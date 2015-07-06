@@ -4,4 +4,19 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_new_point">NewPointActivity</string>
+    <string name="where">Где:</string>
+
+    <string-array name="man_acvitity_spinner_array">
+        <item>Указать</item>
+        <item>Активен</item>
+        <item>Не активен</item>
+        <item>Не известно</item>
+    </string-array>
+    <string-array name="man_vehicle_spinner_array">
+        <item>Указать</item>
+        <item>РТ</item>
+        <item>Гусь</item>
+        <item>Другой</item>
+    </string-array>
+
 </resources>
