@@ -16,6 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".NewPointActivity"
+            android:label="@string/title_activity_new_point"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mototime.motobat.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
