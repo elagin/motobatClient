@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="0.8"
+    android:keepScreenOn="true"
     tools:context=".MainActivity">
 
     <ListView
