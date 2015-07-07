@@ -1,4 +1,4 @@
-package com.mototime.motobat;
+package com.mototime.motobat.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import com.mototime.motobat.R;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.mototime.motobat;
+package com.mototime.motobat.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import com.mototime.motobat.MyApp;
+import com.mototime.motobat.R;
+import com.mototime.motobat.activity.NewPointActivity;
 
 
 public class MainActivity extends Activity implements View.OnClickListener  {
