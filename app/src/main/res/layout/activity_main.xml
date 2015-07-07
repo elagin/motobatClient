@@ -7,11 +7,8 @@
     android:keepScreenOn="true"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id="@+id/point_list"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_weight="0.74" />
+    <include
+        layout="@layout/point_list"/>
 
     <Button
         android:id="@+id/new_point_btn"

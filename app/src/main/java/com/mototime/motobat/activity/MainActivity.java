@@ -1,22 +1,25 @@
 package com.mototime.motobat.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.mototime.motobat.MyApp;
+import com.mototime.motobat.Point;
+import com.mototime.motobat.Points;
 import com.mototime.motobat.R;
-import com.mototime.motobat.activity.NewPointActivity;
-
 
 public class MainActivity extends Activity implements View.OnClickListener  {
 
     private MyApp myApp = null;
     private Button newPointBtn;
+    private View pointList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,8 @@ public class MainActivity extends Activity implements View.OnClickListener  {
 
         newPointBtn = (Button)findViewById(R.id.new_point_btn);
         newPointBtn.setOnClickListener(this);
+
+        //pointList = findViewById(R.id.point_list);
     }
 
     @Override
@@ -59,5 +64,36 @@ public class MainActivity extends Activity implements View.OnClickListener  {
                 startActivity(new Intent(this, NewPointActivity.class));
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        drawList(this);
+    }
+
+    private void drawList(Context context) {
+        ViewGroup view = (ViewGroup) ((Activity) context).findViewById(R.id.accListContent);
+        if(view.getChildCount() > 0)
+            view.removeAllViews();
+        boolean   noYesterday = true;
+
+        Integer[] visible = myApp.points.sort(myApp.points.getVisibleAccidents(), Points.Sort.BACKWARD);
+
+//        if (points.error.equals("ok") || points.error.equals("no_new")) {
+            for (int i : visible) {
+                Point point = myApp.points.getPoint(i);
+//                if (!acc.isToday() && noYesterday) {
+//                    //inflateYesterdayRow(context, view);
+//                    noYesterday = false;
+//                }
+                point.inflateRow(context, view);
+            }
+//            if (visible.length == 0) {
+//                view.addView(noAccidentsNotification(context));
+//            }
+//        } else {
+//            // TODO Сюда вкрячить сообщение об ошибке
+//        }
     }
 }

@@ -1,7 +1,6 @@
 package com.mototime.motobat.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,7 +10,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.mototime.motobat.MyApp;
+import com.mototime.motobat.Point;
 import com.mototime.motobat.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -87,8 +91,32 @@ public class NewPointActivity extends Activity implements AdapterView.OnItemSele
         int id = v.getId();
         switch (id) {
             case R.id.createBtn:
+                JSONObject result = createNew();
+                try {
+                    Point point = new Point(this, result);
+                    ((MyApp) getApplicationContext()).points.addPoint(point);
+                } catch (Point.PointException e) {
+                    e.printStackTrace();
+                }
                 finish();
                 break;
         }
+    }
+
+    private JSONObject createNew() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("lat", 55);
+            json.put("lon", 37);
+            json.put("id", 10);
+            json.put("address", "ул. Ленина");
+            json.put("created_date", new Date().getTime());
+            json.put("owner", "UserName");
+            json.put("owner_id", 22);
+            json.put("descr", "test");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 }
