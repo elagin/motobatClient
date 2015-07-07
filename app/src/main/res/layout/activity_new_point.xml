@@ -69,6 +69,19 @@
 
         </TableRow>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Описание"
+                android:id="@+id/commentTextView"
+                android:layout_span="2" />
+        </TableRow>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"

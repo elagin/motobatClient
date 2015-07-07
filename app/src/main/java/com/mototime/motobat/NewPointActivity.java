@@ -11,12 +11,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import java.util.Date;
+
 
 public class NewPointActivity extends Activity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     Spinner manAcvititySpinner;
     Spinner vehicleTypeSpinner;
     Button createBtn;
+
+    private enum ManAcvitityStatus {
+        ACTIVE, NOT_ACTIVE, UNKNOWN,
+    }
+
+    private enum VehicleType {
+        RT, GS, OTHER,
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
