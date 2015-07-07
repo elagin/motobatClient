@@ -3,6 +3,7 @@
     package="com.mototime.motobat" >
 
     <application
+        android:name="com.mototime.motobat.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

@@ -11,11 +11,14 @@ import android.widget.Button;
 
 public class MainActivity extends Activity implements View.OnClickListener  {
 
+    private MyApp myApp = null;
     private Button newPointBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myApp = (MyApp) getApplicationContext();
+
         setContentView(R.layout.activity_main);
 
         newPointBtn = (Button)findViewById(R.id.new_point_btn);
