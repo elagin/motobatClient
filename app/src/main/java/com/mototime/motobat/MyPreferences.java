@@ -17,6 +17,8 @@ public class MyPreferences {
     private final static String savedlng = "savedlng";
     private final static String savedlat = "savedlat";
 
+    private final static String login = "login";
+    private final static String password = "password";
 
     private static SharedPreferences preferences;
     private static Context context;
@@ -37,5 +39,23 @@ public class MyPreferences {
                 .putFloat(savedlng, (float) latlng.longitude).commit();
     }
 
+    public String getLogin() {
+        return preferences.getString(login, "");
+    }
 
+    public void setLogin(String value) {
+        preferences.edit().putString(login, value).commit();
+    }
+
+    public String getPassword() {
+        return preferences.getString(password, "");
+    }
+
+    public void setPassword(String value) {
+        preferences.edit().putString(password, value).commit();
+    }
+
+    public void resetAuth() {
+        preferences.edit().remove(login).remove(password).commit();
+    }
 }

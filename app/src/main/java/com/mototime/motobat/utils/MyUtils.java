@@ -1,7 +1,10 @@
 package com.mototime.motobat.utils;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -110,5 +113,11 @@ public class MyUtils {
             out = Const.timeFormat.format(date);
         }
         return out;
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm      = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
