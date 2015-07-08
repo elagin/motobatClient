@@ -21,8 +21,9 @@ public class MyApp extends Application {
 
 //    private Map<Integer, Point> pointsMap;
     public Points points;
-    public  MyPreferences prefs = null;
-    public MyMapManager map;
+    private  MyPreferences prefs = null;
+    private Session session = null;
+    private MyMapManager map;
 
     private final MyApp instance;
 
@@ -58,5 +59,9 @@ public class MyApp extends Application {
 //    public Map<Integer, Point> getPointsMap() {
 //        return pointsMap;
 //    }
+
+    public Session getSession () {
+        return session;
+    }
 
 }

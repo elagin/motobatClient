@@ -31,5 +31,10 @@
     <string name="login_button">Вход</string>
     <string name="auth_password_error">Не удалось авторизоваться. Возможно неверно введен логин или пароль.</string>
     <string name="auth_not_available">Авторизация не возможна, пожалуйста, проверьте доступность Internet.</string>
-
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="role_developer">Разработчик</string>
+    <string name="role_admin">администратор</string>
+    <string name="role_moderator">модератор</string>
+    <string name="role_user">пользователь</string>
+    <string name="role_read_only">только чтение</string>
 </resources>
