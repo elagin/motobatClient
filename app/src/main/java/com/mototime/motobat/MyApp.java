@@ -1,6 +1,11 @@
 package com.mototime.motobat;
 
 import android.app.Application;
+import android.content.Context;
+import android.location.Location;
+
+import com.mototime.motobat.maps.general.MyMapManager;
+import com.mototime.motobat.maps.google.MyGoogleMapManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -16,8 +21,11 @@ public class MyApp extends Application {
 
 //    private Map<Integer, Point> pointsMap;
     public Points points;
+    public  MyPreferences prefs = null;
+    public MyMapManager map;
 
     private final MyApp instance;
+
     public MyApp() {
         instance = this;
 
@@ -25,6 +33,22 @@ public class MyApp extends Application {
 //            pointsMap = new HashMap<>();
 //        }
         points = new Points(this);
+    }
+
+    public MyPreferences getPreferences() {
+        if (prefs == null)
+            prefs = new MyPreferences(getApplicationContext());
+        return prefs;
+    }
+
+    public Points getPoints() {
+        return points;
+    }
+
+    public void createMap(Context context) {
+        map = new MyGoogleMapManager(context);
+        Location location = MyLocationManager.getLocation(this);
+        map.jumpToPoint(location);
     }
 
 //    public void addPoint(Point point) {

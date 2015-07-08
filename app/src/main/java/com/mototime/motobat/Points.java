@@ -68,4 +68,8 @@ public class Points {
     public void addPoint(Point point) {
         points.put(10, point);
     }
+
+    public Map<Integer, Point> getMap() {
+        return points;
+    }
 }

@@ -14,12 +14,15 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.Point;
 import com.mototime.motobat.Points;
 import com.mototime.motobat.R;
+import com.mototime.motobat.utils.Const;
 
 public class MainActivity extends Activity implements View.OnClickListener  {
 
     private MyApp myApp = null;
     private Button newPointBtn;
     private View pointList;
+    private View       mapContainer;
+    public Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +31,15 @@ public class MainActivity extends Activity implements View.OnClickListener  {
 
         setContentView(R.layout.activity_main);
 
-        newPointBtn = (Button)findViewById(R.id.new_point_btn);
-        newPointBtn.setOnClickListener(this);
+        context = this;
 
+//        newPointBtn = (Button)findViewById(R.id.new_point_btn);
+//        newPointBtn.setOnClickListener(this);
+
+        mapContainer = findViewById(R.id.map_container);
+        mapContainer.setTranslationX(Const.getWidth(context));
+
+        myApp.createMap(this);
         //pointList = findViewById(R.id.point_list);
     }
 
@@ -69,7 +78,7 @@ public class MainActivity extends Activity implements View.OnClickListener  {
     @Override
     protected void onResume() {
         super.onResume();
-        drawList(this);
+        //drawList(this);
     }
 
     private void drawList(Context context) {

@@ -56,6 +56,10 @@ public class Point {
         return descr;
     }
 
+    public Date getCreated() {
+        return created;
+    }
+
     private void createPoint(JSONObject data) throws PointException {
 //        if (!checkPrerequisites(data))
 //            throw new PointException();
@@ -154,5 +158,9 @@ public class Point {
 
     public int getHoursAgo() {
         return (int) ((new Date()).getTime() - created.getTime()) / 3600000;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

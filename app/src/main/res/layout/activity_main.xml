@@ -1,3 +1,24 @@
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    tools:context="com.mototime.motobat.activity.MainActivity" >
+    <fragment
+        class ="com.mototime.motobat.activity.MainScreenFragment"
+        android:id="@+id/main_screen_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="main_screen">
+
+    </fragment>
+</FrameLayout>
+
+<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,9 +31,17 @@
     <include
         layout="@layout/point_list"/>
 
+    <LinearLayout
+        android:id="@+id/map_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    </LinearLayout>
+
     <Button
         android:id="@+id/new_point_btn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="New Button" />
 </LinearLayout>
+    -->
