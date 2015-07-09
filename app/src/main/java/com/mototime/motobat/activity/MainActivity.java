@@ -19,7 +19,7 @@ import com.mototime.motobat.utils.Const;
 public class MainActivity extends Activity implements View.OnClickListener  {
 
     private MyApp myApp = null;
-    private Button newPointBtn;
+    private Button loginBtn;
     private View pointList;
     private View       mapContainer;
     public Context context;
@@ -33,13 +33,13 @@ public class MainActivity extends Activity implements View.OnClickListener  {
 
         context = this;
 
-//        newPointBtn = (Button)findViewById(R.id.new_point_btn);
-//        newPointBtn.setOnClickListener(this);
+        loginBtn = (Button)findViewById(R.id.login_btn);
+        loginBtn.setOnClickListener(this);
 
         mapContainer = findViewById(R.id.map_container);
         mapContainer.setTranslationX(Const.getWidth(context));
 
-        myApp.createMap(this);
+        //myApp.createMap(this);
         //pointList = findViewById(R.id.point_list);
     }
 
@@ -70,7 +70,8 @@ public class MainActivity extends Activity implements View.OnClickListener  {
         int id = v.getId();
         switch (id) {
             case R.id.new_point_btn:
-                startActivity(new Intent(this, NewPointActivity.class));
+                //startActivity(new Intent(this, NewPointActivity.class));
+                startActivity(new Intent(this, VKLoginActivity.class));
                 break;
         }
     }

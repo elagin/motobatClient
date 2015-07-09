@@ -37,4 +37,5 @@
     <string name="role_moderator">модератор</string>
     <string name="role_user">пользователь</string>
     <string name="role_read_only">только чтение</string>
+    <string name="title_activity_vklogin">VKLoginActivity</string>
 </resources>
