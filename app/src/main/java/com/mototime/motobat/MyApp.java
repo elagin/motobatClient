@@ -60,6 +60,12 @@ public class MyApp extends Application {
         map = new MyGoogleMapManager(context);
         Location location = MyLocationManager.getLocation(this);
         map.jumpToPoint(location);
+        map.placeUser(context);
+    }
+
+    public void updateMap(Context context) {
+        map.placePoints(context);
+        map.placeUser(context);
     }
 
 //    public void addPoint(Point point) {

@@ -103,7 +103,7 @@ public class MyGoogleMapManager extends MyMapManager {
     }
 
     @SuppressWarnings("UnusedParameters")
-    public void placeAcc(Context context) {
+    public void placePoints(Context context) {
         if (accidents == null) {
             accidents = new HashMap<>();
         }

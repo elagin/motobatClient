@@ -24,6 +24,12 @@
                 android:text="Вход"
                 android:id="@+id/login_btn" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Создать точку"
+                android:id="@+id/add_point_btn" />
+
         </LinearLayout>
 
 

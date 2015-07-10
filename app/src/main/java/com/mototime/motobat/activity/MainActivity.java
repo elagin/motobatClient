@@ -24,6 +24,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private MyApp myApp = null;
     private Button loginBtn;
+    private Button addPointBtn;
     private View pointList;
     private View mapContainer;
     public Context context;
@@ -39,6 +40,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         loginBtn = (Button) findViewById(R.id.login_btn);
         loginBtn.setOnClickListener(this);
+
+        addPointBtn = (Button) findViewById(R.id.add_point_btn);
+        addPointBtn.setOnClickListener(this);
 
         mapContainer = findViewById(R.id.map_container);
 
@@ -73,8 +77,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.login_btn:
-                //startActivity(new Intent(this, NewPointActivity.class));
                 startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case R.id.add_point_btn:
+                startActivity(new Intent(this, NewPointActivity.class));
                 break;
         }
     }
@@ -83,6 +89,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         //drawList(this);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            if(bundle.getBoolean("CreateNewPoint", false)) {
+                myApp.updateMap(context);
+            }
+        }
     }
 
     private void drawList(Context context) {

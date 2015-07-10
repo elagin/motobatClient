@@ -20,7 +20,7 @@ public abstract class MyMapManager {
     @SuppressWarnings("SameParameterValue")
     public abstract void zoom(int zoom);
 
-    public abstract void placeAcc(Context context);
+    public abstract void placePoints(Context context);
 
     public String getName() {
         return name;

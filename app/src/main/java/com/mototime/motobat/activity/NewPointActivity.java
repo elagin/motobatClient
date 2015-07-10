@@ -1,6 +1,7 @@
 package com.mototime.motobat.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -95,6 +96,10 @@ public class NewPointActivity extends Activity implements AdapterView.OnItemSele
                 try {
                     Point point = new Point(this, result);
                     ((MyApp) getApplicationContext()).points.addPoint(point);
+
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("CreateNewPoint", true);
+                    startActivity(intent);
                 } catch (Point.PointException e) {
                     e.printStackTrace();
                 }
