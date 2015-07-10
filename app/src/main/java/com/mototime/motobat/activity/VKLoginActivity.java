@@ -39,7 +39,6 @@ public class VKLoginActivity extends Activity {
         VKUIHelper.onResume(this);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -78,6 +77,9 @@ public class VKLoginActivity extends Activity {
         public void onReceiveNewToken(VKAccessToken newToken) {
             newToken.saveTokenToSharedPreferences(VKLoginActivity.this, sTokenKey);
             Intent i = new Intent(VKLoginActivity.this, LoginActivity.class);
+            i.putExtra("ReceiveNewToken", true);
+            i.putExtra("accessToken", newToken.accessToken);
+            i.putExtra("userId", newToken.userId);
             startActivity(i);
         }
 
@@ -86,6 +88,9 @@ public class VKLoginActivity extends Activity {
         @Override
         public void onAcceptUserToken(VKAccessToken token) {
             Intent i = new Intent(VKLoginActivity.this, LoginActivity.class);
+            i.putExtra("AcceptUserToken", true);
+            i.putExtra("accessToken", token.accessToken);
+            i.putExtra("userId", token.userId);
             startActivity(i);
         }
     };

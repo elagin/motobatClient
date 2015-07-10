@@ -71,6 +71,8 @@ public class MyApp extends Application {
 //    }
 
     public Session getSession() {
+        if (session == null)
+            session = new Session(getApplicationContext());
         return session;
     }
 

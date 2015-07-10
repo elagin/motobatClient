@@ -16,12 +16,15 @@ import com.mototime.motobat.Points;
 import com.mototime.motobat.R;
 import com.mototime.motobat.utils.Const;
 
-public class MainActivity extends Activity implements View.OnClickListener  {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class MainActivity extends Activity implements View.OnClickListener {
 
     private MyApp myApp = null;
     private Button loginBtn;
     private View pointList;
-    private View       mapContainer;
+    private View mapContainer;
     public Context context;
 
     @Override
@@ -33,7 +36,7 @@ public class MainActivity extends Activity implements View.OnClickListener  {
 
         context = this;
 
-        loginBtn = (Button)findViewById(R.id.login_btn);
+        loginBtn = (Button) findViewById(R.id.login_btn);
         loginBtn.setOnClickListener(this);
 
         mapContainer = findViewById(R.id.map_container);
@@ -84,21 +87,21 @@ public class MainActivity extends Activity implements View.OnClickListener  {
 
     private void drawList(Context context) {
         ViewGroup view = (ViewGroup) ((Activity) context).findViewById(R.id.accListContent);
-        if(view.getChildCount() > 0)
+        if (view.getChildCount() > 0)
             view.removeAllViews();
-        boolean   noYesterday = true;
+        boolean noYesterday = true;
 
         Integer[] visible = myApp.points.sort(myApp.points.getVisibleAccidents(), Points.Sort.BACKWARD);
 
 //        if (points.error.equals("ok") || points.error.equals("no_new")) {
-            for (int i : visible) {
-                Point point = myApp.points.getPoint(i);
+        for (int i : visible) {
+            Point point = myApp.points.getPoint(i);
 //                if (!acc.isToday() && noYesterday) {
 //                    //inflateYesterdayRow(context, view);
 //                    noYesterday = false;
 //                }
-                point.inflateRow(context, view);
-            }
+            point.inflateRow(context, view);
+        }
 //            if (visible.length == 0) {
 //                view.addView(noAccidentsNotification(context));
 //            }

@@ -20,6 +20,8 @@ public class MyPreferences {
     private final static String login = "login";
     private final static String password = "password";
 
+    private static String sTokenKey = "VK_ACCESS_TOKEN";
+
     private static SharedPreferences preferences;
     private static Context context;
 
@@ -58,4 +60,6 @@ public class MyPreferences {
     public void resetAuth() {
         preferences.edit().remove(login).remove(password).commit();
     }
+
+    public String getVkToken() { return preferences.getString(sTokenKey, "");}
 }

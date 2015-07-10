@@ -3,28 +3,26 @@ package com.mototime.motobat.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.app.ActionBarActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.wallet.LineItem;
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.R;
-import com.mototime.motobat.utils.MyUtils;
+import com.mototime.motobat.network.AsyncTaskCompleteListener;
+import com.mototime.motobat.network.RoleRequest;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKUIHelper;
 
-import org.w3c.dom.Text;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -32,8 +30,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private Button loginBtn;
     private Button cancelBtn;
 
-    private EditText login;
-    private EditText password;
     private MyApp myApp = null;
     private MyPreferences prefs;
 
@@ -48,37 +44,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         MyApp myApp = (MyApp) getApplicationContext();
 
         context = this;
         prefs = myApp.getPreferences();
-        login = (EditText) findViewById(R.id.auth_login);
-        login.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                enableLoginBtn();
-            }
-        });
-
-        password = (EditText) findViewById(R.id.auth_password);
-        password.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                enableLoginBtn();
-            }
-        });
 
         cancelBtn = (Button) findViewById(R.id.cancel_button);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -159,11 +130,33 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     }
 
     private void fillCtrls() {
-
-        login.setText(prefs.getLogin());
-        password.setText(prefs.getPassword());
         View accListYesterdayLine = findViewById(R.id.accListYesterdayLine);
-        TextView roleView = (TextView)findViewById(R.id.role);
+        TextView roleView = (TextView) findViewById(R.id.role);
+        TextView loggedStatus = (TextView) findViewById(R.id.auth_logged_status);
+
+        String formatRole = getString(R.string.auth_role);
+//        String formatStatus = getString(R.string.auth_logged_status);
+
+        if (VKSdk.instance() != null) {
+            if (VKSdk.isLoggedIn()) {
+                loginBtn.setEnabled(false);
+                logoutBtn.setEnabled(true);
+                roleView.setText(String.format(formatRole, myApp.getSession().getRole()));
+                loggedStatus.setText(R.string.is_authorized);
+                finish();
+
+            } else {
+                loginBtn.setEnabled(true);
+                logoutBtn.setEnabled(false);
+                roleView.setText(String.format(formatRole, getString(R.string.auth_role_un_set)));
+                loggedStatus.setText(R.string.is_not_authorized);
+                //authorized
+            }
+        } else {
+            loginBtn.setEnabled(true);
+            roleView.setText(String.format(formatRole, getString(R.string.auth_role_un_set)));
+            loggedStatus.setText(R.string.is_not_authorized);
+        }
 
         //Авторизованы?
 //        if (myApp.getSession().isAuthorized()) {
@@ -196,16 +189,29 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     protected void onResume() {
         super.onResume();
 
-        if(VKSdk.instance() != null ) {
-            if (VKSdk.isLoggedIn()) {
-                loginBtn.setEnabled(false);
-                logoutBtn.setEnabled(true);
-            } else {
-                loginBtn.setEnabled(true);
-                logoutBtn.setEnabled(false);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            Boolean isReceiveNewToken = bundle.getBoolean("ReceiveNewToken", false);
+            Boolean isAcceptUserToken = bundle.getBoolean("AcceptUserToken", false);
+            if (isReceiveNewToken || isAcceptUserToken) {
+                String accessToken = bundle.getString("accessToken");
+                String userId = bundle.getString("userId");
+                new RoleRequest(new RoleCallback(), context, userId);
             }
-        } else {
-            loginBtn.setEnabled(true);
+        }
+
+        fillCtrls();
+    }
+
+    private class RoleCallback implements AsyncTaskCompleteListener {
+
+        @Override
+        public void onTaskComplete(JSONObject result) {
+            try {
+                myApp.getSession().setRole(result.getString("role"));
+                fillCtrls();
+            } catch (JSONException e) {
+            }
         }
     }
 }

@@ -23,9 +23,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="auth_header">Для входа используйте учетные данные ВКонтакте.</string>
-    <string name="auth_login">Логин</string>
-    <string name="auth_password">Пароль</string>
-    <string name="auth_role">Вы: %1$s.</string>
+    <string name="auth_logged_status">Статус: %1$s.</string>
+    <string name="auth_role">Роль: %1$s.</string>
+    <string name="auth_role_un_set">Не установлена</string>
     <string name="create_cancel">Отмена</string>
     <string name="logout_button">Выход</string>
     <string name="login_button">Вход</string>
@@ -38,4 +38,6 @@
     <string name="role_user">пользователь</string>
     <string name="role_read_only">только чтение</string>
     <string name="title_activity_vklogin">VKLoginActivity</string>
+    <string name="is_authorized">Статус: авторизован</string>
+    <string name="is_not_authorized">Статус: не авторизован</string>
 </resources>

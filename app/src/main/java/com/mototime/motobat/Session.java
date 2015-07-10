@@ -24,14 +24,14 @@ public class Session {
     private static final String[] Admin = new String[]{"admin", "developer"};
     private static final String[] Developer = new String[]{"developer"};
 
-    private       String        role;
-    private       String        name;
-    private       int           id;
+    private String role;
+    private String name;
+    private int id;
     private final MyPreferences prefs;
     private boolean isAuthorized = false;
     private final Context context;
-    private       String  login;
-    private       String  password;
+    private String login;
+    private String password;
 
     public Session(Context context) {
         this.context = context;
@@ -57,7 +57,7 @@ public class Session {
 
     private void reset() {
         name = "";
-        role = "";
+        role = "Не установлена";
         id = 0;
     }
 
@@ -67,6 +67,10 @@ public class Session {
 
     public String getRole() {
         return role;
+    }
+
+    public void setRole(String value) {
+        this.role = value;
     }
 
     public int getID() {
@@ -161,13 +165,13 @@ public class Session {
 
     public String getName(Context context) {
         //Порядок важен.
-        if(isDeveloper())
+        if (isDeveloper())
             return context.getString(R.string.role_developer);
-        else if(isAdmin())
+        else if (isAdmin())
             return context.getString(R.string.role_admin);
-        else if(isModerator())
+        else if (isModerator())
             return context.getString(R.string.role_moderator);
-        else if(isStandart())
+        else if (isStandart())
             return context.getString(R.string.role_user);
         else
             return context.getString(R.string.role_read_only);
