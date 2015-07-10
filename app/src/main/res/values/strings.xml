@@ -40,4 +40,5 @@
     <string name="title_activity_vklogin">VKLoginActivity</string>
     <string name="is_authorized">Статус: авторизован</string>
     <string name="is_not_authorized">Статус: не авторизован</string>
+    <string name="map_provider_category">Карта</string>
 </resources>

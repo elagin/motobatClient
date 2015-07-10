@@ -38,15 +38,15 @@ public class Session {
         prefs = new MyPreferences(context);
         reset();
 
-        if (!prefs.getLogin().isEmpty()) {
-            login = prefs.getLogin();
-            password = prefs.getPassword();
-            if (!auth(context, login, password)) {
-                showLogin(context);
-            }
-        } else {
-            showLogin(context);
-        }
+//        if (!prefs.getLogin().isEmpty()) {
+//            login = prefs.getLogin();
+//            password = prefs.getPassword();
+//            if (!auth(context, login, password)) {
+//                showLogin(context);
+//            }
+//        } else {
+//            showLogin(context);
+//        }
     }
 
     private void showLogin(Context context) {

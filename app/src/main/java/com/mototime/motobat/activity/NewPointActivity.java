@@ -1,9 +1,11 @@
 package com.mototime.motobat.activity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
-import android.view.Menu;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,9 +13,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.mototime.motobat.MyApp;
+import com.mototime.motobat.MyLocationManager;
 import com.mototime.motobat.Point;
 import com.mototime.motobat.R;
+import com.mototime.motobat.utils.MyUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,11 +32,16 @@ import org.json.JSONObject;
 import java.util.Date;
 
 
-public class NewPointActivity extends Activity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class NewPointActivity extends FragmentActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
-    Spinner manAcvititySpinner;
-    Spinner vehicleTypeSpinner;
-    Button createBtn;
+    private Spinner manAcvititySpinner;
+    private Spinner vehicleTypeSpinner;
+    private Button createBtn;
+    private GoogleMap map;
+    private MyApp myApp = null;
+    private NewPoint point;
+    private final int RADIUS = 1000;
+    private Context context;
 
     private enum ManAcvitityStatus {
         ACTIVE, NOT_ACTIVE, UNKNOWN,
@@ -39,6 +55,9 @@ public class NewPointActivity extends Activity implements AdapterView.OnItemSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_point);
+        context = this;
+
+        myApp = (MyApp) getApplicationContext();
 
         createBtn = (Button) findViewById(R.id.createBtn);
         createBtn.setOnClickListener(this);
@@ -54,13 +73,9 @@ public class NewPointActivity extends Activity implements AdapterView.OnItemSele
         vehicleTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
         vehicleTypeSpinner.setOnItemSelectedListener(this);
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_new_point, menu);
-        return true;
+        point = new NewPoint();
+        map = makeMap();
     }
 
     @Override
@@ -123,5 +138,73 @@ public class NewPointActivity extends Activity implements AdapterView.OnItemSele
             e.printStackTrace();
         }
         return json;
+    }
+
+    private GoogleMap makeMap() {
+        GoogleMap map;
+        FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+        SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.mc_create_map_container);
+        map = mapFragment.getMap();
+
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(point.location), 16));
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+        map.getUiSettings().setZoomControlsEnabled(true);
+        if (!myApp.getSession().isModerator()) {
+            CircleOptions circleOptions = new CircleOptions().center(MyUtils.LocationToLatLng(point.initialLocation)).radius(RADIUS).fillColor(0x20FF0000);
+            map.addCircle(circleOptions);
+            map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                @Override
+                public void onCameraChange(CameraPosition camera) {
+//                    Button mcCreateFineAddressConfirm = (Button) ((Activity) context).findViewById(R.id.mc_create_fine_address_confirm);
+//                    if (point.initialLocation != null) {
+//                        double distance = MyUtils.LatLngToLocation(camera.target).distanceTo(point.initialLocation);
+//                        if (distance > RADIUS) {
+//                            mcCreateFineAddressConfirm.setEnabled(false);
+//                        } else {
+//                            mcCreateFineAddressConfirm.setEnabled(true);
+//                        }
+//                    } else {
+//                        mcCreateFineAddressConfirm.setEnabled(false);
+//                    }
+                }
+            });
+        }
+        map.clear();
+        for (int id : myApp.getPoints().getMap().keySet()) {
+            Point point = myApp.getPoints().getPoint(id);
+            if (point.isInvisible()) continue;
+            String title = point.getAddress();
+//            if (!point.getMedText().equals("")) {
+//                title += ", " + point.getMedText();
+//            }
+            title += ", " + MyUtils.getIntervalFromNowInText(point.getCreated()) + " назад";
+
+            float alpha;
+            int age = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 3600000);
+            if (age < 2) {
+                alpha = 1.0f;
+            } else if (age < 6) {
+                alpha = 0.5f;
+            } else {
+                alpha = 0.2f;
+            }
+            map.addMarker(new MarkerOptions().position(MyUtils.LocationToLatLng(point.getLocation())).title(title)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.point)).alpha(alpha));
+        }
+        return map;
+    }
+
+    private class NewPoint {
+        final Location initialLocation;
+        final Date created;
+        Location location;
+        String address;
+        String description;
+
+        public NewPoint() {
+            initialLocation = location = MyLocationManager.getLocation(context);
+            created = new Date();
+            address = MyLocationManager.address;
+        }
     }
 }

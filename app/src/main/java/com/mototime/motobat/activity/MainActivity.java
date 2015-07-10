@@ -15,10 +15,6 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.Point;
 import com.mototime.motobat.Points;
 import com.mototime.motobat.R;
-import com.mototime.motobat.utils.Const;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -91,7 +87,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         //drawList(this);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            if(bundle.getBoolean("CreateNewPoint", false)) {
+            if (bundle.getBoolean("CreateNewPoint", false)) {
                 myApp.updateMap(context);
             }
         }
