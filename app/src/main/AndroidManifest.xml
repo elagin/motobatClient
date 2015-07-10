@@ -3,6 +3,11 @@
     package="com.mototime.motobat" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".MyApp"
@@ -18,7 +23,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDfQZrnHvn-fNCYmFQSMBa-1ClE0ZCWUQ4" />
+            android:value="AIzaSyAqkqD7Nfrne3cXlFsLJnoYrVTasiBi0NQ" />
 
         <activity
             android:name=".activity.MainActivity"

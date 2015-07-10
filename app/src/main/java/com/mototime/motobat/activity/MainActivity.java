@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.mototime.motobat.utils.Const;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     private MyApp myApp = null;
     private Button loginBtn;
@@ -40,9 +41,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         loginBtn.setOnClickListener(this);
 
         mapContainer = findViewById(R.id.map_container);
-        mapContainer.setTranslationX(Const.getWidth(context));
 
-        //myApp.createMap(this);
+        myApp.createMap(this);
         //pointList = findViewById(R.id.point_list);
     }
 
