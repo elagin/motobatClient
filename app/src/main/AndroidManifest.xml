@@ -26,7 +26,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -34,19 +33,23 @@
             android:name=".activity.NewPointActivity"
             android:label="@string/title_activity_new_point"
             android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:keepScreenOn="true" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mototime.motobat.activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:keepScreenOn="true"
             android:label="@string/title_activity_login" >
         </activity>
         <activity
             android:name=".activity.VKLoginActivity"
+            android:screenOrientation="portrait"
+            android:keepScreenOn="true"
             android:label="@string/title_activity_vklogin" >
         </activity>
     </application>
-
 </manifest>

@@ -30,7 +30,6 @@ public class VKLoginActivity extends Activity {
 
         VKUIHelper.onCreate(this);
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
-
         VKSdk.authorize(sMyScope, true, true);
     }
 
@@ -78,7 +77,7 @@ public class VKLoginActivity extends Activity {
         @Override
         public void onReceiveNewToken(VKAccessToken newToken) {
             newToken.saveTokenToSharedPreferences(VKLoginActivity.this, sTokenKey);
-            Intent i = new Intent(VKLoginActivity.this, MainActivity.class);
+            Intent i = new Intent(VKLoginActivity.this, LoginActivity.class);
             startActivity(i);
         }
 
@@ -86,7 +85,7 @@ public class VKLoginActivity extends Activity {
         // Так что на этом этапе не понятно, авторизовался ли юзер успешно.
         @Override
         public void onAcceptUserToken(VKAccessToken token) {
-            Intent i = new Intent(VKLoginActivity.this, MainActivity.class);
+            Intent i = new Intent(VKLoginActivity.this, LoginActivity.class);
             startActivity(i);
         }
     };

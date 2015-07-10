@@ -2,6 +2,7 @@ package com.mototime.motobat.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,10 +21,12 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.R;
 import com.mototime.motobat.utils.MyUtils;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.VKUIHelper;
 
 import org.w3c.dom.Text;
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
     private Button logoutBtn;
     private Button loginBtn;
@@ -37,7 +40,7 @@ public class LoginActivity extends ActionBarActivity {
     private static Context context;
 
     private void enableLoginBtn() {
-        loginBtn.setEnabled(login.getText().toString().length() > 0 && password.getText().toString().length() > 0);
+        //loginBtn.setEnabled(login.getText().toString().length() > 0 && password.getText().toString().length() > 0);
     }
 
     @Override
@@ -98,28 +101,38 @@ public class LoginActivity extends ActionBarActivity {
         });
 
         loginBtn = (Button) findViewById(R.id.login_button);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (MyUtils.isOnline(context)) {
-                    MyApp myApp1 = (MyApp) getApplicationContext();
-                    if (myApp1.getSession().auth(context, login.getText().toString(), password.getText().toString())) {
-                        finish();
-                    } else {
-                        TextView authErrorHelper = (TextView) findViewById(R.id.auth_error_helper);
-                        authErrorHelper.setText(R.string.auth_password_error);
-                    }
-                } else {
-                    //TODO Перенести в ресурсы
-                    Toast.makeText(context, R.string.auth_not_available, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        loginBtn.setOnClickListener(this);
+//            @Override
+//            public void onClick(View v) {
+//                if (MyUtils.isOnline(context)) {
+//                    MyApp myApp1 = (MyApp) getApplicationContext();
+//                    if (myApp1.getSession().auth(context, login.getText().toString(), password.getText().toString())) {
+//                        finish();
+//                    } else {
+//                        TextView authErrorHelper = (TextView) findViewById(R.id.auth_error_helper);
+//                        authErrorHelper.setText(R.string.auth_password_error);
+//                    }
+//                } else {
+//                    //TODO Перенести в ресурсы
+//                    Toast.makeText(context, R.string.auth_not_available, Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
 
         TextView accListYesterdayLine = (TextView) findViewById(R.id.accListYesterdayLine);
         accListYesterdayLine.setMovementMethod(LinkMovementMethod.getInstance());
 
         fillCtrls();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.login_button:
+                startActivity(new Intent(this, VKLoginActivity.class));
+                break;
+        }
     }
 
 
@@ -172,5 +185,27 @@ public class LoginActivity extends ActionBarActivity {
 //            roleView.setVisibility(View.GONE);
 //            enableLoginBtn();
 //        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        VKUIHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(VKSdk.instance() != null ) {
+            if (VKSdk.isLoggedIn()) {
+                loginBtn.setEnabled(false);
+                logoutBtn.setEnabled(true);
+            } else {
+                loginBtn.setEnabled(true);
+                logoutBtn.setEnabled(false);
+            }
+        } else {
+            loginBtn.setEnabled(true);
+        }
     }
 }
