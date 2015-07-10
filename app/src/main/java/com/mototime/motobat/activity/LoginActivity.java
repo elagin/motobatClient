@@ -45,7 +45,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        MyApp myApp = (MyApp) getApplicationContext();
+        myApp = (MyApp) getApplicationContext();
 
         context = this;
         prefs = myApp.getPreferences();
@@ -92,6 +92,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         TextView accListYesterdayLine = (TextView) findViewById(R.id.accListYesterdayLine);
         accListYesterdayLine.setMovementMethod(LinkMovementMethod.getInstance());
 
+        checkBundle();
+
         fillCtrls();
     }
 
@@ -132,7 +134,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
             if (VKSdk.isLoggedIn()) {
                 loginBtn.setEnabled(false);
                 logoutBtn.setEnabled(true);
-                roleView.setText(String.format(formatRole, myApp.getSession().getRole()));
+
+                //roleView.setText(String.format(formatRole, myApp.getSession().getRole()));
+                String role = myApp.getSession().getRole();
+                roleView.setText(String.format(formatRole, role));
+
                 loggedStatus.setText(R.string.is_authorized);
                 finish();
 
@@ -179,7 +185,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
+    }
 
+    private void checkBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             Boolean isReceiveNewToken = bundle.getBoolean("ReceiveNewToken", false);
@@ -190,8 +198,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 new RoleRequest(new RoleCallback(), context, userId);
             }
         }
-
-        fillCtrls();
     }
 
     private class RoleCallback implements AsyncTaskCompleteListener {

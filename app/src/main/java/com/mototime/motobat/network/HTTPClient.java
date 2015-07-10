@@ -194,6 +194,8 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
         } else {
             protocol = "http";
         }
+
+        //http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php?method=getrole&userid=rjhdby
         String script;
         String defaultMethod = myApp.getProps().get("app." + app + ".json.method.default");
         String server = myApp.getProps().get("app." + app + ".json.server");
@@ -203,7 +205,8 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
             script = defaultMethod;
         }
         try {
-            return new URL(protocol + "://" + server + "/" + script);
+            //return new URL(protocol + "://" + server + "/" + script);
+            return new URL("http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

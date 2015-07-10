@@ -20,8 +20,8 @@ public class RoleRequest extends HTTPClient  {
         this.userID = userID;
 
         post = new HashMap<>();
-        post.put("calledMethod", "getRole");
-        post.put("userID", userID);
+        post.put("method", "getRole");
+        post.put("userid", userID);
         execute(post);
     }
 
