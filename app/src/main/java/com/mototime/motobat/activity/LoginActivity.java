@@ -23,6 +23,8 @@ import com.vk.sdk.VKUIHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
     private Button logoutBtn;
@@ -205,7 +207,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         @Override
         public void onTaskComplete(JSONObject result) {
             try {
-                myApp.getSession().setRole(result.getString("role"));
+                //{"RESULT":{"role":"standart"}}
+                //{"ERROR":{"text":"NO USER","object":"rjhd"}}
+                result = (JSONObject) result.get("RESULT");
+                String role = result.getString("role");
+                if(role != null )
+                    myApp.getSession().setRole(role);
                 fillCtrls();
             } catch (JSONException e) {
             }

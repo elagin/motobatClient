@@ -13,6 +13,8 @@ import java.util.HashMap;
 public class RoleRequest extends HTTPClient  {
 
     private final String userID;
+    private final String VALID_RESULT = "RESULT";
+    private final String INVALID_RESULT = "ERROR";
 
     public RoleRequest(AsyncTaskCompleteListener listener, Context context, String userID) {
         this.listener = listener;
@@ -22,24 +24,19 @@ public class RoleRequest extends HTTPClient  {
         post = new HashMap<>();
         post.put("method", "getRole");
         post.put("userid", userID);
+        post.put("userid", "rjhdby");
         execute(post);
     }
 
     @Override
     public boolean error(JSONObject response) {
-        if (!response.has("result")) return true;
-        try {
-            String result = response.getString("result");
-            if (result.equals("OK")) return false;
-        } catch (JSONException e) {
-            return true;
-        }
-        return true;
+        return response.has(INVALID_RESULT);
     }
 
     @Override
     public String getError(JSONObject response) {
-        if (!response.has("result")) return "Ошибка соединения "  + response.toString();
+        if (!response.has(VALID_RESULT))
+            return "Ошибка соединения "  + response.toString();
         try {
             String result = response.getString("result");
             switch (result) {

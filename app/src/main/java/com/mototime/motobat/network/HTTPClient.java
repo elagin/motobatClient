@@ -67,7 +67,7 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
             }
             if (post.containsKey("method")) {
                 method = post.get("method");
-                post.remove("method");
+                //post.remove("method");
             } else {
                 method = "default";
             }
@@ -183,7 +183,6 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-        // Log.d("JSON POST", result.toString());
         return result.toString();
     }
 
@@ -195,10 +194,21 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
             protocol = "http";
         }
 
+//        default.app=mcaccidents
+//        app.mcaccidents.json.server=forum.moto.msk.ru
+//        app.mcaccidents.json.method.geocode=mobile/geocodeReverse.php
+//        app.mcaccidents.json.method.default=mobile/main_mc_acc_json.php
+//        app.osm.provider.search=http://nominatim.openstreetmap.org/search
+
+        //method = default
         //http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php?method=getrole&userid=rjhdby
         String script;
         String defaultMethod = myApp.getProps().get("app." + app + ".json.method.default");
+        //defaultMethod = mobile/main_mc_acc_json.php
+
         String server = myApp.getProps().get("app." + app + ".json.server");
+        //server = forum.moto.msk.ru;
+
         if (myApp.getProps().containsKey("app." + app + ".json.method." + method)) {
             script = myApp.getProps().get("app." + app + ".json.method." + method);
         } else {
