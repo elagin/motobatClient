@@ -109,7 +109,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
             case R.id.createBtn:
                 JSONObject result = createNew();
                 try {
-                    Point point = new Point(this, result);
+                    Point point = new Point(result, this);
                     ((MyApp) getApplicationContext()).points.addPoint(point);
 
                     Intent intent = new Intent(this, MainActivity.class);

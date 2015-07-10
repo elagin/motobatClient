@@ -31,7 +31,7 @@ public class Point {
 
     MyApp myApp = null;
 
-    public Point(Context context, JSONObject json) throws PointException{
+    public Point(JSONObject json, Context context ) throws PointException{
         myApp = (MyApp) context.getApplicationContext();
         createPoint(json);
     }

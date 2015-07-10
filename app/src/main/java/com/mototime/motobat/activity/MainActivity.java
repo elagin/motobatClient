@@ -16,6 +16,12 @@ import com.mototime.motobat.Point;
 import com.mototime.motobat.Points;
 import com.mototime.motobat.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
+
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     private MyApp myApp = null;
@@ -44,6 +50,43 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         myApp.createMap(this);
         //pointList = findViewById(R.id.point_list);
+        testCreatePoints();
+    }
+
+    private void testCreatePoints() {
+        double lat = 55.752296447753906;
+        double lon = 37.62273406982422;
+
+        JSONArray json = new JSONArray();
+
+        for (int i = 0; i < 6; i++) {
+            json.put(createNew(i, lat, lon));
+            lat += 0.008;
+            lon += (i * 0.002);
+        }
+        try {
+            myApp.getPoints().parseJSON(json);
+            myApp.updateMap(context);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JSONObject createNew(int id, double lat, double lon) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("lat", lat);
+            json.put("lon", lon);
+            json.put("id", id);
+            json.put("address", "ул. Ленина");
+            json.put("created_date", new Date().getTime());
+            json.put("owner", "UserName");
+            json.put("owner_id", 22);
+            json.put("descr", "test");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 
     @Override
