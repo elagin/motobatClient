@@ -69,9 +69,9 @@ public class MainActivity extends Activity implements View.OnClickListener  {
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.new_point_btn:
+            case R.id.login_btn:
                 //startActivity(new Intent(this, NewPointActivity.class));
-                startActivity(new Intent(this, VKLoginActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 break;
         }
     }

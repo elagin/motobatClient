@@ -153,24 +153,24 @@ public class LoginActivity extends ActionBarActivity {
         TextView roleView = (TextView)findViewById(R.id.role);
 
         //Авторизованы?
-        if (myApp.getSession().isAuthorized()) {
-            loginBtn.setEnabled(false);
-            logoutBtn.setEnabled(true);
-            accListYesterdayLine.setVisibility(View.GONE);
-            String format = getString(R.string.auth_role);
-            roleView.setText(String.format(format, myApp.getSession().getName(this)));
-            roleView.setVisibility(View.VISIBLE);
-            login.setEnabled(false);
-            password.setEnabled(false);
-        } else {
-//        if (prefs.isAnonim()) {
-            loginBtn.setEnabled(true);
-            logoutBtn.setEnabled(false);
-//            login.setEnabled(!anonim.isChecked());
-//            password.setEnabled(!anonim.isChecked());
-            accListYesterdayLine.setVisibility(View.VISIBLE);
-            roleView.setVisibility(View.GONE);
-            enableLoginBtn();
-        }
+//        if (myApp.getSession().isAuthorized()) {
+//            loginBtn.setEnabled(false);
+//            logoutBtn.setEnabled(true);
+//            accListYesterdayLine.setVisibility(View.GONE);
+//            String format = getString(R.string.auth_role);
+//            roleView.setText(String.format(format, myApp.getSession().getName(this)));
+//            roleView.setVisibility(View.VISIBLE);
+//            login.setEnabled(false);
+//            password.setEnabled(false);
+//        } else {
+////        if (prefs.isAnonim()) {
+//            loginBtn.setEnabled(true);
+//            logoutBtn.setEnabled(false);
+////            login.setEnabled(!anonim.isChecked());
+////            password.setEnabled(!anonim.isChecked());
+//            accListYesterdayLine.setVisibility(View.VISIBLE);
+//            roleView.setVisibility(View.GONE);
+//            enableLoginBtn();
+//        }
     }
 }
