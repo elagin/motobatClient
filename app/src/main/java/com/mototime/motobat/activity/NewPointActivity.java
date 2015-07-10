@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,6 +38,11 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
     private Spinner manAcvititySpinner;
     private Spinner vehicleTypeSpinner;
     private Button createBtn;
+    private Button backButton;
+    private Button addressConfirmBtn;
+    private TextView createWhere;
+    private View mapPage;
+    private View detailsPage;
     private GoogleMap map;
     private MyApp myApp = null;
     private NewPoint point;
@@ -59,8 +65,17 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
 
         myApp = (MyApp) getApplicationContext();
 
-        createBtn = (Button) findViewById(R.id.createBtn);
+        mapPage = findViewById(R.id.map_page);
+        detailsPage = findViewById(R.id.detail_page);
+
+        createBtn = (Button) findViewById(R.id.point_create_create);
         createBtn.setOnClickListener(this);
+
+        addressConfirmBtn = (Button) findViewById(R.id.address_confirm_btn);
+        addressConfirmBtn.setOnClickListener(this);
+
+        backButton = (Button) findViewById(R.id.point_create_back);
+        backButton.setOnClickListener(this);
 
         manAcvititySpinner = (Spinner) findViewById(R.id.manAcvititySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.man_acvitity_spinner_array, android.R.layout.simple_spinner_item);
@@ -73,6 +88,8 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         vehicleTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
         vehicleTypeSpinner.setOnItemSelectedListener(this);
+
+        createWhere = (TextView) findViewById(R.id.create_where);
 
         point = new NewPoint();
         map = makeMap();
@@ -106,7 +123,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.createBtn:
+            case R.id.point_create_create:
                 JSONObject result = createNew();
                 try {
                     Point point = new Point(result, this);
@@ -120,8 +137,30 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
                 }
                 finish();
                 break;
+            case R.id.address_confirm_btn:
+                point.updateLocation(MyUtils.LatLngToLocation(map.getCameraPosition().target));
+                goToDetails();
+                break;
+            case R.id.point_create_back:
+                if (mapPage.getVisibility() == View.GONE)
+                    goToMap();
+                break;
         }
     }
+
+    private void goToDetails() {
+        mapPage.setVisibility(View.GONE);
+        detailsPage.setVisibility(View.VISIBLE);
+        createWhere.setText(Double.toString(point.location.getLatitude()) + " / " + Double.toString(point.location.getLongitude()));
+        backButton.setEnabled(true);
+    }
+
+    private void goToMap() {
+        mapPage.setVisibility(View.VISIBLE);
+        detailsPage.setVisibility(View.GONE);
+        backButton.setEnabled(false);
+    }
+
 
     private JSONObject createNew() {
         JSONObject json = new JSONObject();
@@ -205,6 +244,11 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
             initialLocation = location = MyLocationManager.getLocation(context);
             created = new Date();
             address = MyLocationManager.address;
+        }
+
+        public void updateLocation(Location location) {
+            this.location = location;
+//            new GeocodeRequest(new GeocodeCallback(), accident.location, context);
         }
     }
 }

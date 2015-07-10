@@ -10,14 +10,14 @@
     tools:context="com.mototime.motobat.activity.NewPointActivity">
 
     <LinearLayout
-        android:id="@+id/mc_create_map"
+        android:id="@+id/map_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"  >
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1" >
 
@@ -25,7 +25,7 @@
                 android:id="@+id/mc_create_map_container"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="276dp" />
+                android:layout_height="322dp" />
 
             <ImageView
                 android:id="@+id/mc_create_map_pointer"
@@ -34,12 +34,21 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/map_provider_category"
                 android:src="@drawable/target" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Сохранить адрес"
+                android:id="@+id/address_confirm_btn"
+                android:layout_gravity="center_horizontal|bottom" />
         </FrameLayout>
     </LinearLayout>
 
     <TableLayout
+        android:id="@+id/detail_page"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_height="322dp"
         android:shrinkColumns="1"
         android:stretchColumns="1,2">
         <TableRow
@@ -58,6 +67,7 @@
                 android:id="@+id/create_where"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
@@ -109,26 +119,40 @@
                 android:id="@+id/commentTextView"
                 android:layout_span="2" />
         </TableRow>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Отмена"
-                android:id="@+id/cancelBtn" />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Создать"
-                android:id="@+id/createBtn"
-                android:onClick="onClick"
-                android:enabled="false" />
-        </LinearLayout>
-
     </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/mc_create_bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:weightSum="1.5" >
+
+        <Button
+            android:id="@+id/point_create_cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="@string/create_cancel" />
+
+        <Button
+            android:id="@+id/point_create_back"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:enabled="false"
+            android:text="@string/mc_create_back_button" />
+
+        <Button
+            android:id="@+id/point_create_create"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:clickable="false"
+            android:enabled="false"
+            android:text="@string/mc_create_create" />
+    </LinearLayout>
 </LinearLayout>

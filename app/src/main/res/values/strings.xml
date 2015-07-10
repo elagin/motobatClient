@@ -41,4 +41,6 @@
     <string name="is_authorized">Статус: авторизован</string>
     <string name="is_not_authorized">Статус: не авторизован</string>
     <string name="map_provider_category">Карта</string>
+    <string name="mc_create_back_button">Назад</string>
+    <string name="mc_create_create">Готово</string>
 </resources>
