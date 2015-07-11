@@ -12,12 +12,9 @@ import java.util.HashMap;
  */
 public class RoleRequest extends HTTPClient  {
 
-    private final String userID;
-
     public RoleRequest(AsyncTaskCompleteListener listener, Context context, String userID) {
         this.listener = listener;
         this.context = context;
-        this.userID = userID;
 
         post = new HashMap<>();
         post.put("method", "getRole");
