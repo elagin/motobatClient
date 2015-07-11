@@ -26,8 +26,8 @@ public class Point {
 
     private Location location;
     private String address;
-
     private String descr;
+    private int karma;
 
     MyApp myApp = null;
 
@@ -64,19 +64,20 @@ public class Point {
 //        if (!checkPrerequisites(data))
 //            throw new PointException();
 //        attributes = new HashMap<>();
-
+        //{"owner":244452742,"id":7,"karma":0,"lng":37.631439208984,"created":1436646776,"lat":55.756504058838}]
         try {
             location = new Location(LocationManager.NETWORK_PROVIDER);
             location.setLatitude(Float.parseFloat(data.getString("lat")));
-            location.setLongitude(Float.parseFloat(data.getString("lon")));
+            location.setLongitude(Float.parseFloat(data.getString("lng")));
             location.setAccuracy(0);
             id = data.getInt("id");
-            address = data.getString("address");
+            //address = data.getString("address");
             //created = myApp.dateFormat.parse(data.getString("created_date"));
-            created = new Date();
-            ownerName = data.getString("owner");
-            ownerID = data.getInt("owner_id");
-            descr = data.getString("descr");
+            Long date = Long.parseLong(data.getString("created"));
+            created = new Date(date * 1000);
+            ownerID = data.getInt("owner");
+            karma = data.getInt("karma");
+            //descr = data.getString("descr");
         } catch (Exception e) {
             e.printStackTrace();
             throw new PointException();

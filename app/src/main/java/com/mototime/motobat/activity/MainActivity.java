@@ -15,6 +15,8 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.Point;
 import com.mototime.motobat.Points;
 import com.mototime.motobat.R;
+import com.mototime.motobat.network.AsyncTaskCompleteListener;
+import com.mototime.motobat.network.GetPointListRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -131,13 +133,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+
+        new GetPointListRequest(new GetPointListCallback(), context);
         //drawList(this);
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.getBoolean("CreateNewPoint", false)) {
-                myApp.updateMap(context);
-            }
-        }
+//        Bundle bundle = getIntent().getExtras();
+//        if (bundle != null) {
+//            if (bundle.getBoolean("CreateNewPoint", false)) {
+//                myApp.updateMap(context);
+//            }
+//        }
     }
 
     private void drawList(Context context) {
@@ -164,4 +168,25 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 //            // TODO Сюда вкрячить сообщение об ошибке
 //        }
     }
+
+    private class GetPointListCallback implements AsyncTaskCompleteListener {
+        @Override
+        public void onTaskComplete(JSONObject result) {
+            try {
+                JSONArray res = (JSONArray) result.get("RESULT");
+                for(int i =0; i < res.length(); i++) {
+                    JSONObject item = (JSONObject) res.get(i);
+                    try {
+                        Point point = new Point(item, context);
+                        myApp.getPoints().addPoint(point);
+                        myApp.updateMap(context);
+                    } catch (Point.PointException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (JSONException e) {
+            }
+        }
+    }
+
 }
