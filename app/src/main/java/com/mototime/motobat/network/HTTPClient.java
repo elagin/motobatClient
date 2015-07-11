@@ -30,13 +30,15 @@ import java.util.zip.GZIPInputStream;
  * Created by pavel on 09.07.15.
  */
 public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer, JSONObject> {
-    private final static String CHARSET   = "UTF-8";
+    private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
+    protected final String VALID_RESULT = "RESULT";
+    protected final String INVALID_RESULT = "ERROR";
     private ProgressDialog dialog;
-    Context                   context;
-    MyApp                     myApp;
+    Context context;
+    MyApp myApp;
     AsyncTaskCompleteListener listener;
-    Map<String, String>       post;
+    Map<String, String> post;
 
     @SafeVarargs
     @Override
@@ -255,7 +257,28 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
         dismiss();
     }
 
-    protected abstract boolean error(JSONObject response);
+    protected boolean error(JSONObject response) {
+        return response.has(INVALID_RESULT);
+    }
 
-    protected abstract String getError(JSONObject response);
+    protected String getError(JSONObject response) {
+        if (response.has(VALID_RESULT)) return "OK";
+        if (!response.has(INVALID_RESULT)) return "Ошибка соединения " + response.toString();
+        try {
+            JSONObject error = response.getJSONObject(INVALID_RESULT);
+            String text = error.getString("text");
+            String object = error.getString("object");
+            switch (text) {
+                case "PREREQUISITES":
+                    return "Ошибка в параметрах запроса " + object;
+                case "NO USER":
+                    return "Пользователь отсутствует";
+                case "ALREADY IN ROLE":
+                    return "Роль уже назначена";
+            }
+        } catch (JSONException ignored) {
+
+        }
+        return "Неизвестная ошибка " + response.toString();
+    }
 }
