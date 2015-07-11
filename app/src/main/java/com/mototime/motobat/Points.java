@@ -69,7 +69,7 @@ public class Points {
         return points.get(id);
     }
 
-    public void addPoint(Point point) {
+    private void addPoint(Point point) {
         points.put(point.getId(), point);
     }
 
@@ -79,6 +79,7 @@ public class Points {
 
     public void parseJSON(JSONArray json) throws JSONException {
         if (((JSONObject) json.get(0)).has("isError")) return;
+        points.clear();
         for (int i = 0; i < json.length(); i++) {
             JSONObject item = json.getJSONObject(i);
             try {

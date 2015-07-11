@@ -1,7 +1,6 @@
 package com.mototime.motobat.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -136,18 +135,6 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
                 request.setLocation(newPoint.location);
                 request.setAddress(newPoint.address);
                 request.execute();
-//                JSONObject result = createNew();
-//                try {
-//                    Point point = new Point(result, this);
-//                    ((MyApp) getApplicationContext()).points.addPoint(point);
-//
-//                    Intent intent = new Intent(this, MainActivity.class);
-//                    intent.putExtra("CreateNewPoint", true);
-//                    startActivity(intent);
-//                } catch (Point.PointException e) {
-//                    e.printStackTrace();
-//                }
-//                finish();
                 break;
             case R.id.address_confirm_btn:
                 newPoint.updateLocation(MyUtils.LatLngToLocation(map.getCameraPosition().target));
@@ -171,23 +158,6 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         mapPage.setVisibility(View.VISIBLE);
         detailsPage.setVisibility(View.GONE);
         backButton.setEnabled(false);
-    }
-
-    private JSONObject createNew() {
-        JSONObject json = new JSONObject();
-        try {
-            json.put("lat", newPoint.location.getLatitude());
-            json.put("lon", newPoint.location.getLongitude());
-            json.put("id", rnd.nextInt(100));
-            json.put("address", newPoint.address);
-            json.put("created_date", new Date().getTime());
-            json.put("owner", "UserName");
-            json.put("owner_id", 22);
-            json.put("descr", pointDescr.getText());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json;
     }
 
     private GoogleMap makeMap() {
@@ -224,12 +194,9 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         }
         map.clear();
         for (int id : myApp.getPoints().getMap().keySet()) {
-            Point point = myApp.getPoints().getPoint(id);
+            final Point point = myApp.getPoints().getPoint(id);
             if (point.isInvisible()) continue;
             String title = point.getAddress();
-//            if (!newPoint.getMedText().equals("")) {
-//                title += ", " + newPoint.getMedText();
-//            }
             title += ", " + MyUtils.getIntervalFromNowInText(point.getCreated()) + " назад";
 
             float alpha;
@@ -261,7 +228,6 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
 
         public void updateLocation(Location location) {
             this.location = location;
-//            new GeocodeRequest(new GeocodeCallback(), accident.location, context);
         }
     }
 
@@ -274,10 +240,6 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
                 //{"RESULT":{"role":"standart"}}
                 //{"ERROR":{"text":"NO USER","object":"rjhd"}}
                 result = (JSONObject) result.get("RESULT");
-                String role = result.getString("role");
-                if(role != null )
-                    myApp.getSession().setRole(role);
-                //fillCtrls();
             } catch (JSONException e) {
             }
         }

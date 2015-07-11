@@ -111,7 +111,7 @@ public class MyGoogleMapManager extends MyMapManager {
         accidents.clear();
 
         for (int id : myApp.getPoints().getMap().keySet()) {
-            Point point = myApp.getPoints().getPoint(id);
+            final Point point = myApp.getPoints().getPoint(id);
             if (point.isInvisible()) continue;
             String title = point.getAddress();
 //            if (!point.getMedText().equals("")) {
