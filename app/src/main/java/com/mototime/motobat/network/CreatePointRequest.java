@@ -42,25 +42,4 @@ public class CreatePointRequest extends HTTPClient {
     public void setCreated(Date created) {
         post.put("created", Const.dateFormat.format(created));
     }
-
-    @Override
-    public String getError(JSONObject response) {
-        if (!response.has("result")) return "Ошибка соединения " + response.toString();
-        try {
-            if (response.getJSONObject("result").has("ID")) return "Сообщение отправлено";
-            String result = response.getString("result");
-            switch (result) {
-                case "AUTH ERROR":
-                    return "Вы не авторизованы";
-                case "NO RIGHTS":
-                case "READONLY":
-                    return "Недостаточно прав";
-                case "PROBABLY SPAM":
-                    return "Нельзя создавать события так часто";
-            }
-        } catch (JSONException ignored) {
-
-        }
-        return "Неизвестная ошибка " + response.toString();
-    }
 }
