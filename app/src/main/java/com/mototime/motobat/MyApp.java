@@ -6,29 +6,22 @@ import android.location.Location;
 
 import com.mototime.motobat.maps.general.MyMapManager;
 import com.mototime.motobat.maps.google.MyGoogleMapManager;
-import com.mototime.motobat.utils.Props;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-/**
- * Created by pavel on 07.07.15.
- */
 public class MyApp extends Application {
 
     public static final SimpleDateFormat fullTimeFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
     public static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
+    private final MyApp instance;
     //    private Map<Integer, Point> pointsMap;
     public Points points;
     private MyPreferences prefs = null;
-    private Props props = null;
     private Session session = null;
     private MyMapManager map;
     private VK vk;
-
-    private final MyApp instance;
 
     public MyApp() {
         instance = this;
@@ -44,12 +37,6 @@ public class MyApp extends Application {
         if (prefs == null)
             prefs = new MyPreferences(getApplicationContext());
         return prefs;
-    }
-
-    public Props getProps() {
-        if (props == null)
-            props = new Props(instance);
-        return props;
     }
 
     public Points getPoints() {

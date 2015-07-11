@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.mototime.motobat.MyApp;
+import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.utils.MyUtils;
 
 import org.json.JSONException;
@@ -20,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -32,8 +32,9 @@ import java.util.zip.GZIPInputStream;
 public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer, JSONObject> {
     private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
-    protected final String VALID_RESULT = "RESULT";
-    protected final String INVALID_RESULT = "ERROR";
+    protected final static String VALID_RESULT = "RESULT";
+    protected final static String INVALID_RESULT = "ERROR";
+    protected MyPreferences preferences;
     private ProgressDialog dialog;
     Context context;
     MyApp myApp;
@@ -43,6 +44,7 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
     @SafeVarargs
     @Override
     protected final JSONObject doInBackground(Map<String, String>... params) {
+        preferences = new MyPreferences(context);
         return request(params[0]);
     }
 
@@ -57,10 +59,10 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
                 return new JSONObject();
             }
         }
-        URL url;
-        String app, method;
-        myApp = (MyApp) context.getApplicationContext();
+        //myApp = (MyApp) context.getApplicationContext();
+        /*
         try {
+
             if (post.containsKey("app")) {
                 app = post.get("app");
                 post.remove("app");
@@ -73,7 +75,10 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
             } else {
                 method = "default";
             }
-            url = createUrl(app, method, false);
+            */
+        URL url = getUrl();
+        if (url == null) return new JSONObject();
+            /*
             if (post.containsKey("hint")) {
                 final String hint = post.get("hint");
                 post.remove("hint");
@@ -89,10 +94,13 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
                 };
                 ((Activity) context).runOnUiThread(execute);
             }
+            */
+            /*
         } catch (Exception e) {
             e.printStackTrace();
             return new JSONObject();
         }
+        */
         HttpURLConnection connection = null;
         StringBuilder response = new StringBuilder();
         CustomTrustManager.allowAllSSL();
@@ -188,41 +196,9 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
         return result.toString();
     }
 
-    private URL createUrl(String app, String method, Boolean https) {
-        String protocol;
-        if (https) {
-            protocol = "https";
-        } else {
-            protocol = "http";
-        }
-
-//        default.app=mcaccidents
-//        app.mcaccidents.json.server=forum.moto.msk.ru
-//        app.mcaccidents.json.method.geocode=mobile/geocodeReverse.php
-//        app.mcaccidents.json.method.default=mobile/main_mc_acc_json.php
-//        app.osm.provider.search=http://nominatim.openstreetmap.org/search
-
-        //method = default
+    private URL getUrl() {
         //http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php?method=getrole&userid=rjhdby
-        String script;
-        String defaultMethod = myApp.getProps().get("app." + app + ".json.method.default");
-        //defaultMethod = mobile/main_mc_acc_json.php
-
-        String server = myApp.getProps().get("app." + app + ".json.server");
-        //server = forum.moto.msk.ru;
-
-        if (myApp.getProps().containsKey("app." + app + ".json.method." + method)) {
-            script = myApp.getProps().get("app." + app + ".json.method." + method);
-        } else {
-            script = defaultMethod;
-        }
-        try {
-            //return new URL(protocol + "://" + server + "/" + script);
-            return new URL("http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return preferences.getServerURI();
     }
 
     private void dismiss() {

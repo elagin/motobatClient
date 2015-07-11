@@ -7,6 +7,9 @@ import android.preference.PreferenceManager;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * Created by pavel on 08.07.15.
  */
@@ -21,6 +24,8 @@ public class MyPreferences {
     private final static String password = "password";
 
     private static String sTokenKey = "VK_ACCESS_TOKEN";
+
+    private static String serverURI = "server";
 
     private static SharedPreferences preferences;
     private static Context context;
@@ -61,5 +66,26 @@ public class MyPreferences {
         preferences.edit().remove(login).remove(password).commit();
     }
 
-    public String getVkToken() { return preferences.getString(sTokenKey, "");}
+    public String getVkToken() {
+        return preferences.getString(sTokenKey, "");
+    }
+
+    public URL getServerURI() {
+        String DefaultURI = "http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php";
+        String URI = preferences.getString(serverURI, "");
+        if (URI.equals("")) {
+            setServerURI(DefaultURI);
+            URI = DefaultURI;
+        }
+        try {
+            return new URL(URI);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void setServerURI(String URI) {
+        preferences.edit().putString(serverURI, URI);
+    }
 }
