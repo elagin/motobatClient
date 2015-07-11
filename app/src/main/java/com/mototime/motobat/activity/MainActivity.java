@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Random;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -30,6 +31,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private View pointList;
     private View mapContainer;
     public Context context;
+    private Random rnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         context = this;
+
+        rnd = new Random();
 
         loginBtn = (Button) findViewById(R.id.login_btn);
         loginBtn.setOnClickListener(this);
@@ -54,8 +58,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void testCreatePoints() {
-        double lat = 55.752296447753906;
-        double lon = 37.62273406982422;
+        double lat = 55.7522964477;
+        double lon = 37.6227340698;
 
         JSONArray json = new JSONArray();
 
@@ -77,12 +81,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         try {
             json.put("lat", lat);
             json.put("lon", lon);
-            json.put("id", id);
-            json.put("address", "ул. Ленина");
+            json.put("id", rnd.nextInt(100));
+            json.put("address", myApp.getAddres(lat, lon));
             json.put("created_date", new Date().getTime());
             json.put("owner", "UserName");
             json.put("owner_id", 22);
-            json.put("descr", "test");
+            json.put("descr", "text");
         } catch (JSONException e) {
             e.printStackTrace();
         }

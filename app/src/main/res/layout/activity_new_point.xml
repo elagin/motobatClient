@@ -13,7 +13,7 @@
         android:id="@+id/map_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"  >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/map_address"
@@ -21,13 +21,14 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
-            android:text="@string/where"/>
+            android:maxLines="2"
+            android:text="@string/where" />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="1" >
+            android:layout_weight="1">
 
             <fragment
                 android:id="@+id/mc_create_map_container"
@@ -44,43 +45,35 @@
                 android:src="@drawable/target" />
 
             <Button
+                android:id="@+id/address_confirm_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Сохранить адрес"
-                android:id="@+id/address_confirm_btn"
-                android:layout_gravity="center_horizontal|bottom" />
+                android:layout_gravity="center_horizontal|bottom"
+                android:text="Сохранить адрес" />
         </FrameLayout>
     </LinearLayout>
 
     <TableLayout
         android:id="@+id/detail_page"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="322dp"
         android:shrinkColumns="1"
-        android:stretchColumns="1,2">
+        android:stretchColumns="1,2"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/create_where"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:maxLines="3"
+            android:text="@string/where" />
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="1,2" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginRight="4dp"
-                android:text="@string/where"/>
-
-            <TextView
-                android:id="@+id/create_where"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </TableRow>
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="1,2" >
+            android:stretchColumns="1,2">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -90,10 +83,9 @@
                 android:text="Активность инспектора" />
 
             <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/manAcvititySpinner"
-                android:spinnerMode="dropdown" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </TableRow>
 
@@ -109,24 +101,33 @@
                 android:text="Тип ТС" />
 
             <Spinner
+                android:id="@+id/vehicleTypeSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/vehicleTypeSpinner" />
+                android:layout_height="wrap_content" />
 
         </TableRow>
 
-        <TableRow
+        <TextView
+            android:id="@+id/create_point_descr_label"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:text="Описание"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/create_point_descr"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:gravity="top"
+            android:inputType="textFilter|textMultiLine|textNoSuggestions"
+            android:lines="3"
+            android:minLines="3">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Описание"
-                android:id="@+id/commentTextView"
-                android:layout_span="2" />
-        </TableRow>
+            <requestFocus />
+        </EditText>
+
     </TableLayout>
 
     <LinearLayout
@@ -134,7 +135,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom"
-        android:weightSum="1.5" >
+        android:weightSum="1.5">
 
         <Button
             android:id="@+id/point_create_cancel"

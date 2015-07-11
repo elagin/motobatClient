@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Random;
 
 
 public class NewPointActivity extends FragmentActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -42,13 +43,15 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
     private Button addressConfirmBtn;
     private TextView createWhere;
     private TextView mapAddress;
+    private TextView pointDescr;
     private View mapPage;
     private View detailsPage;
     private GoogleMap map;
     private MyApp myApp = null;
-    private NewPoint point;
+    private NewPoint newPoint;
     private final int RADIUS = 1000;
     private Context context;
+    private Random rnd;
 
     private enum ManAcvitityStatus {
         ACTIVE, NOT_ACTIVE, UNKNOWN,
@@ -65,6 +68,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         context = this;
 
         myApp = (MyApp) getApplicationContext();
+        rnd = new Random();
 
         mapPage = findViewById(R.id.map_page);
         detailsPage = findViewById(R.id.detail_page);
@@ -92,8 +96,9 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
 
         createWhere = (TextView) findViewById(R.id.create_where);
         mapAddress = (TextView) findViewById(R.id.map_address);
+        pointDescr = (TextView) findViewById(R.id.create_point_descr);
 
-        point = new NewPoint();
+        newPoint = new NewPoint();
         map = makeMap();
     }
 
@@ -140,7 +145,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
                 finish();
                 break;
             case R.id.address_confirm_btn:
-                point.updateLocation(MyUtils.LatLngToLocation(map.getCameraPosition().target));
+                newPoint.updateLocation(MyUtils.LatLngToLocation(map.getCameraPosition().target));
                 goToDetails();
                 break;
             case R.id.point_create_back:
@@ -153,7 +158,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
     private void goToDetails() {
         mapPage.setVisibility(View.GONE);
         detailsPage.setVisibility(View.VISIBLE);
-        createWhere.setText(Double.toString(point.location.getLatitude()) + " / " + Double.toString(point.location.getLongitude()));
+        createWhere.setText(newPoint.address);
         backButton.setEnabled(true);
     }
 
@@ -166,14 +171,14 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
     private JSONObject createNew() {
         JSONObject json = new JSONObject();
         try {
-            json.put("lat", 55);
-            json.put("lon", 37);
-            json.put("id", 10);
-            json.put("address", "ул. Ленина");
+            json.put("lat", newPoint.location.getLatitude());
+            json.put("lon", newPoint.location.getLongitude());
+            json.put("id", rnd.nextInt(100));
+            json.put("address", newPoint.address);
             json.put("created_date", new Date().getTime());
             json.put("owner", "UserName");
             json.put("owner_id", 22);
-            json.put("descr", "test");
+            json.put("descr", pointDescr.getText());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -186,19 +191,21 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.mc_create_map_container);
         map = mapFragment.getMap();
 
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(point.location), 16));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(newPoint.location), 16));
         map.getUiSettings().setMyLocationButtonEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
         if (!myApp.getSession().isModerator()) {
-            CircleOptions circleOptions = new CircleOptions().center(MyUtils.LocationToLatLng(point.initialLocation)).radius(RADIUS).fillColor(0x20FF0000);
+            CircleOptions circleOptions = new CircleOptions().center(MyUtils.LocationToLatLng(newPoint.initialLocation)).radius(RADIUS).fillColor(0x20FF0000);
             map.addCircle(circleOptions);
             map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
                 public void onCameraChange(CameraPosition camera) {
-                    mapAddress.setText(myApp.getAddres(camera.target.latitude, camera.target.longitude));
+                    String address = myApp.getAddres(camera.target.latitude, camera.target.longitude);
+                    mapAddress.setText(address);
+                    newPoint.address = address;
 //                    Button mcCreateFineAddressConfirm = (Button) ((Activity) context).findViewById(R.id.mc_create_fine_address_confirm);
-//                    if (point.initialLocation != null) {
-//                        double distance = MyUtils.LatLngToLocation(camera.target).distanceTo(point.initialLocation);
+//                    if (newPoint.initialLocation != null) {
+//                        double distance = MyUtils.LatLngToLocation(camera.target).distanceTo(newPoint.initialLocation);
 //                        if (distance > RADIUS) {
 //                            mcCreateFineAddressConfirm.setEnabled(false);
 //                        } else {
@@ -215,8 +222,8 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
             Point point = myApp.getPoints().getPoint(id);
             if (point.isInvisible()) continue;
             String title = point.getAddress();
-//            if (!point.getMedText().equals("")) {
-//                title += ", " + point.getMedText();
+//            if (!newPoint.getMedText().equals("")) {
+//                title += ", " + newPoint.getMedText();
 //            }
             title += ", " + MyUtils.getIntervalFromNowInText(point.getCreated()) + " назад";
 
@@ -245,11 +252,11 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         public NewPoint() {
             initialLocation = location = MyLocationManager.getLocation(context);
             created = new Date();
-            address = MyLocationManager.address;
         }
 
         public void updateLocation(Location location) {
             this.location = location;
+
 //            new GeocodeRequest(new GeocodeCallback(), accident.location, context);
         }
     }
