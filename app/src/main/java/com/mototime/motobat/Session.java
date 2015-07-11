@@ -2,12 +2,8 @@ package com.mototime.motobat;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.mototime.motobat.activity.LoginActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,8 +34,8 @@ public class Session {
         prefs = new MyPreferences(context);
         reset();
 
-//        if (!prefs.getLogin().isEmpty()) {
-//            login = prefs.getLogin();
+//        if (!prefs.getUserID().isEmpty()) {
+//            login = prefs.getUserID();
 //            password = prefs.getPassword();
 //            if (!auth(context, login, password)) {
 //                showLogin(context);
@@ -78,7 +74,7 @@ public class Session {
     }
 
     public String getLogin() {
-        return prefs.getLogin();
+        return prefs.getUserID();
     }
 
     public static String makePassHash(String pass) {
@@ -107,7 +103,7 @@ public class Session {
         this.password = password;
         this.login = login;
 //        AuthRequest auth = new AuthRequest(context);
-//        auth.setLogin(login);
+//        auth.setUserID(login);
 //        auth.setPassword(password);
 //        JSONObject result = auth.execute();
 //        if (auth.error(result)) {
@@ -120,7 +116,7 @@ public class Session {
 //                role = result.getString("role");
 //                id = Integer.parseInt(result.getString("id"));
 //                if (name.length() > 0) {
-//                    prefs.setLogin(login);
+//                    prefs.setUserID(login);
 //                    prefs.setPassword(password);
 //                    isAuthorized = true;
 //                } else {

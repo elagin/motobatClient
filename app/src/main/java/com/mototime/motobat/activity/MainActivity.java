@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         myApp.createMap(this);
         //pointList = findViewById(R.id.point_list);
-        testCreatePoints();
+        //testCreatePoints();
     }
 
     private void testCreatePoints() {

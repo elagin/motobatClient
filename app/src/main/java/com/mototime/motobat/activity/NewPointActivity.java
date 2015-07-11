@@ -25,6 +25,8 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyLocationManager;
 import com.mototime.motobat.Point;
 import com.mototime.motobat.R;
+import com.mototime.motobat.network.AsyncTaskCompleteListener;
+import com.mototime.motobat.network.CreatePointRequest;
 import com.mototime.motobat.utils.MyUtils;
 
 import org.json.JSONException;
@@ -32,7 +34,6 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.Random;
-
 
 public class NewPointActivity extends FragmentActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
@@ -131,18 +132,22 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         int id = v.getId();
         switch (id) {
             case R.id.point_create_create:
-                JSONObject result = createNew();
-                try {
-                    Point point = new Point(result, this);
-                    ((MyApp) getApplicationContext()).points.addPoint(point);
-
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.putExtra("CreateNewPoint", true);
-                    startActivity(intent);
-                } catch (Point.PointException e) {
-                    e.printStackTrace();
-                }
-                finish();
+                CreatePointRequest request = new CreatePointRequest(new CreatePointCallback(), context, myApp.getPreferences().getUserID());
+                request.setLocation(newPoint.location);
+                request.setAddress(newPoint.address);
+                request.execute();
+//                JSONObject result = createNew();
+//                try {
+//                    Point point = new Point(result, this);
+//                    ((MyApp) getApplicationContext()).points.addPoint(point);
+//
+//                    Intent intent = new Intent(this, MainActivity.class);
+//                    intent.putExtra("CreateNewPoint", true);
+//                    startActivity(intent);
+//                } catch (Point.PointException e) {
+//                    e.printStackTrace();
+//                }
+//                finish();
                 break;
             case R.id.address_confirm_btn:
                 newPoint.updateLocation(MyUtils.LatLngToLocation(map.getCameraPosition().target));
@@ -256,8 +261,25 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
 
         public void updateLocation(Location location) {
             this.location = location;
-
 //            new GeocodeRequest(new GeocodeCallback(), accident.location, context);
+        }
+    }
+
+    private class CreatePointCallback implements AsyncTaskCompleteListener {
+        @Override
+        public void onTaskComplete(JSONObject result) {
+            try {
+                //{"error":"Ошибка соединения {\"RESULT\":{\"response\":\"ok\"}}"}
+                //{"error":"Ошибка соединения {\"ERROR\":{\"text\":\"PREREQUISITES\",\"object\":\"userid\"}}"}
+                //{"RESULT":{"role":"standart"}}
+                //{"ERROR":{"text":"NO USER","object":"rjhd"}}
+                result = (JSONObject) result.get("RESULT");
+                String role = result.getString("role");
+                if(role != null )
+                    myApp.getSession().setRole(role);
+                //fillCtrls();
+            } catch (JSONException e) {
+            }
         }
     }
 }

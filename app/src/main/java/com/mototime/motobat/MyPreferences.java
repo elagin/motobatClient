@@ -23,7 +23,7 @@ public class MyPreferences {
     private final static String login = "login";
     private final static String password = "password";
 
-    private static String sTokenKey = "VK_ACCESS_TOKEN";
+    private final static String VK_TOKEN_KEY = "vk_access_token";
 
     private static String serverURI = "server";
 
@@ -46,11 +46,11 @@ public class MyPreferences {
                 .putFloat(savedlng, (float) latlng.longitude).commit();
     }
 
-    public String getLogin() {
+    public String getUserID() {
         return preferences.getString(login, "");
     }
 
-    public void setLogin(String value) {
+    public void setUserID(String value) {
         preferences.edit().putString(login, value).commit();
     }
 
@@ -67,7 +67,11 @@ public class MyPreferences {
     }
 
     public String getVkToken() {
-        return preferences.getString(sTokenKey, "");
+        return preferences.getString(VK_TOKEN_KEY, "");
+    }
+
+    public void setVkToken(String value) {
+        preferences.edit().putString(VK_TOKEN_KEY, value).commit();
     }
 
     public URL getServerURI() {

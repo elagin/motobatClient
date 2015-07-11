@@ -23,8 +23,6 @@ import com.vk.sdk.VKUIHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
     private Button logoutBtn;
@@ -197,6 +195,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
             if (isReceiveNewToken || isAcceptUserToken) {
                 String accessToken = bundle.getString("accessToken");
                 String userId = bundle.getString("userId");
+                myApp.getPreferences().setUserID(userId);
                 new RoleRequest(new RoleCallback(), context, userId);
             }
         }

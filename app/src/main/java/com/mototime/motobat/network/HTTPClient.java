@@ -37,7 +37,6 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
     protected MyPreferences preferences;
     private ProgressDialog dialog;
     Context context;
-    MyApp myApp;
     AsyncTaskCompleteListener listener;
     Map<String, String> post;
 
