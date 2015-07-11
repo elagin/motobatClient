@@ -44,18 +44,6 @@ public class CreatePointRequest extends HTTPClient {
     }
 
     @Override
-    public boolean error(JSONObject response) {
-        if (!response.has("result")) return true;
-        try {
-            JSONObject result = response.getJSONObject("result");
-            if (result.has("ID")) return false;
-        } catch (JSONException e) {
-            return true;
-        }
-        return true;
-    }
-
-    @Override
     public String getError(JSONObject response) {
         if (!response.has("result")) return "Ошибка соединения " + response.toString();
         try {

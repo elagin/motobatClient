@@ -1,12 +1,10 @@
 package com.mototime.motobat.network;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.utils.MyUtils;
 
@@ -32,13 +30,12 @@ import java.util.zip.GZIPInputStream;
 public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer, JSONObject> {
     private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
-    protected final static String VALID_RESULT = "RESULT";
-    protected final static String INVALID_RESULT = "ERROR";
+
     protected MyPreferences preferences;
-    private ProgressDialog dialog;
     Context context;
     AsyncTaskCompleteListener listener;
     Map<String, String> post;
+    private ProgressDialog dialog;
 
     @SafeVarargs
     @Override
@@ -51,7 +48,7 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
         if (!MyUtils.isOnline(context)) {
             try {
                 JSONObject result = new JSONObject();
-                result.put("error", "Интернет не доступен");
+                result.put("isError", "Интернет не доступен");
                 return result;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -159,7 +156,7 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
                 reader = new JSONObject(response.toString().replace("\\", "").replace("\"", ""));
             } catch (JSONException e1) {
                 e1.printStackTrace();
-                String fakeAnswer = "{ error : unknown }";
+                String fakeAnswer = "{ isError : unknown }";
                 try {
                     reader = new JSONObject(fakeAnswer);
                 } catch (JSONException e2) {
@@ -213,11 +210,11 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
 
     @Override
     protected void onPostExecute(JSONObject result) {
-        if (error(result) && !result.has("error")) {
+        if (isError(result) && !result.has("isError")) {
             String error = getError(result);
             result = new JSONObject();
             try {
-                result.put("error", error);
+                result.put("isError", error);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -232,28 +229,11 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
         dismiss();
     }
 
-    protected boolean error(JSONObject response) {
-        return response.has(INVALID_RESULT);
+    protected boolean isError(JSONObject response) {
+        return RequestErrors.isError(response);
     }
 
     protected String getError(JSONObject response) {
-        if (response.has(VALID_RESULT)) return "OK";
-        if (!response.has(INVALID_RESULT)) return "Ошибка соединения " + response.toString();
-        try {
-            JSONObject error = response.getJSONObject(INVALID_RESULT);
-            String text = error.getString("text");
-            String object = error.getString("object");
-            switch (text) {
-                case "PREREQUISITES":
-                    return "Ошибка в параметрах запроса " + object;
-                case "NO USER":
-                    return "Пользователь отсутствует";
-                case "ALREADY IN ROLE":
-                    return "Роль уже назначена";
-            }
-        } catch (JSONException ignored) {
-
-        }
-        return "Неизвестная ошибка " + response.toString();
+        return RequestErrors.getErrorText(response);
     }
 }

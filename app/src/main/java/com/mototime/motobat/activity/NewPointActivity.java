@@ -269,8 +269,8 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         @Override
         public void onTaskComplete(JSONObject result) {
             try {
-                //{"error":"Ошибка соединения {\"RESULT\":{\"response\":\"ok\"}}"}
-                //{"error":"Ошибка соединения {\"ERROR\":{\"text\":\"PREREQUISITES\",\"object\":\"userid\"}}"}
+                //{"isError":"Ошибка соединения {\"RESULT\":{\"response\":\"ok\"}}"}
+                //{"isError":"Ошибка соединения {\"ERROR\":{\"text\":\"PREREQUISITES\",\"object\":\"userid\"}}"}
                 //{"RESULT":{"role":"standart"}}
                 //{"ERROR":{"text":"NO USER","object":"rjhd"}}
                 result = (JSONObject) result.get("RESULT");

@@ -78,7 +78,7 @@ public class Points {
     }
 
     public void parseJSON(JSONArray json) throws JSONException {
-        if (((JSONObject) json.get(0)).has("error")) return;
+        if (((JSONObject) json.get(0)).has("isError")) return;
         for (int i = 0; i < json.length(); i++) {
             JSONObject item = json.getJSONObject(i);
             try {

@@ -148,7 +148,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         Integer[] visible = myApp.points.sort(myApp.points.getVisibleAccidents(), Points.Sort.BACKWARD);
 
-//        if (points.error.equals("ok") || points.error.equals("no_new")) {
+//        if (points.isError.equals("ok") || points.isError.equals("no_new")) {
         for (int i : visible) {
             Point point = myApp.points.getPoint(i);
 //                if (!acc.isToday() && noYesterday) {

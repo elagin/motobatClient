@@ -106,9 +106,9 @@ public class Session {
 //        auth.setUserID(login);
 //        auth.setPassword(password);
 //        JSONObject result = auth.execute();
-//        if (auth.error(result)) {
-//            String error = auth.getError(result);
-//            Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+//        if (auth.isError(result)) {
+//            String isError = auth.getError(result);
+//            Toast.makeText(context, isError, Toast.LENGTH_LONG).show();
 //            isAuthorized = false;
 //        } else {
 //            try {
