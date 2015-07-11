@@ -41,6 +41,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
     private Button backButton;
     private Button addressConfirmBtn;
     private TextView createWhere;
+    private TextView mapAddress;
     private View mapPage;
     private View detailsPage;
     private GoogleMap map;
@@ -90,6 +91,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         vehicleTypeSpinner.setOnItemSelectedListener(this);
 
         createWhere = (TextView) findViewById(R.id.create_where);
+        mapAddress = (TextView) findViewById(R.id.map_address);
 
         point = new NewPoint();
         map = makeMap();
@@ -161,7 +163,6 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         backButton.setEnabled(false);
     }
 
-
     private JSONObject createNew() {
         JSONObject json = new JSONObject();
         try {
@@ -194,6 +195,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
             map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
                 public void onCameraChange(CameraPosition camera) {
+                    mapAddress.setText(myApp.getAddres(camera.target.latitude, camera.target.longitude));
 //                    Button mcCreateFineAddressConfirm = (Button) ((Activity) context).findViewById(R.id.mc_create_fine_address_confirm);
 //                    if (point.initialLocation != null) {
 //                        double distance = MyUtils.LatLngToLocation(camera.target).distanceTo(point.initialLocation);
