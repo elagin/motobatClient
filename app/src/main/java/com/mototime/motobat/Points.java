@@ -16,11 +16,9 @@ import java.util.Map;
 public class Points {
 
     private final Context context;
-    MyApp myApp;
     private Map<Integer, Point> points;
 
     public Points(Context context) {
-        myApp = (MyApp) context;
         if (points == null) {
             points = new HashMap<>();
         }
@@ -34,7 +32,7 @@ public class Points {
             public void onTaskComplete(JSONObject response) throws JSONException {
                 if (!RequestErrors.isError(response)) {
                     updatePointsList(response.getJSONArray(RequestErrors.VALID_RESULT));
-                    myApp.getMap().placePoints(context);
+                    ((MyApp) context).getMap().placePoints(context);
                 }
             }
         }, context);
@@ -56,7 +54,7 @@ public class Points {
             }
         }
     }
-
+/*
     public Map<Integer, Point> getVisibleAccidents() {
         Map<Integer, Point> out = new HashMap<>();
         for (int i : points.keySet()) {
@@ -67,7 +65,7 @@ public class Points {
         }
         return out;
     }
-
+*/
     public Point getPoint(int id) {
         return points.get(id);
     }
@@ -75,8 +73,9 @@ public class Points {
     public Map<Integer, Point> getMap() {
         return points;
     }
-
+/*
     public enum Sort {
         FORWARD, BACKWARD
     }
+    */
 }
