@@ -31,9 +31,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private MyApp myApp = null;
     private Button loginBtn;
     private Button addPointBtn;
-    private View pointList;
-    private View mapContainer;
-    private Random rnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
