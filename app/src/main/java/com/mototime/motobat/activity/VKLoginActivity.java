@@ -20,8 +20,8 @@ public class VKLoginActivity extends Activity {
     private static final String TAG = "Kate.LoginActivity";
     private final String appID = "4989462";
 
-    private static String sTokenKey = "VK_ACCESS_TOKEN";
-    private static String[] sMyScope = new String[]{VKScope.FRIENDS, VKScope.WALL, VKScope.PHOTOS, VKScope.NOHTTPS};
+    private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
+    private static String[] sMyScope = new String[]{VKScope.WALL};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

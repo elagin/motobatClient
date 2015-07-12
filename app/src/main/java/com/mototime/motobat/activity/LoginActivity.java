@@ -16,6 +16,7 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
+import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.network.RoleRequest;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKUIHelper;
@@ -196,6 +197,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 String accessToken = bundle.getString("accessToken");
                 String userId = bundle.getString("userId");
                 myApp.getPreferences().setUserID(userId);
+                myApp.getPreferences().setVkToken(accessToken);
+                //new IsMemberVKRequest(new IsMemberVKCallback(), context, myApp.getPreferences().getVkToken());
                 new RoleRequest(new RoleCallback(), context, userId);
             }
         }
@@ -210,9 +213,20 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 //{"ERROR":{"text":"NO USER","object":"rjhd"}}
                 result = (JSONObject) result.get("RESULT");
                 String role = result.getString("role");
-                if(role != null )
+                if (role != null)
                     myApp.getSession().setRole(role);
                 fillCtrls();
+            } catch (JSONException e) {
+            }
+        }
+    }
+
+    private class IsMemberVKCallback implements AsyncTaskCompleteListener {
+        @Override
+        public void onTaskComplete(JSONObject result) {
+            try {
+                //{"response":0}
+                result = (JSONObject) result.get("response");
             } catch (JSONException e) {
             }
         }
