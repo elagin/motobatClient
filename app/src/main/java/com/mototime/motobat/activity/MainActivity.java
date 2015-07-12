@@ -27,6 +27,7 @@ import java.util.Random;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
+    public Context context;
     private MyApp myApp = null;
     private Button loginBtn;
     private Button addPointBtn;
