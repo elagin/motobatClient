@@ -84,18 +84,7 @@ public class MyGoogleMapManager extends MyMapManager {
 
     @SuppressWarnings("UnusedParameters")
     public void placeUser(Context context) {
-        if (user != null) {
-            user.remove();
-        }
-
-        Location location = MyLocationManager.getLocation(context);
-        //if(location != null) {
-        user = map.addMarker(new MarkerOptions().position(MyUtils.LocationToLatLng(location)).title("Вы")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.user)));
-        //} else {
-        //TODO Отобразить сообщение?
-        //Toast.makeText(this, Startup.context.getString(R.string.position_not_available), Toast.LENGTH_LONG).show();
-        //}
+        return;
     }
 
     public void jumpToPoint(Location location) {
@@ -113,7 +102,8 @@ public class MyGoogleMapManager extends MyMapManager {
         for (int id : myApp.getPoints().getMap().keySet()) {
             final Point point = myApp.getPoints().getPoint(id);
             if (point.isInvisible()) continue;
-            String title = point.getAddress();
+            //String title = point.getAddress();
+            String title = "";
 //            if (!point.getMedText().equals("")) {
 //                title += ", " + point.getMedText();
 //            }
