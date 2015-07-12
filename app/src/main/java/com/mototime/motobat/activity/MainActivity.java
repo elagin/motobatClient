@@ -27,13 +27,9 @@ import java.util.Random;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-    public Context context;
     private MyApp myApp = null;
     private Button loginBtn;
     private Button addPointBtn;
-    private View pointList;
-    private View mapContainer;
-    private Random rnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +38,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
-        context = this;
-
-        rnd = new Random();
-
         loginBtn = (Button) findViewById(R.id.login_btn);
         loginBtn.setOnClickListener(this);
 
         addPointBtn = (Button) findViewById(R.id.add_point_btn);
         addPointBtn.setOnClickListener(this);
-
-        mapContainer = findViewById(R.id.map_container);
 
         myApp.createMap(this);
         //pointList = findViewById(R.id.point_list);

@@ -8,10 +8,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mototime.motobat.MyApp;
-import com.mototime.motobat.MyLocationManager;
 import com.mototime.motobat.Point;
 import com.mototime.motobat.R;
 import com.mototime.motobat.maps.general.MyMapManager;
@@ -22,14 +22,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by pavel on 08.07.15.
- */
+
 public class MyGoogleMapManager extends MyMapManager {
     private static GoogleMap map;
-    private static Marker user;
-    private static Map<String, Integer> accidents;
-    private static String selected;
+    private static Map<String, Integer> points;
 
     private MyApp myApp = null;
 
@@ -37,7 +33,6 @@ public class MyGoogleMapManager extends MyMapManager {
 
         myApp = (MyApp) context.getApplicationContext();
         setName(MyMapManager.GOOGLE);
-        selected = "";
 
         Inflate.set(context, R.id.map_container, R.layout.google_maps_view);
 
@@ -62,42 +57,46 @@ public class MyGoogleMapManager extends MyMapManager {
 
             @Override
             public boolean onMarkerClick(Marker marker) {
-                String id = marker.getId();
-//                if (selected.equals(id) && accidents.containsKey(id)) {
-//                    AccidentsGeneral.toDetails(context, accidents.get(selected));
-//                } else {
                 marker.showInfoWindow();
-                selected = id;
-//                }
                 return true;
             }
         });
-//        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-//            @Override
-//            public void onMapLongClick(LatLng latLng) {
+        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
 //                String uri    = "geo:" + latLng.latitude + "," + latLng.longitude;
 //                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 //                context.startActivity(intent);
-//            }
-//        });
+            }
+        });
+    }
+
+    private static void init() {
+        map.clear();
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+        map.getUiSettings().setZoomControlsEnabled(true);
     }
 
     @SuppressWarnings("UnusedParameters")
+    @Override
     public void placeUser(Context context) {
         return;
     }
 
+    @Override
     public void jumpToPoint(Location location) {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(location), 16));
     }
 
     @SuppressWarnings("UnusedParameters")
+    @Override
     public void placePoints(Context context) {
-        if (accidents == null) {
-            accidents = new HashMap<>();
+        if (points == null) {
+            points = new HashMap<>();
         }
         init();
-        accidents.clear();
+        points.clear();
 
         for (int id : myApp.getPoints().getMap().keySet()) {
             final Point point = myApp.getPoints().getPoint(id);
@@ -120,17 +119,11 @@ public class MyGoogleMapManager extends MyMapManager {
             }
             Marker marker = map.addMarker(new MarkerOptions().position(MyUtils.LocationToLatLng(point.getLocation())).title(title)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.point)).alpha(alpha));
-            accidents.put(marker.getId(), id);
+            points.put(marker.getId(), id);
         }
     }
 
-    private static void init() {
-        map.clear();
-        map.setMyLocationEnabled(true);
-        map.getUiSettings().setMyLocationButtonEnabled(true);
-        map.getUiSettings().setZoomControlsEnabled(true);
-    }
-
+    @Override
     public void zoom(int zoom) {
         map.animateCamera(CameraUpdateFactory.zoomTo(zoom));
     }

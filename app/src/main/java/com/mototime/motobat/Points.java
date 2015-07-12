@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.GetPointListRequest;
-import com.mototime.motobat.network.HTTPClient;
 import com.mototime.motobat.network.RequestErrors;
 
 import org.json.JSONArray;
@@ -17,8 +16,11 @@ import java.util.Map;
 public class Points {
 
     private final Context context;
+    MyApp myApp;
     private Map<Integer, Point> points;
+
     public Points(Context context) {
+        myApp = (MyApp) context;
         if (points == null) {
             points = new HashMap<>();
         }
@@ -26,12 +28,13 @@ public class Points {
         requestPoints(context);
     }
 
-    public void requestPoints(Context context) {
+    public void requestPoints(final Context context) {
         new GetPointListRequest(new AsyncTaskCompleteListener() {
             @Override
             public void onTaskComplete(JSONObject response) throws JSONException {
                 if (!RequestErrors.isError(response)) {
                     updatePointsList(response.getJSONArray(RequestErrors.VALID_RESULT));
+                    myApp.getMap().placePoints(context);
                 }
             }
         }, context);
