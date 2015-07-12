@@ -195,6 +195,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 String accessToken = bundle.getString("accessToken");
                 String userId = bundle.getString("userId");
                 myApp.getPreferences().setUserID(userId);
+                myApp.getPreferences().setVkToken(accessToken);
+                //new IsMemberVKRequest(new IsMemberVKCallback(), context, myApp.getPreferences().getVkToken());
                 new RoleRequest(new RoleCallback(), context, userId);
             }
         }
@@ -215,6 +217,17 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
             }
             myApp.getSession().setRole(role);
             fillCtrls();
+        }
+    }
+
+    private class IsMemberVKCallback implements AsyncTaskCompleteListener {
+        @Override
+        public void onTaskComplete(JSONObject result) {
+            try {
+                //{"response":0}
+                result = (JSONObject) result.get("response");
+            } catch (JSONException e) {
+            }
         }
     }
 }
