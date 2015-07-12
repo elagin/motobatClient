@@ -24,9 +24,6 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-/**
- * Created by pavel on 09.07.15.
- */
 public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer, JSONObject> {
     private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
@@ -55,48 +52,10 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
                 return new JSONObject();
             }
         }
-        //myApp = (MyApp) context.getApplicationContext();
-        /*
-        try {
 
-            if (post.containsKey("app")) {
-                app = post.get("app");
-                post.remove("app");
-            } else {
-                app = myApp.getProps().get("default.app");
-            }
-            if (post.containsKey("method")) {
-                method = post.get("method");
-                //post.remove("method");
-            } else {
-                method = "default";
-            }
-            */
         URL url = getUrl();
         if (url == null) return new JSONObject();
-            /*
-            if (post.containsKey("hint")) {
-                final String hint = post.get("hint");
-                post.remove("hint");
-                Runnable execute = new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog = new ProgressDialog(context);
-                        dialog.setMessage("Обмен данными...\n" + hint);
-                        dialog.setIndeterminate(true);
-                        dialog.setCancelable(true);
-                        dialog.show();
-                    }
-                };
-                ((Activity) context).runOnUiThread(execute);
-            }
-            */
-            /*
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new JSONObject();
-        }
-        */
+
         HttpURLConnection connection = null;
         StringBuilder response = new StringBuilder();
         CustomTrustManager.allowAllSSL();
@@ -210,15 +169,6 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
 
     @Override
     protected void onPostExecute(JSONObject result) {
-        if (isError(result) && !result.has("isError")) {
-            String error = getError(result);
-            result = new JSONObject();
-            try {
-                result.put("isError", error);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
         if (listener != null) {
             try {
                 listener.onTaskComplete(result);
@@ -227,13 +177,5 @@ public abstract class HTTPClient extends AsyncTask<Map<String, String>, Integer,
             }
         }
         dismiss();
-    }
-
-    protected boolean isError(JSONObject response) {
-        return RequestErrors.isError(response);
-    }
-
-    protected String getError(JSONObject response) {
-        return RequestErrors.getErrorText(response);
     }
 }

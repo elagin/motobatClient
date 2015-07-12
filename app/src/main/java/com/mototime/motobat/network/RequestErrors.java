@@ -1,5 +1,8 @@
 package com.mototime.motobat.network;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,7 +16,7 @@ public class RequestErrors {
     final static public String NORIGHTS = "NO RIGHTS";
     final static public String UNKNOWNERROR = "UNKNOWN ERROR";
 
-    public static String getErrorText(JSONObject response) {
+    public static String getError(JSONObject response) {
         if (response.has(VALID_RESULT)) return "OK";
         if (!response.has(INVALID_RESULT)) return "Ошибка соединения " + response.toString();
         try {
@@ -39,6 +42,10 @@ public class RequestErrors {
     }
 
     public static boolean isError(JSONObject response) {
-        return response.has(RequestErrors.INVALID_RESULT);
+        return !response.has(RequestErrors.VALID_RESULT);
+    }
+
+    public static void showError(Context context, JSONObject response) {
+        Toast.makeText(context, getError(response), Toast.LENGTH_LONG).show();
     }
 }

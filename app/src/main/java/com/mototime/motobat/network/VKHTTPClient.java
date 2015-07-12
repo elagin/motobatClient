@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.utils.MyUtils;
 
@@ -26,7 +25,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-public class VKHTTPClient  extends AsyncTask<Map<String, String>, Integer, JSONObject> {
+public abstract class VKHTTPClient  extends AsyncTask<Map<String, String>, Integer, JSONObject> {
     private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
 
@@ -35,8 +34,6 @@ public class VKHTTPClient  extends AsyncTask<Map<String, String>, Integer, JSONO
     AsyncTaskCompleteListener listener;
     Map<String, String> post;
     private ProgressDialog dialog;
-
-    MyApp myApp = null;
 
     @SafeVarargs
     @Override
@@ -56,8 +53,10 @@ public class VKHTTPClient  extends AsyncTask<Map<String, String>, Integer, JSONO
                 return new JSONObject();
             }
         }
+
         URL url = getUrl();
         if (url == null) return new JSONObject();
+
         HttpURLConnection connection = null;
         StringBuilder response = new StringBuilder();
         CustomTrustManager.allowAllSSL();
@@ -154,12 +153,8 @@ public class VKHTTPClient  extends AsyncTask<Map<String, String>, Integer, JSONO
     }
 
     private URL getUrl() {
-        myApp = (MyApp) context.getApplicationContext();
         //String res = "https://api.vk.com/method/groups.isMember?group_id=20629724&access_token=" + myApp.getPreferences().getVkToken();
         String res = "https://api.vk.com/method/groups.isMember";
-        //http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php?method=getrole&userid=rjhdby
-        //return preferences.getServerURI();
-        //myApp.getPreferences().getVkToken()
         try {
             return new URL(res);
         } catch (MalformedURLException e) {
@@ -181,15 +176,6 @@ public class VKHTTPClient  extends AsyncTask<Map<String, String>, Integer, JSONO
 
     @Override
     protected void onPostExecute(JSONObject result) {
-        if (isError(result) && !result.has("isError")) {
-            String error = getError(result);
-            result = new JSONObject();
-            try {
-                result.put("isError", error);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
         if (listener != null) {
             try {
                 listener.onTaskComplete(result);
@@ -198,13 +184,5 @@ public class VKHTTPClient  extends AsyncTask<Map<String, String>, Integer, JSONO
             }
         }
         dismiss();
-    }
-
-    protected boolean isError(JSONObject response) {
-        return RequestErrors.isError(response);
-    }
-
-    protected String getError(JSONObject response) {
-        return RequestErrors.getErrorText(response);
     }
 }

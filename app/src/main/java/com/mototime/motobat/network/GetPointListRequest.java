@@ -7,9 +7,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-/**
- * Created by pavel on 11.07.15.
- */
 public class GetPointListRequest extends HTTPClient  {
 
     public GetPointListRequest (AsyncTaskCompleteListener listener, Context context) {
