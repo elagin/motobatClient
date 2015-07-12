@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.GetPointListRequest;
-import com.mototime.motobat.network.HTTPClient;
 import com.mototime.motobat.network.RequestErrors;
 
 import org.json.JSONArray;
@@ -18,6 +17,7 @@ public class Points {
 
     private final Context context;
     private Map<Integer, Point> points;
+
     public Points(Context context) {
         if (points == null) {
             points = new HashMap<>();
@@ -26,12 +26,13 @@ public class Points {
         requestPoints(context);
     }
 
-    public void requestPoints(Context context) {
+    public void requestPoints(final Context context) {
         new GetPointListRequest(new AsyncTaskCompleteListener() {
             @Override
             public void onTaskComplete(JSONObject response) throws JSONException {
                 if (!RequestErrors.isError(response)) {
                     updatePointsList(response.getJSONArray(RequestErrors.VALID_RESULT));
+                    ((MyApp) context).getMap().placePoints(context);
                 }
             }
         }, context);
@@ -53,7 +54,7 @@ public class Points {
             }
         }
     }
-
+/*
     public Map<Integer, Point> getVisibleAccidents() {
         Map<Integer, Point> out = new HashMap<>();
         for (int i : points.keySet()) {
@@ -64,7 +65,7 @@ public class Points {
         }
         return out;
     }
-
+*/
     public Point getPoint(int id) {
         return points.get(id);
     }
@@ -72,8 +73,9 @@ public class Points {
     public Map<Integer, Point> getMap() {
         return points;
     }
-
+/*
     public enum Sort {
         FORWARD, BACKWARD
     }
+    */
 }

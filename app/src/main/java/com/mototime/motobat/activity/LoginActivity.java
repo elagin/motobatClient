@@ -16,7 +16,6 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.network.RoleRequest;
 import com.vk.sdk.VKSdk;

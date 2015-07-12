@@ -125,4 +125,8 @@ public class MyApp extends Application {
         }
         return res.toString();
     }
+
+    public MyMapManager getMap() {
+        return map;
+    }
 }
