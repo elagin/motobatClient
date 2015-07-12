@@ -16,7 +16,7 @@ public class RequestErrors {
     final static public String NORIGHTS = "NO RIGHTS";
     final static public String UNKNOWNERROR = "UNKNOWN ERROR";
 
-    public static String getErrorText(JSONObject response) {
+    public static String getError(JSONObject response) {
         if (response.has(VALID_RESULT)) return "OK";
         if (!response.has(INVALID_RESULT)) return "Ошибка соединения " + response.toString();
         try {
@@ -46,6 +46,6 @@ public class RequestErrors {
     }
 
     public static void showError(Context context, JSONObject response) {
-        Toast.makeText(context, getErrorText(response), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getError(response), Toast.LENGTH_LONG).show();
     }
 }
