@@ -4,6 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.mototime.motobat.activity.LoginActivity;
+import com.mototime.motobat.network.AsyncTaskCompleteListener;
+import com.mototime.motobat.network.GetUserInfoVKRequest;
+import com.mototime.motobat.network.IsMemberVKRequest;
+import com.mototime.motobat.network.RoleRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -28,9 +36,12 @@ public class Session {
     private final Context context;
     private String login;
     private String password;
+    private MyApp myAmp = null;
+    private Boolean isMember = false;
 
-    public Session(Context context) {
+    public Session(Context context, MyApp myAmp) {
         this.context = context;
+        this.myAmp = myAmp;
         prefs = new MyPreferences(context);
         reset();
 
@@ -171,5 +182,45 @@ public class Session {
             return context.getString(R.string.role_user);
         else
             return context.getString(R.string.role_read_only);
+    }
+
+    public void collectData() {
+        new IsMemberVKRequest(new IsMemberVKCallback(), context, myAmp.getPreferences().getVkToken());
+        //Для этого мето
+        new GetUserInfoVKRequest(new GetUserInfoVKCallback(), context, myAmp.getPreferences().getVkToken());
+        new RoleRequest(new RoleCallback(), context, userId);
+    }
+
+    private class IsMemberVKCallback implements AsyncTaskCompleteListener {
+        @Override
+        public void onTaskComplete(JSONObject result) {
+            try {
+                isMember = result.getBoolean("response");
+            } catch (JSONException e) {
+            }
+        }
+    }
+
+    private class GetUserInfoVKCallback implements AsyncTaskCompleteListener {
+
+        @Override
+        public void onTaskComplete(JSONObject response) throws JSONException {
+            try {
+                StringBuilder userName = new StringBuilder();
+                JSONArray resArray = (JSONArray) response.get("response");
+                JSONObject result = (JSONObject) resArray.get(0);
+                String firstName = result.getString("first_name");
+                String lastName = result.getString("last_name");
+                if (lastName != null)
+                    userName.append(lastName);
+                if (firstName != null) {
+                    if (userName.length() > 0)
+                        userName.append(" ");
+                    userName.append(firstName);
+                }
+                name = userName.toString();
+            } catch (JSONException e) {
+            }
+        }
     }
 }

@@ -25,7 +25,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-public abstract class VKHTTPClient  extends AsyncTask<Map<String, String>, Integer, JSONObject> {
+public abstract class VKHTTPClient extends AsyncTask<Map<String, String>, Integer, JSONObject> {
     private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
 
@@ -54,9 +54,11 @@ public abstract class VKHTTPClient  extends AsyncTask<Map<String, String>, Integ
             }
         }
 
-        URL url = getUrl();
+        String method = post.get("method");
+        if(method == null) return new JSONObject();
+        URL url = getUrl(method);
         if (url == null) return new JSONObject();
-
+        post.remove("method");
         HttpURLConnection connection = null;
         StringBuilder response = new StringBuilder();
         CustomTrustManager.allowAllSSL();
@@ -152,9 +154,10 @@ public abstract class VKHTTPClient  extends AsyncTask<Map<String, String>, Integ
         return result.toString();
     }
 
-    private URL getUrl() {
+    private URL getUrl(String method) {
         //String res = "https://api.vk.com/method/groups.isMember?group_id=20629724&access_token=" + myApp.getPreferences().getVkToken();
-        String res = "https://api.vk.com/method/groups.isMember";
+        //String res = "https://api.vk.com/method/groups.isMember";
+        String res = "https://api.vk.com/method/" + method;
         try {
             return new URL(res);
         } catch (MalformedURLException e) {

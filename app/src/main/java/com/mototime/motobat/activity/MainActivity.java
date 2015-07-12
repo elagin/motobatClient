@@ -63,7 +63,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
         if(!VKSdk.wakeUpSession())
             VKSdk.authorize(sMyScope, true, true);
-        //pointList = findViewById(R.id.point_list);
+        else
+            myApp.getSession().collectData();
     }
 
     @Override
@@ -130,6 +131,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             newToken.saveTokenToSharedPreferences(context, sTokenKey);
             myApp.getPreferences().setUserID(newToken.userId);
             myApp.getPreferences().setVkToken(newToken.accessToken);
+            myApp.getSession().collectData();
         }
 
         // Вызывается после VKSdk.authorize, но до отображения окна VK.
@@ -138,6 +140,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         public void onAcceptUserToken(VKAccessToken token) {
             myApp.getPreferences().setUserID(token.userId);
             myApp.getPreferences().setVkToken(token.accessToken);
+            myApp.getSession().collectData();
         }
     };
 }

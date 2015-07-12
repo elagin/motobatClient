@@ -129,8 +129,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         View accListYesterdayLine = findViewById(R.id.accListYesterdayLine);
         TextView roleView = (TextView) findViewById(R.id.role);
         TextView loggedStatus = (TextView) findViewById(R.id.auth_logged_status);
+        TextView userNameView = (TextView) findViewById(R.id.user_name);
 
         String formatRole = getString(R.string.auth_role);
+        String formatUserName = getString(R.string.auth_user_name);
+
 //        String formatStatus = getString(R.string.auth_logged_status);
 
         if (VKSdk.instance() != null) {
@@ -143,6 +146,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 roleView.setText(String.format(formatRole, role));
 
                 loggedStatus.setText(R.string.is_authorized);
+
+                userNameView.setText(String.format(formatUserName, myApp.getSession().getName()));
                 //finish();
 
             } else {

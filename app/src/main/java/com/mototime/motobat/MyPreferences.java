@@ -24,6 +24,7 @@ public class MyPreferences {
     private final static String password = "password";
 
     private final static String VK_TOKEN_KEY = "vk_access_token";
+    private final static String VK_USER_NAME = "vk_user_name";
 
     private static String serverURI = "server";
 
@@ -91,5 +92,13 @@ public class MyPreferences {
 
     public void setServerURI(String URI) {
         preferences.edit().putString(serverURI, URI);
+    }
+
+    public void setVKUserName(String value) {
+        preferences.edit().putString(VK_USER_NAME, value);
+    }
+
+    public String getVKUserName() {
+        return preferences.getString(VK_USER_NAME, "");
     }
 }

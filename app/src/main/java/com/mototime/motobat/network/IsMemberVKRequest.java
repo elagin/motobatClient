@@ -10,7 +10,7 @@ public class IsMemberVKRequest extends VKHTTPClient {
         this.context = context;
 
         post = new HashMap<>();
-        //post.put("method", "getRole");
+        post.put("method", "groups.isMember");
         post.put("group_id", "68397238");
         post.put("access_token", access_token);
         execute(post);

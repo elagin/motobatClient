@@ -25,6 +25,7 @@
     <string name="auth_header">Для входа используйте учетные данные ВКонтакте.</string>
     <string name="auth_logged_status">Статус: %1$s.</string>
     <string name="auth_role">Роль: %1$s.</string>
+    <string name="auth_user_name">Имя: %1$s.</string>
     <string name="auth_role_un_set">Не установлена</string>
     <string name="create_cancel">Отмена</string>
     <string name="logout_button">Выход</string>
