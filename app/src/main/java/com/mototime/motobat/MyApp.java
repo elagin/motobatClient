@@ -31,11 +31,6 @@ public class MyApp extends Application {
 
     public MyApp() {
         instance = this;
-
-//        if (pointsMap == null) {
-//            pointsMap = new HashMap<>();
-//        }
-        points = new Points(this);
         vk = new VK();
     }
 
@@ -46,6 +41,8 @@ public class MyApp extends Application {
     }
 
     public Points getPoints() {
+        if(points == null)
+            points = new Points(this);
         return points;
     }
 
