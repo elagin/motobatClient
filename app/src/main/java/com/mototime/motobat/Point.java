@@ -87,4 +87,8 @@ public class Point {
     public void setError(boolean error) {
         this.error = error;
     }
+
+    public int getKarma() {
+        return karma;
+    }
 }
