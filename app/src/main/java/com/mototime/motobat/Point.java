@@ -3,13 +3,8 @@ package com.mototime.motobat;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.mototime.motobat.utils.MyUtils;
-import com.mototime.motobat.utils.NewID;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
 
@@ -20,6 +15,7 @@ import java.util.Date;
  */
 public class Point {
 
+    MyApp myApp = null;
     private int id;
     private Date created;
     private int ownerID;
@@ -27,12 +23,9 @@ public class Point {
     private float lng;
     private Location location;
     private int karma;
-
     private boolean error;
 
-    MyApp myApp = null;
-
-    public Point(JSONObject json, Context context ) {
+    public Point(JSONObject json, Context context) {
         setError(false);
         myApp = (MyApp) context.getApplicationContext();
         createPoint(json);
@@ -90,5 +83,9 @@ public class Point {
 
     public int getKarma() {
         return karma;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(lat, lng);
     }
 }

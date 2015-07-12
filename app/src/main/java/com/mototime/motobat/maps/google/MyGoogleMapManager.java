@@ -3,11 +3,13 @@ package com.mototime.motobat.maps.google;
 import android.content.Context;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -111,8 +113,10 @@ public class MyGoogleMapManager extends MyMapManager {
             float alpha;
             int minutes = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 60000 - point.getKarma());
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
-            Marker marker = map.addMarker(new MarkerOptions().position(MyUtils.LocationToLatLng(point.getLocation())).title(title)
+            Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
+            Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.police_stick)).alpha(alpha));
+            map.addCircle(new CircleOptions().center(point.getLatLng()).radius(25).strokeColor(0xFFFF0000).strokeWidth(2));
             points.put(marker.getId(), id);
         }
     }
