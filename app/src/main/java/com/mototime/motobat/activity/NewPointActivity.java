@@ -188,7 +188,8 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         for (int id : myApp.getPoints().getMap().keySet()) {
             final Point point = myApp.getPoints().getPoint(id);
             if (point.isInvisible()) continue;
-            String title = point.getAddress();
+//            String title = point.getAddress();
+            String title = "";
             title += ", " + MyUtils.getIntervalFromNowInText(point.getCreated()) + " назад";
 
             float alpha;

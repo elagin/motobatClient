@@ -96,46 +96,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        new GetPointListRequest(new GetPointListCallback(), context);
-    }
-
-    private void drawList(Context context) {
-        ViewGroup view = (ViewGroup) ((Activity) context).findViewById(R.id.accListContent);
-        if (view.getChildCount() > 0)
-            view.removeAllViews();
-        boolean noYesterday = true;
-
-        Integer[] visible = myApp.points.sort(myApp.points.getVisibleAccidents(), Points.Sort.BACKWARD);
-
-//        if (points.isError.equals("ok") || points.isError.equals("no_new")) {
-        for (int i : visible) {
-            final Point point = myApp.points.getPoint(i);
-//                if (!acc.isToday() && noYesterday) {
-//                    //inflateYesterdayRow(context, view);
-//                    noYesterday = false;
-//                }
-            point.inflateRow(context, view);
-        }
-//            if (visible.length == 0) {
-//                view.addView(noAccidentsNotification(context));
-//            }
-//        } else {
-//            // TODO Сюда вкрячить сообщение об ошибке
-//        }
-    }
-
-    private class GetPointListCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject response) {
-            if (!RequestErrors.isError(response)) {
-                try {
-                    JSONArray result = response.getJSONArray("RESULT");
-                    myApp.getPoints().parseJSON(result);
-                    myApp.updateMap(context);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        myApp.getPoints().requestPoints(this);
     }
 }
