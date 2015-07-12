@@ -1,6 +1,7 @@
 package com.mototime.motobat.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,13 @@ import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.GetPointListRequest;
 import com.mototime.motobat.network.RequestErrors;
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKCaptchaDialog;
+import com.vk.sdk.VKScope;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.VKSdkListener;
+import com.vk.sdk.VKUIHelper;
+import com.vk.sdk.api.VKError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +39,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private MyApp myApp = null;
     private Button loginBtn;
     private Button addPointBtn;
+
+    private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
+    private static String[] sMyScope = new String[]{VKScope.WALL};
+    private final String appID = "4989462";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         addPointBtn.setOnClickListener(this);
 
         myApp.createMap(this);
+
+        VKUIHelper.onCreate(this);
+        VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
+        if(!VKSdk.wakeUpSession())
+            VKSdk.authorize(sMyScope, true, true);
         //pointList = findViewById(R.id.point_list);
     }
 
@@ -89,4 +106,38 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onResume();
         myApp.getPoints().requestPoints(myApp);
     }
+
+    private VKSdkListener sdkListener = new VKSdkListener() {
+        @Override
+        public void onCaptchaError(VKError captchaError) {
+            new VKCaptchaDialog(captchaError).show();
+        }
+
+        @Override
+        public void onTokenExpired(VKAccessToken expiredToken) {
+            VKSdk.authorize(sMyScope);
+        }
+
+        @Override
+        public void onAccessDenied(VKError authorizationError) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage(authorizationError.errorMessage)
+                    .show();
+        }
+
+        @Override
+        public void onReceiveNewToken(VKAccessToken newToken) {
+            newToken.saveTokenToSharedPreferences(context, sTokenKey);
+            myApp.getPreferences().setUserID(newToken.userId);
+            myApp.getPreferences().setVkToken(newToken.accessToken);
+        }
+
+        // Вызывается после VKSdk.authorize, но до отображения окна VK.
+        // Так что на этом этапе не понятно, авторизовался ли юзер успешно.
+        @Override
+        public void onAcceptUserToken(VKAccessToken token) {
+            myApp.getPreferences().setUserID(token.userId);
+            myApp.getPreferences().setVkToken(token.accessToken);
+        }
+    };
 }

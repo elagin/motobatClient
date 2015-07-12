@@ -18,6 +18,7 @@ import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.network.RoleRequest;
+import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKUIHelper;
 
@@ -32,6 +33,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private Button cancelBtn;
     private MyApp myApp = null;
     private MyPreferences prefs;
+    private static String[] sMyScope = new String[]{VKScope.WALL};
 
     private void enableLoginBtn() {
         //loginBtn.setEnabled(login.getText().toString().length() > 0 && password.getText().toString().length() > 0);
@@ -63,6 +65,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 //TODO Добавить запрос подтверждения на выход.
+                VKSdk.logout();
                 prefs.resetAuth();
 //                AccidentsGeneral.auth.logoff();
                 fillCtrls();
@@ -91,7 +94,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         TextView accListYesterdayLine = (TextView) findViewById(R.id.accListYesterdayLine);
         accListYesterdayLine.setMovementMethod(LinkMovementMethod.getInstance());
 
-        checkBundle();
+        //checkBundle();
 
         fillCtrls();
     }
@@ -101,7 +104,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         int id = v.getId();
         switch (id) {
             case R.id.login_button:
-                startActivity(new Intent(this, VKLoginActivity.class));
+                //startActivity(new Intent(this, VKLoginActivity.class));
+                VKSdk.authorize(sMyScope, true, true);
                 break;
         }
     }
@@ -139,7 +143,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 roleView.setText(String.format(formatRole, role));
 
                 loggedStatus.setText(R.string.is_authorized);
-                finish();
+                //finish();
 
             } else {
                 loginBtn.setEnabled(true);
