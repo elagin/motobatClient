@@ -112,7 +112,7 @@ public class MyGoogleMapManager extends MyMapManager {
             int minutes = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 60000 - point.getKarma());
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
             Marker marker = map.addMarker(new MarkerOptions().position(MyUtils.LocationToLatLng(point.getLocation())).title(title)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.point)).alpha(alpha));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.police_stick)).alpha(alpha));
             points.put(marker.getId(), id);
         }
     }

@@ -202,7 +202,7 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
                 alpha = 0.2f;
             }
             map.addMarker(new MarkerOptions().position(MyUtils.LocationToLatLng(point.getLocation())).title(title)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.point)).alpha(alpha));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.police_stick)).alpha(alpha));
         }
         return map;
     }

@@ -86,6 +86,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        myApp.getPoints().requestPoints(this);
+        myApp.getPoints().requestPoints(myApp);
     }
 }
