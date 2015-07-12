@@ -109,14 +109,8 @@ public class MyGoogleMapManager extends MyMapManager {
             title += ", " + MyUtils.getIntervalFromNowInText(point.getCreated()) + " назад";
 
             float alpha;
-            int age = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 3600000);
-            if (age < 2) {
-                alpha = 1.0f;
-            } else if (age < 6) {
-                alpha = 0.5f;
-            } else {
-                alpha = 0.2f;
-            }
+            int minutes = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 60000);
+            alpha = Math.min((float) (1 - 0.003 * minutes), 0.2f);
             Marker marker = map.addMarker(new MarkerOptions().position(MyUtils.LocationToLatLng(point.getLocation())).title(title)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.point)).alpha(alpha));
             points.put(marker.getId(), id);
