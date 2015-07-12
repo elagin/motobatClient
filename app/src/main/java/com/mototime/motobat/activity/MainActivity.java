@@ -17,6 +17,7 @@ import com.mototime.motobat.Points;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.GetPointListRequest;
+import com.mototime.motobat.network.RequestErrors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,12 +27,12 @@ import java.util.Random;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
+    public Context context;
     private MyApp myApp = null;
     private Button loginBtn;
     private Button addPointBtn;
     private View pointList;
     private View mapContainer;
-    public Context context;
     private Random rnd;
 
     @Override
@@ -125,14 +126,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private class GetPointListCallback implements AsyncTaskCompleteListener {
         @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                JSONArray res = (JSONArray) result.get("RESULT");
-                myApp.getPoints().parseJSON(res);
-                myApp.updateMap(context);
-            } catch (JSONException e) {
+        public void onTaskComplete(JSONObject response) {
+            if (!RequestErrors.isError(response)) {
+                try {
+                    JSONArray result = response.getJSONArray("RESULT");
+                    myApp.getPoints().parseJSON(result);
+                    myApp.updateMap(context);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
-
 }

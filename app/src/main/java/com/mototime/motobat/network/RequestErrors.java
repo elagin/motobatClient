@@ -1,5 +1,8 @@
 package com.mototime.motobat.network;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,6 +42,10 @@ public class RequestErrors {
     }
 
     public static boolean isError(JSONObject response) {
-        return response.has(RequestErrors.INVALID_RESULT);
+        return !response.has(RequestErrors.VALID_RESULT);
+    }
+
+    public static void showError(Context context, JSONObject response) {
+        Toast.makeText(context, getErrorText(response), Toast.LENGTH_LONG).show();
     }
 }

@@ -7,9 +7,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-/**
- * Created by pavel on 09.07.15.
- */
 public class RoleRequest extends HTTPClient  {
 
     public RoleRequest(AsyncTaskCompleteListener listener, Context context, String userID) {

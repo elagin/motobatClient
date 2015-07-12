@@ -26,9 +26,9 @@ import com.mototime.motobat.Point;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.CreatePointRequest;
+import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.utils.MyUtils;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -36,6 +36,7 @@ import java.util.Random;
 
 public class NewPointActivity extends FragmentActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
+    private final int RADIUS = 1000;
     private Spinner manAcvititySpinner;
     private Spinner vehicleTypeSpinner;
     private Button createBtn;
@@ -49,17 +50,8 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
     private GoogleMap map;
     private MyApp myApp = null;
     private NewPoint newPoint;
-    private final int RADIUS = 1000;
     private Context context;
     private Random rnd;
-
-    private enum ManAcvitityStatus {
-        ACTIVE, NOT_ACTIVE, UNKNOWN,
-    }
-
-    private enum VehicleType {
-        RT, GS, OTHER,
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,6 +206,14 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
         return map;
     }
 
+    private enum ManAcvitityStatus {
+        ACTIVE, NOT_ACTIVE, UNKNOWN,
+    }
+
+    private enum VehicleType {
+        RT, GS, OTHER,
+    }
+
     private class NewPoint {
         final Location initialLocation;
         final Date created;
@@ -233,15 +233,8 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
 
     private class CreatePointCallback implements AsyncTaskCompleteListener {
         @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                //{"isError":"Ошибка соединения {\"RESULT\":{\"response\":\"ok\"}}"}
-                //{"isError":"Ошибка соединения {\"ERROR\":{\"text\":\"PREREQUISITES\",\"object\":\"userid\"}}"}
-                //{"RESULT":{"role":"standart"}}
-                //{"ERROR":{"text":"NO USER","object":"rjhd"}}
-                result = (JSONObject) result.get("RESULT");
-            } catch (JSONException e) {
-            }
+        public void onTaskComplete(JSONObject response) {
+            if (RequestErrors.isError(response)) RequestErrors.showError(context, response);
         }
     }
 }

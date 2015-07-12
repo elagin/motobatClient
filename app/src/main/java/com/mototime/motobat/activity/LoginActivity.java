@@ -16,6 +16,7 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
+import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.network.RoleRequest;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKUIHelper;
@@ -25,14 +26,12 @@ import org.json.JSONObject;
 
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
+    private static Context context;
     private Button logoutBtn;
     private Button loginBtn;
     private Button cancelBtn;
-
     private MyApp myApp = null;
     private MyPreferences prefs;
-
-    private static Context context;
 
     private void enableLoginBtn() {
         //loginBtn.setEnabled(login.getText().toString().length() > 0 && password.getText().toString().length() > 0);
@@ -204,17 +203,18 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private class RoleCallback implements AsyncTaskCompleteListener {
 
         @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                //{"RESULT":{"role":"standart"}}
-                //{"ERROR":{"text":"NO USER","object":"rjhd"}}
-                result = (JSONObject) result.get("RESULT");
-                String role = result.getString("role");
-                if(role != null )
-                    myApp.getSession().setRole(role);
-                fillCtrls();
-            } catch (JSONException e) {
+        public void onTaskComplete(JSONObject response) {
+            String role = "readonly";
+            if (!RequestErrors.isError(response)) {
+                try {
+                    JSONObject result = response.getJSONObject("RESULT");
+                    role = result.getString("role");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+            myApp.getSession().setRole(role);
+            fillCtrls();
         }
     }
 }
