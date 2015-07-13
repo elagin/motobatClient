@@ -6,6 +6,8 @@ import android.content.Intent;
 import com.mototime.motobat.activity.LoginActivity;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.IsMemberVKRequest;
+import com.mototime.motobat.network.RequestErrors;
+import com.mototime.motobat.network.RoleRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -184,9 +186,8 @@ public class Session {
 
     public void collectData() {
         new IsMemberVKRequest(new IsMemberVKCallback(), context, myAmp.getPreferences().getVkToken());
-        //Для этого мето
         //new GetUserInfoVKRequest(new GetUserInfoVKCallback(), context, myAmp.getPreferences().getVkToken());
-        //new RoleRequest(new RoleCallback(), context, userId);
+        new RoleRequest(new RoleCallback(), context, myAmp.getPreferences().getUserID());
     }
 
     private class IsMemberVKCallback implements AsyncTaskCompleteListener {
@@ -196,6 +197,23 @@ public class Session {
                 isMember = result.getBoolean("response");
             } catch (JSONException e) {
             }
+        }
+    }
+
+    private class RoleCallback implements AsyncTaskCompleteListener {
+
+        @Override
+        public void onTaskComplete(JSONObject response) {
+            String role = "readonly";
+            if (!RequestErrors.isError(response)) {
+                try {
+                    JSONObject result = response.getJSONObject("RESULT");
+                    role = result.getString("role");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            setRole(role);
         }
     }
 

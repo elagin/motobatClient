@@ -15,12 +15,12 @@ import android.widget.Button;
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.R;
 import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.VKCaptchaDialog;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKSdkListener;
 import com.vk.sdk.VKUIHelper;
 import com.vk.sdk.api.VKError;
+import com.vk.sdk.dialogs.VKCaptchaDialog;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -135,6 +135,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        VKUIHelper.onResume(this);
+
         myApp.getPoints().requestPoints(myApp);
         if (inCreate) {
             ViewTreeObserver vto = leftCreateWizard.getViewTreeObserver();
@@ -173,10 +175,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         @Override
         public void onReceiveNewToken(VKAccessToken newToken) {
+            Context context = getApplicationContext();
             newToken.saveTokenToSharedPreferences(context, sTokenKey);
             myApp.getPreferences().setUserID(newToken.userId);
             myApp.getPreferences().setVkToken(newToken.accessToken);
-            myApp.getSession().collectData();
+            //myApp.getSession().collectData();
+            Boolean isLogged = isLoggedInVK();
+            int a = 10;
+
         }
 
         // Вызывается после VKSdk.authorize, но до отображения окна VK.
@@ -185,7 +191,31 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         public void onAcceptUserToken(VKAccessToken token) {
             myApp.getPreferences().setUserID(token.userId);
             myApp.getPreferences().setVkToken(token.accessToken);
-            myApp.getSession().collectData();
+            //myApp.getSession().collectData();
+            Boolean isLogged = isLoggedInVK();
+
+            int a = 10;
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        VKUIHelper.onActivityResult(requestCode, resultCode, data);
+        Boolean isLogged = isLoggedInVK();
+        int a = 10;
+    }
+
+    private Boolean isLoggedInVK() {
+        if (VKSdk.instance() != null) {
+            Boolean isLogged = VKSdk.isLoggedIn();
+            return isLogged;
+        } else
+            return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        VKUIHelper.onDestroy(this);
+    }
 }
