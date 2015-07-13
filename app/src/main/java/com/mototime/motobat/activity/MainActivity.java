@@ -1,6 +1,6 @@
 package com.mototime.motobat.activity;
 
-import android.app.Activity;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,16 +9,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 
 import com.mototime.motobat.MyApp;
-import com.mototime.motobat.Point;
-import com.mototime.motobat.Points;
 import com.mototime.motobat.R;
-import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.GetPointListRequest;
-import com.mototime.motobat.network.RequestErrors;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCaptchaDialog;
 import com.vk.sdk.VKScope;
@@ -27,41 +22,53 @@ import com.vk.sdk.VKSdkListener;
 import com.vk.sdk.VKUIHelper;
 import com.vk.sdk.api.VKError;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Random;
-
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     public Context context;
     private MyApp myApp = null;
     private Button loginBtn;
     private Button addPointBtn;
+    private Button cancelButton;
 
-    private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
-    private static String[] sMyScope = new String[]{VKScope.WALL};
-    private final String appID = "4989462";
+    private static String   sTokenKey = "VK_ACCESS_TOKEN_FULL";
+    private static String[] sMyScope  = new String[]{VKScope.WALL};
+    private final  String   appID     = "4989462";
+    private boolean inCreate;
+
+    View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        inCreate = true;
         super.onCreate(savedInstanceState);
         myApp = (MyApp) getApplicationContext();
 
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.root);
 
+        leftCreateWizard = this.findViewById(R.id.create_left);
+        rightCreateWizard = this.findViewById(R.id.create_right);
+        bottomCreate = this.findViewById(R.id.create_bottom);
+        leftMain = this.findViewById(R.id.main_left);
+/*
         loginBtn = (Button) findViewById(R.id.login_btn);
         loginBtn.setOnClickListener(this);
 
         addPointBtn = (Button) findViewById(R.id.add_point_btn);
         addPointBtn.setOnClickListener(this);
+*/
 
+
+        cancelButton = (Button) findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(this);
+
+        addPointBtn = (Button) findViewById(R.id.create_wizard);
+        addPointBtn.setOnClickListener(this);
         myApp.createMap(this);
 
         VKUIHelper.onCreate(this);
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
-        if(!VKSdk.wakeUpSession())
+        if (!VKSdk.wakeUpSession())
             VKSdk.authorize(sMyScope, true, true);
         else
             myApp.getSession().collectData();
@@ -91,13 +98,36 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
+        ObjectAnimator animateLeft, animateRight, animateBottom, animateMain;
+        int            id = v.getId();
         switch (id) {
             case R.id.login_btn:
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
-            case R.id.add_point_btn:
+            case R.id.create_wizard:
+                /*
                 startActivity(new Intent(this, NewPointActivity.class));
+                */
+                animateLeft = ObjectAnimator.ofFloat(leftCreateWizard, View.TRANSLATION_X, -leftCreateWizard.getWidth(), 0);
+                animateLeft.setDuration(200).start();
+                animateRight = ObjectAnimator.ofFloat(rightCreateWizard, View.TRANSLATION_X, rightCreateWizard.getWidth(), 0);
+                animateRight.setDuration(200).start();
+                animateBottom = ObjectAnimator.ofFloat(bottomCreate, View.TRANSLATION_Y, bottomCreate.getWidth(), 0);
+                animateBottom.setDuration(200).start();
+                animateMain = ObjectAnimator.ofFloat(leftMain, View.TRANSLATION_X, 0, -leftMain.getWidth());
+                animateMain.setDuration(200).start();
+                inCreate = true;
+                break;
+            case R.id.cancel_button:
+                animateLeft = ObjectAnimator.ofFloat(leftCreateWizard, View.TRANSLATION_X, 0, -leftCreateWizard.getWidth());
+                animateLeft.setDuration(200).start();
+                animateRight = ObjectAnimator.ofFloat(rightCreateWizard, View.TRANSLATION_X, 0, rightCreateWizard.getWidth());
+                animateRight.setDuration(200).start();
+                animateBottom = ObjectAnimator.ofFloat(bottomCreate, View.TRANSLATION_Y, 0, bottomCreate.getWidth());
+                animateBottom.setDuration(200).start();
+                animateMain = ObjectAnimator.ofFloat(leftMain, View.TRANSLATION_X, -leftMain.getWidth(), 0);
+                animateMain.setDuration(200).start();
+                inCreate = false;
                 break;
         }
     }
@@ -106,6 +136,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         myApp.getPoints().requestPoints(myApp);
+        if (inCreate) {
+            ViewTreeObserver vto = leftCreateWizard.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    leftCreateWizard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    leftCreateWizard.setTranslationX(-leftCreateWizard.getWidth());
+                    rightCreateWizard.setTranslationX(rightCreateWizard.getWidth());
+                    bottomCreate.setTranslationY(bottomCreate.getHeight());
+                    inCreate = false;
+                }
+            });
+        }
+        //leftCreateWizard.setTranslationX(-leftCreateWizard.getWidth());
+        //rightCreateWizard.setTranslationX(rightCreateWizard.getWidth());
     }
 
     private VKSdkListener sdkListener = new VKSdkListener() {

@@ -5,9 +5,7 @@ import android.content.Intent;
 
 import com.mototime.motobat.activity.LoginActivity;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.GetUserInfoVKRequest;
 import com.mototime.motobat.network.IsMemberVKRequest;
-import com.mototime.motobat.network.RoleRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -187,8 +185,8 @@ public class Session {
     public void collectData() {
         new IsMemberVKRequest(new IsMemberVKCallback(), context, myAmp.getPreferences().getVkToken());
         //Для этого мето
-        new GetUserInfoVKRequest(new GetUserInfoVKCallback(), context, myAmp.getPreferences().getVkToken());
-        new RoleRequest(new RoleCallback(), context, userId);
+        //new GetUserInfoVKRequest(new GetUserInfoVKCallback(), context, myAmp.getPreferences().getVkToken());
+        //new RoleRequest(new RoleCallback(), context, userId);
     }
 
     private class IsMemberVKCallback implements AsyncTaskCompleteListener {

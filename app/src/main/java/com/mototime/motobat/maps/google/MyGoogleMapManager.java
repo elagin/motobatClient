@@ -36,10 +36,12 @@ public class MyGoogleMapManager extends MyMapManager {
         myApp = (MyApp) context.getApplicationContext();
         setName(MyMapManager.GOOGLE);
 
-        Inflate.set(context, R.id.map_container, R.layout.google_maps_view);
+        //Inflate.set(context, R.id.map_container, R.layout.google_maps_view);
+        //Inflate.set(context, R.id.map, R.layout.root);
 
         android.support.v4.app.FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
-        final SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.google_map);
+        //final SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.google_map);
+        final SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.map);
 
 /* Возможно поможет, хотя и костыль */
         for (int i = 0; i < 5; i++) {
