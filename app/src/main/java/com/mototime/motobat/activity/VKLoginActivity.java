@@ -5,15 +5,14 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.mototime.motobat.MyApp;
 import com.mototime.motobat.R;
 import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.VKCaptchaDialog;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKSdkListener;
 import com.vk.sdk.VKUIHelper;
 import com.vk.sdk.api.VKError;
+import com.vk.sdk.dialogs.VKCaptchaDialog;
 
 public class VKLoginActivity extends Activity {
 
