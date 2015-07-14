@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.R;
@@ -35,7 +36,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private Button loginBtn;
     private Button addPointBtn;
     private Button cancelButton;
-    private Button notifyButton;
+    private TextView textNotify;
 
     private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
     private static String[] sMyScope = new String[]{VKScope.WALL};
@@ -67,15 +68,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         addPointBtn.setOnClickListener(this);
 */
 
-
         cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(this);
 
         addPointBtn = (Button) findViewById(R.id.create_wizard);
         addPointBtn.setOnClickListener(this);
 
-        notifyButton = (Button) findViewById(R.id.notify_button);
-        notifyButton.setOnClickListener(this);
+        textNotify = (TextView) findViewById(R.id.text_notify);
 
         myApp.createMap(this);
 
@@ -130,11 +129,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 AnimateViews.show(leftMain, AnimateViews.LEFT);
                 inCreate = false;
                 break;
-            case R.id.notify_button:
-                ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, 0, -notifyTop.getWidth());
-                animateTop.setDuration(200).start();
-                notifyButton.setText("");
-                break;
+//            case R.id.notify_button:
+//                ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, 0, -notifyTop.getWidth());
+//                animateTop.setDuration(200).start();
+//                notifyButton.setText("");
+//                break;
         }
     }
 
@@ -174,7 +173,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 if (isMember)
                     myApp.getPoints().requestPoints(myApp);
                 else
-                    showNotify("Вы не состоите в группе\n 'Moto Times'.\nЗагрузка точек не возможна.");
+                    showNotify("Вы не состоите в группе 'Moto Times'.\nЗагрузка точек не возможна.");
             } catch (JSONException e) {
                 int a = 10;
             }
@@ -182,7 +181,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void showNotify(String text) {
-        notifyButton.setText(text);
+        textNotify.setText(text);
         ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, -notifyTop.getWidth(), 0);
         animateTop.setDuration(500).start();
     }
