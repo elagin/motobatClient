@@ -19,7 +19,6 @@ import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.utils.AnimateViews;
 import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.VKCaptchaDialog;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKSdkListener;
