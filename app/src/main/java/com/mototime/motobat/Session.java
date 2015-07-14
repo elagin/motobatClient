@@ -184,8 +184,16 @@ public class Session {
             return context.getString(R.string.role_read_only);
     }
 
+    public Boolean isMember() {
+        return isMember;
+    }
+
+    public void setIsMember(Boolean value) {
+        this.isMember = value;
+    }
+
     public void collectData() {
-        new IsMemberVKRequest(new IsMemberVKCallback(), context, myAmp.getPreferences().getVkToken());
+        //new IsMemberVKRequest(new IsMemberVKCallback(), context, myAmp.getPreferences().getVkToken());
         //new GetUserInfoVKRequest(new GetUserInfoVKCallback(), context, myAmp.getPreferences().getVkToken());
         new RoleRequest(new RoleCallback(), context, myAmp.getPreferences().getUserID());
     }
