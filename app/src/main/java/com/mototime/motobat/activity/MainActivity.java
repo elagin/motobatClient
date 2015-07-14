@@ -19,6 +19,7 @@ import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.utils.AnimateViews;
 import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKCaptchaDialog;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKSdkListener;
@@ -33,7 +34,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     public Context context;
     private MyApp myApp = null;
-    private Button loginBtn;
     private Button addPointBtn;
     private Button cancelButton;
     private TextView textNotify;
@@ -52,7 +52,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         myApp = (MyApp) getApplicationContext();
         context = getApplicationContext();
 
-        //setContentView(R.layout.activity_main);
         setContentView(R.layout.root);
 
         leftCreateWizard = this.findViewById(R.id.create_left);
