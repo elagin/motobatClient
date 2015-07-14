@@ -116,11 +116,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.create_wizard:
-                AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
-                AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
-                AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
-                AnimateViews.hide(leftMain, AnimateViews.LEFT);
-                inCreate = true;
+                if(myApp.getSession().isStandart()) {
+                    AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
+                    AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
+                    AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
+                    AnimateViews.hide(leftMain, AnimateViews.LEFT);
+                    inCreate = true;
+                } else {
+                    showNotify("У Вас нет прав на создание точек.");
+                }
                 break;
             case R.id.cancel_button:
                 AnimateViews.hide(leftCreateWizard, AnimateViews.LEFT);
