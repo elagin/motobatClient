@@ -218,7 +218,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 rt.setAlpha(1f);
                 gs.setAlpha(0.4f);
                 car.setAlpha(0.4f);
-                newPoint.setGS();
+                newPoint.setRT();
                 break;
 //            case R.id.notify_button:
 //                ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, 0, -notifyTop.getWidth());
