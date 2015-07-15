@@ -38,20 +38,20 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageButton"
+            android:id="@+id/good_police"
             android:background="@drawable/helmet_good"
             android:alpha="0.4"/>
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageButton2"
+            android:id="@+id/normal_police"
             android:background="@drawable/helmet"/>
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageButton3"
+            android:id="@+id/evil_police"
             android:background="@drawable/helmet_bad"
             android:alpha="0.4"/>
     </LinearLayout>
@@ -69,20 +69,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="RT"
-            android:id="@+id/b4"
+            android:id="@+id/rt"
             android:alpha="1"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="GS"
-            android:id="@+id/button5"/>
+            android:id="@+id/gs"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Авто"
-            android:id="@+id/button6"
+            android:id="@+id/car"
             />
     </LinearLayout>
 
