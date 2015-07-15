@@ -18,12 +18,13 @@
         android:layout_gravity="top"
         android:id="@+id/notify_top">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="text"
-        android:id="@+id/notify_button"
-        android:layout_gravity="center_horizontal"/>
+        <TextView
+                android:id="@+id/text_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Уведомление"
+                android:background="#8cff0000" />
     </LinearLayout>
 
     <LinearLayout
@@ -31,25 +32,31 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/create_left"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="#22000000">
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Добрый"
-            android:id="@+id/button"/>
+            android:id="@+id/good_police"
+            android:background="@drawable/helmet_good"
+            android:alpha="0.4"
+            android:layout_margin="8dp"/>
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Равнодушный"
-            android:id="@+id/button2"/>
+            android:id="@+id/normal_police"
+            android:background="@drawable/helmet"
+            android:layout_margin="8dp"/>
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Злой"
-            android:id="@+id/button3"/>
+            android:id="@+id/evil_police"
+            android:background="@drawable/helmet_bad"
+            android:alpha="0.4"
+            android:layout_margin="8dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -59,26 +66,29 @@
         android:id="@+id/create_right"
         android:gravity="center_vertical|end|right"
         android:layout_gravity="right"
-        >
+        android:background="#22000000">
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RT"
-            android:id="@+id/b4"
-            android:alpha="1"/>
+            android:id="@+id/rt"
+            android:background="@drawable/rt"
+            android:layout_margin="8dp"/>
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GS"
-            android:id="@+id/button5"/>
+            android:id="@+id/gs"
+            android:background="@drawable/gs"
+            android:layout_margin="8dp"/>
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Авто"
-            android:id="@+id/button6"/>
+            android:id="@+id/car"
+            android:background="@drawable/car"
+            android:layout_margin="8dp"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -89,11 +99,13 @@
         android:id="@+id/main_left"
         >
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create"
-            android:id="@+id/create_wizard"/>
+            android:id="@+id/create_wizard"
+            android:background="@drawable/create"
+            android:layout_margin="8dp"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -101,7 +113,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:id="@+id/create_bottom">
+        android:id="@+id/create_bottom"
+        >
 
         <Button
             android:layout_width="wrap_content"

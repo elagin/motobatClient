@@ -171,8 +171,8 @@ public class NewPointActivity extends FragmentActivity implements AdapterView.On
                     mapAddress.setText(address);
                     newPoint.address = address;
 //                    Button mcCreateFineAddressConfirm = (Button) ((Activity) context).findViewById(R.id.mc_create_fine_address_confirm);
-//                    if (newPoint.initialLocation != null) {
-//                        double distance = MyUtils.LatLngToLocation(camera.target).distanceTo(newPoint.initialLocation);
+//                    if (NewPoint.initialLocation != null) {
+//                        double distance = MyUtils.LatLngToLocation(camera.target).distanceTo(NewPoint.initialLocation);
 //                        if (distance > RADIUS) {
 //                            mcCreateFineAddressConfirm.setEnabled(false);
 //                        } else {

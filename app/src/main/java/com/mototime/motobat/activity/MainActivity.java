@@ -11,11 +11,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.mototime.motobat.MyApp;
+import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.IsMemberVKRequest;
+import com.mototime.motobat.utils.AnimateViews;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -29,157 +33,17 @@ import org.json.JSONObject;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
+    private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
+    private static String[] sMyScope = new String[]{VKScope.WALL};
+    private final String appID = "4989462";
     public Context context;
+    View   leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop;
+    ImageButton rt, gs, car, good, normal, evil, addPointBtn;
     private MyApp myApp = null;
-    private Button loginBtn;
-    private Button addPointBtn;
     private Button cancelButton;
-    private Button notifyButton;
-
-    private static String   sTokenKey = "VK_ACCESS_TOKEN_FULL";
-    private static String[] sMyScope  = new String[]{VKScope.WALL};
-    private final  String   appID     = "4989462";
+    private TextView textNotify;
     private boolean inCreate;
-
-    View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        inCreate = true;
-        super.onCreate(savedInstanceState);
-        myApp = (MyApp) getApplicationContext();
-        context = getApplicationContext();
-
-        //setContentView(R.layout.activity_main);
-        setContentView(R.layout.root);
-
-        leftCreateWizard = this.findViewById(R.id.create_left);
-        rightCreateWizard = this.findViewById(R.id.create_right);
-        bottomCreate = this.findViewById(R.id.create_bottom);
-        leftMain = this.findViewById(R.id.main_left);
-        notifyTop = findViewById((R.id.notify_top));
-/*
-        loginBtn = (Button) findViewById(R.id.login_btn);
-        loginBtn.setOnClickListener(this);
-
-        addPointBtn = (Button) findViewById(R.id.add_point_btn);
-        addPointBtn.setOnClickListener(this);
-*/
-
-        cancelButton = (Button) findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(this);
-
-        addPointBtn = (Button) findViewById(R.id.create_wizard);
-        addPointBtn.setOnClickListener(this);
-
-        notifyButton = (Button) findViewById(R.id.notify_button);
-        notifyButton.setOnClickListener(this);
-
-        myApp.createMap(this);
-
-        VKUIHelper.onCreate(this);
-        VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onClick(View v) {
-        ObjectAnimator animateLeft, animateRight, animateBottom, animateMain;
-        int            id = v.getId();
-        switch (id) {
-            case R.id.login_btn:
-                startActivity(new Intent(this, LoginActivity.class));
-                break;
-            case R.id.create_wizard:
-                /*
-                startActivity(new Intent(this, NewPointActivity.class));
-                */
-                animateLeft = ObjectAnimator.ofFloat(leftCreateWizard, View.TRANSLATION_X, -leftCreateWizard.getWidth(), 0);
-                animateLeft.setDuration(200).start();
-                animateRight = ObjectAnimator.ofFloat(rightCreateWizard, View.TRANSLATION_X, rightCreateWizard.getWidth(), 0);
-                animateRight.setDuration(200).start();
-                animateBottom = ObjectAnimator.ofFloat(bottomCreate, View.TRANSLATION_Y, bottomCreate.getWidth(), 0);
-                animateBottom.setDuration(200).start();
-                animateMain = ObjectAnimator.ofFloat(leftMain, View.TRANSLATION_X, 0, -leftMain.getWidth());
-                animateMain.setDuration(200).start();
-                inCreate = true;
-                break;
-            case R.id.cancel_button:
-                animateLeft = ObjectAnimator.ofFloat(leftCreateWizard, View.TRANSLATION_X, 0, -leftCreateWizard.getWidth());
-                animateLeft.setDuration(200).start();
-                animateRight = ObjectAnimator.ofFloat(rightCreateWizard, View.TRANSLATION_X, 0, rightCreateWizard.getWidth());
-                animateRight.setDuration(200).start();
-                animateBottom = ObjectAnimator.ofFloat(bottomCreate, View.TRANSLATION_Y, 0, bottomCreate.getWidth());
-                animateBottom.setDuration(200).start();
-                animateMain = ObjectAnimator.ofFloat(leftMain, View.TRANSLATION_X, -leftMain.getWidth(), 0);
-                animateMain.setDuration(200).start();
-                inCreate = false;
-                break;
-            case R.id.notify_button:
-                ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, 0, -notifyTop.getWidth());
-                animateTop.setDuration(200).start();
-                notifyButton.setText("");
-                break;
-        }
-    }
-
-    private void showNotify(String text) {
-        notifyButton.setText(text);
-        ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, -notifyTop.getWidth(), 0);
-        animateTop.setDuration(500).start();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        VKUIHelper.onResume(this);
-
-        if (!VKSdk.wakeUpSession())
-            VKSdk.authorize(sMyScope, true, true);
-        else {
-            //myApp.getSession().collectData();
-            new IsMemberVKRequest(new IsMemberVKCallback(), context, myApp.getPreferences().getVkToken());
-        }
-
-        //myApp.getPoints().requestPoints(myApp);
-        if (inCreate) {
-            ViewTreeObserver vto = leftCreateWizard.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    leftCreateWizard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    leftCreateWizard.setTranslationX(-leftCreateWizard.getWidth());
-                    rightCreateWizard.setTranslationX(rightCreateWizard.getWidth());
-                    bottomCreate.setTranslationY(bottomCreate.getHeight());
-                    inCreate = false;
-                }
-            });
-        }
-        //leftCreateWizard.setTranslationX(-leftCreateWizard.getWidth());
-        //rightCreateWizard.setTranslationX(rightCreateWizard.getWidth());
-    }
-
+    private NewPoint newPoint;
     private VKSdkListener sdkListener = new VKSdkListener() {
         @Override
         public void onCaptchaError(VKError captchaError) {
@@ -200,48 +64,215 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         @Override
         public void onReceiveNewToken(VKAccessToken newToken) {
-            Context context = getApplicationContext();
             newToken.saveTokenToSharedPreferences(context, sTokenKey);
             myApp.getPreferences().setUserID(newToken.userId);
             myApp.getPreferences().setVkToken(newToken.accessToken);
-            //myApp.getSession().collectData();
-            Boolean isLogged = isLoggedInVK();
-            int a = 10;
-
+            myApp.getSession().collectData();
         }
 
         // Вызывается после VKSdk.authorize, но до отображения окна VK.
         // Так что на этом этапе не понятно, авторизовался ли юзер успешно.
         @Override
         public void onAcceptUserToken(VKAccessToken token) {
+            //TODO верятно сохранять по новой не нужно, токен-то старый
             myApp.getPreferences().setUserID(token.userId);
             myApp.getPreferences().setVkToken(token.accessToken);
-            //myApp.getSession().collectData();
-            Boolean isLogged = isLoggedInVK();
+            myApp.getSession().collectData();
+        }
 
-            int a = 10;
+        public void onRenewAccessToken(VKAccessToken token) {
+            onReceiveNewToken(token);
         }
     };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        VKUIHelper.onActivityResult(requestCode, resultCode, data);
-        Boolean isLogged = isLoggedInVK();
-        int a = 10;
-    }
-
-    private Boolean isLoggedInVK() {
-        if (VKSdk.instance() != null) {
-            Boolean isLogged = VKSdk.isLoggedIn();
-            return isLogged;
-        } else
-            return false;
+        VKSdk.processActivityResult(VKSdk.VK_SDK_REQUEST_CODE, resultCode, data);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        VKUIHelper.onDestroy(this);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        VKUIHelper.onCreate(this);
+        inCreate = true;
+        myApp = (MyApp) getApplicationContext();
+        context = getApplicationContext();
+
+        setContentView(R.layout.root);
+
+        assignViews();
+        assignButtons();
+        newPoint = new NewPoint();
+        myApp.createMap(this);
+
+
+        VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
+//        if (!VKSdk.wakeUpSession())
+//            VKSdk.authorize(sMyScope, true, true);
+//        else
+//            myApp.getSession().collectData();
+    }
+
+    private void assignButtons() {
+        cancelButton = (Button) findViewById(R.id.cancel_button);
+        addPointBtn = (ImageButton) findViewById(R.id.create_wizard);
+
+        good = (ImageButton) findViewById(R.id.good_police);
+        evil = (ImageButton) findViewById(R.id.evil_police);
+        normal = (ImageButton) findViewById(R.id.normal_police);
+
+        gs = (ImageButton) findViewById(R.id.gs);
+        rt = (ImageButton) findViewById(R.id.rt);
+        car = (ImageButton) findViewById(R.id.car);
+
+        cancelButton.setOnClickListener(this);
+        addPointBtn.setOnClickListener(this);
+        good.setOnClickListener(this);
+        evil.setOnClickListener(this);
+        normal.setOnClickListener(this);
+        gs.setOnClickListener(this);
+        rt.setOnClickListener(this);
+        car.setOnClickListener(this);
+    }
+
+    private void assignViews() {
+        leftCreateWizard = this.findViewById(R.id.create_left);
+        rightCreateWizard = this.findViewById(R.id.create_right);
+        bottomCreate = this.findViewById(R.id.create_bottom);
+        leftMain = this.findViewById(R.id.main_left);
+        notifyTop = this.findViewById((R.id.notify_top));
+        textNotify = (TextView) findViewById(R.id.text_notify);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.login_btn:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case R.id.create_wizard:
+                if (myApp.getSession().isStandart()) {
+                    AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
+                    AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
+                    AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
+                    AnimateViews.hide(leftMain, AnimateViews.LEFT);
+                    inCreate = true;
+                    newPoint = new NewPoint();
+                    evil.setAlpha(0.4f);
+                    normal.setAlpha(1f);
+                    good.setAlpha(0.4f);
+                    gs.setAlpha(1f);
+                    rt.setAlpha(0.4f);
+                    car.setAlpha(0.4f);
+                    newPoint.setNormal();
+                    newPoint.setGS();
+                } else {
+                    showNotify("У Вас нет прав на создание точек.");
+                }
+                break;
+            case R.id.cancel_button:
+                AnimateViews.hide(leftCreateWizard, AnimateViews.LEFT);
+                AnimateViews.hide(rightCreateWizard, AnimateViews.RIGHT);
+                AnimateViews.hide(bottomCreate, AnimateViews.BOTTOM);
+                AnimateViews.show(leftMain, AnimateViews.LEFT);
+                inCreate = false;
+                break;
+            case R.id.good_police:
+                evil.setAlpha(0.4f);
+                normal.setAlpha(0.4f);
+                good.setAlpha(1f);
+                newPoint.setGood();
+                break;
+            case R.id.evil_police:
+                evil.setAlpha(1f);
+                normal.setAlpha(0.4f);
+                good.setAlpha(0.4f);
+                newPoint.setEvil();
+                break;
+            case R.id.normal_police:
+                evil.setAlpha(0.4f);
+                normal.setAlpha(1f);
+                good.setAlpha(0.4f);
+                newPoint.setNormal();
+                break;
+            case R.id.car:
+                rt.setAlpha(0.4f);
+                gs.setAlpha(0.4f);
+                car.setAlpha(1f);
+                newPoint.setCar();
+                break;
+            case R.id.gs:
+                rt.setAlpha(0.4f);
+                gs.setAlpha(1f);
+                car.setAlpha(0.4f);
+                newPoint.setGS();
+                break;
+            case R.id.rt:
+                rt.setAlpha(1f);
+                gs.setAlpha(0.4f);
+                car.setAlpha(0.4f);
+                newPoint.setRT();
+                break;
+//            case R.id.notify_button:
+//                ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, 0, -notifyTop.getWidth());
+//                animateTop.setDuration(200).start();
+//                notifyButton.setText("");
+//                break;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        VKUIHelper.onResume(this);
+        if (VKSdk.wakeUpSession()) {
+            //myApp.getSession().collectData();
+            new IsMemberVKRequest(new IsMemberVKCallback(), this, myApp.getPreferences().getVkToken());
+        } else {
+            VKSdk.authorize(sMyScope, true, true);
+        }
+
+        myApp.getPoints().requestPoints(myApp);
+        if (inCreate) {
+            ViewTreeObserver vto = leftCreateWizard.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    leftCreateWizard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    leftCreateWizard.setTranslationX(-leftCreateWizard.getWidth());
+                    rightCreateWizard.setTranslationX(rightCreateWizard.getWidth());
+                    bottomCreate.setTranslationY(bottomCreate.getHeight());
+                    textNotify.setTranslationY(-textNotify.getHeight());
+                    inCreate = false;
+                }
+            });
+        }
+    }
+
+    private void showNotify(String text) {
+        textNotify.setText(text);
+        ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, -notifyTop.getWidth(), 0);
+        animateTop.setDuration(500).start();
     }
 
     private class IsMemberVKCallback implements AsyncTaskCompleteListener {
@@ -250,10 +281,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             try {
                 Boolean isMember = (result.getInt("response") != 0);
                 myApp.getSession().setIsMember(isMember);
-                if(isMember)
+                if (isMember)
                     myApp.getPoints().requestPoints(myApp);
                 else
-                    showNotify("Вы не состоите в группе\n 'Moto Times'.\nЗагрузка точек не возможна.");
+                    showNotify("Вы не состоите в группе 'Moto Times'.\nЗагрузка точек не возможна.");
             } catch (JSONException e) {
                 int a = 10;
             }
