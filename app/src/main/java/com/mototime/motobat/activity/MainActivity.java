@@ -81,6 +81,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             myApp.getPreferences().setVkToken(token.accessToken);
             myApp.getSession().collectData();
         }
+
         public void onRenewAccessToken(VKAccessToken token) {
             onReceiveNewToken(token);
         }
@@ -241,7 +242,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         VKUIHelper.onResume(this);
-        Intent intent = getIntent();
         if (VKSdk.wakeUpSession()) {
             //myApp.getSession().collectData();
             new IsMemberVKRequest(new IsMemberVKCallback(), this, myApp.getPreferences().getVkToken());
