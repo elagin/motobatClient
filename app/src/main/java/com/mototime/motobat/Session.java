@@ -195,56 +195,56 @@ public class Session {
     public void collectData() {
         //new IsMemberVKRequest(new IsMemberVKCallback(), context, myAmp.getPreferences().getVkToken());
         //new GetUserInfoVKRequest(new GetUserInfoVKCallback(), context, myAmp.getPreferences().getVkToken());
-        new RoleRequest(new RoleCallback(), context, myAmp.getPreferences().getUserID());
+        //new RoleRequest(new RoleCallback(), context, myAmp.getPreferences().getUserID());
     }
 
-    private class IsMemberVKCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                isMember = result.getBoolean("response");
-            } catch (JSONException e) {
-            }
-        }
-    }
+//    private class IsMemberVKCallback implements AsyncTaskCompleteListener {
+//        @Override
+//        public void onTaskComplete(JSONObject result) {
+//            try {
+//                isMember = result.getBoolean("response");
+//            } catch (JSONException e) {
+//            }
+//        }
+//    }
 
-    private class RoleCallback implements AsyncTaskCompleteListener {
+//    private class RoleCallback implements AsyncTaskCompleteListener {
+//
+//        @Override
+//        public void onTaskComplete(JSONObject response) {
+//            String role = "readonly";
+//            if (!RequestErrors.isError(response)) {
+//                try {
+//                    JSONObject result = response.getJSONObject("RESULT");
+//                    role = result.getString("role");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            setRole(role);
+//        }
+//    }
 
-        @Override
-        public void onTaskComplete(JSONObject response) {
-            String role = "readonly";
-            if (!RequestErrors.isError(response)) {
-                try {
-                    JSONObject result = response.getJSONObject("RESULT");
-                    role = result.getString("role");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            setRole(role);
-        }
-    }
-
-    private class GetUserInfoVKCallback implements AsyncTaskCompleteListener {
-
-        @Override
-        public void onTaskComplete(JSONObject response) throws JSONException {
-            try {
-                StringBuilder userName = new StringBuilder();
-                JSONArray resArray = (JSONArray) response.get("response");
-                JSONObject result = (JSONObject) resArray.get(0);
-                String firstName = result.getString("first_name");
-                String lastName = result.getString("last_name");
-                if (lastName != null)
-                    userName.append(lastName);
-                if (firstName != null) {
-                    if (userName.length() > 0)
-                        userName.append(" ");
-                    userName.append(firstName);
-                }
-                name = userName.toString();
-            } catch (JSONException e) {
-            }
-        }
-    }
+//    private class GetUserInfoVKCallback implements AsyncTaskCompleteListener {
+//
+//        @Override
+//        public void onTaskComplete(JSONObject response) throws JSONException {
+//            try {
+//                StringBuilder userName = new StringBuilder();
+//                JSONArray resArray = (JSONArray) response.get("response");
+//                JSONObject result = (JSONObject) resArray.get(0);
+//                String firstName = result.getString("first_name");
+//                String lastName = result.getString("last_name");
+//                if (lastName != null)
+//                    userName.append(lastName);
+//                if (firstName != null) {
+//                    if (userName.length() > 0)
+//                        userName.append(" ");
+//                    userName.append(firstName);
+//                }
+//                name = userName.toString();
+//            } catch (JSONException e) {
+//            }
+//        }
+//    }
 }

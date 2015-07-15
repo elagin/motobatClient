@@ -19,6 +19,8 @@ import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.IsMemberVKRequest;
+import com.mototime.motobat.network.RequestErrors;
+import com.mototime.motobat.network.RoleRequest;
 import com.mototime.motobat.utils.AnimateViews;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKScope;
@@ -67,7 +69,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             newToken.saveTokenToSharedPreferences(context, sTokenKey);
             myApp.getPreferences().setUserID(newToken.userId);
             myApp.getPreferences().setVkToken(newToken.accessToken);
-            myApp.getSession().collectData();
+            //myApp.getSession().collectData();
         }
 
         // Вызывается после VKSdk.authorize, но до отображения окна VK.
@@ -77,7 +79,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             //TODO верятно сохранять по новой не нужно, токен-то старый
             myApp.getPreferences().setUserID(token.userId);
             myApp.getPreferences().setVkToken(token.accessToken);
-            myApp.getSession().collectData();
+            //myApp.getSession().collectData();
         }
 
         public void onRenewAccessToken(VKAccessToken token) {
@@ -252,7 +254,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             VKSdk.authorize(sMyScope, true, true);
         }
 
-        myApp.getPoints().requestPoints(myApp);
         if (inCreate) {
             ViewTreeObserver vto = leftCreateWizard.getViewTreeObserver();
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -281,13 +282,39 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             try {
                 Boolean isMember = (result.getInt("response") != 0);
                 myApp.getSession().setIsMember(isMember);
-                if (isMember)
+                if (isMember) {
+                    new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID());
                     myApp.getPoints().requestPoints(myApp);
+                }
+
                 else
                     showNotify("Вы не состоите в группе 'Moto Times'.\nЗагрузка точек не возможна.");
             } catch (JSONException e) {
                 int a = 10;
             }
+        }
+    }
+
+    private class RoleCallback implements AsyncTaskCompleteListener {
+
+        @Override
+        public void onTaskComplete(JSONObject response) {
+            String role = "readonly";
+            if (!RequestErrors.isError(response)) {
+                try {
+                    JSONObject result = response.getJSONObject("RESULT");
+                    role = result.getString("role");
+                    myApp.getSession().setRole(role);
+                    if(role != "readonly") {
+                        //TODO Отобразить кнопку
+                        //addPointBtn
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 }
