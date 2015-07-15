@@ -81,12 +81,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             myApp.getPreferences().setVkToken(token.accessToken);
             myApp.getSession().collectData();
         }
+        public void onRenewAccessToken(VKAccessToken token) {
+            onReceiveNewToken(token);
+        }
     };
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        VKSdk.processActivityResult(VKSdk.VK_SDK_REQUEST_CODE, resultCode, data);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        inCreate = true;
         super.onCreate(savedInstanceState);
+        VKUIHelper.onCreate(this);
+        inCreate = true;
         myApp = (MyApp) getApplicationContext();
         context = getApplicationContext();
 
@@ -97,7 +106,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         newPoint = new NewPoint();
         myApp.createMap(this);
 
-        VKUIHelper.onCreate(this);
+
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
 //        if (!VKSdk.wakeUpSession())
 //            VKSdk.authorize(sMyScope, true, true);
@@ -232,6 +241,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         VKUIHelper.onResume(this);
+        Intent intent = getIntent();
         if (VKSdk.wakeUpSession()) {
             //myApp.getSession().collectData();
             new IsMemberVKRequest(new IsMemberVKCallback(), this, myApp.getPreferences().getVkToken());
