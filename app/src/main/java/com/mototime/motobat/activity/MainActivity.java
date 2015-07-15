@@ -37,11 +37,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static String[] sMyScope = new String[]{VKScope.WALL};
     private final String appID = "4989462";
     public Context context;
-    View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop;
-    Button rt, gs, car;
-    ImageButton good, normal, evil;
+    View   leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop;
+    ImageButton rt, gs, car, good, normal, evil, addPointBtn;
     private MyApp myApp = null;
-    private Button addPointBtn;
     private Button cancelButton;
     private TextView textNotify;
     private boolean inCreate;
@@ -117,15 +115,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void assignButtons() {
         cancelButton = (Button) findViewById(R.id.cancel_button);
-        addPointBtn = (Button) findViewById(R.id.create_wizard);
+        addPointBtn = (ImageButton) findViewById(R.id.create_wizard);
 
         good = (ImageButton) findViewById(R.id.good_police);
         evil = (ImageButton) findViewById(R.id.evil_police);
         normal = (ImageButton) findViewById(R.id.normal_police);
 
-        gs = (Button) findViewById(R.id.gs);
-        rt = (Button) findViewById(R.id.rt);
-        car = (Button) findViewById(R.id.car);
+        gs = (ImageButton) findViewById(R.id.gs);
+        rt = (ImageButton) findViewById(R.id.rt);
+        car = (ImageButton) findViewById(R.id.car);
 
         cancelButton.setOnClickListener(this);
         addPointBtn.setOnClickListener(this);
@@ -183,6 +181,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     evil.setAlpha(0.4f);
                     normal.setAlpha(1f);
                     good.setAlpha(0.4f);
+                    gs.setAlpha(1f);
+                    rt.setAlpha(0.4f);
+                    car.setAlpha(0.4f);
+                    newPoint.setNormal();
+                    newPoint.setGS();
                 } else {
                     showNotify("У Вас нет прав на создание точек.");
                 }
@@ -259,6 +262,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     leftCreateWizard.setTranslationX(-leftCreateWizard.getWidth());
                     rightCreateWizard.setTranslationX(rightCreateWizard.getWidth());
                     bottomCreate.setTranslationY(bottomCreate.getHeight());
+                    textNotify.setTranslationY(-textNotify.getHeight());
                     inCreate = false;
                 }
             });

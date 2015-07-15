@@ -40,20 +40,23 @@
             android:layout_height="wrap_content"
             android:id="@+id/good_police"
             android:background="@drawable/helmet_good"
-            android:alpha="0.4"/>
+            android:alpha="0.4"
+            android:layout_margin="8dp"/>
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/normal_police"
-            android:background="@drawable/helmet"/>
+            android:background="@drawable/helmet"
+            android:layout_margin="8dp"/>
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/evil_police"
             android:background="@drawable/helmet_bad"
-            android:alpha="0.4"/>
+            android:alpha="0.4"
+            android:layout_margin="8dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -65,25 +68,27 @@
         android:layout_gravity="right"
         android:background="#22000000">
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RT"
             android:id="@+id/rt"
-            android:alpha="1"/>
+            android:background="@drawable/rt"
+            android:layout_margin="8dp"/>
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GS"
-            android:id="@+id/gs"/>
+            android:id="@+id/gs"
+            android:background="@drawable/gs"
+            android:layout_margin="8dp"/>
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Авто"
             android:id="@+id/car"
-            />
+            android:background="@drawable/car"
+            android:layout_margin="8dp"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -94,11 +99,13 @@
         android:id="@+id/main_left"
         >
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create"
-            android:id="@+id/create_wizard"/>
+            android:id="@+id/create_wizard"
+            android:background="@drawable/create"
+            android:layout_margin="8dp"/>
+
     </LinearLayout>
 
     <LinearLayout
