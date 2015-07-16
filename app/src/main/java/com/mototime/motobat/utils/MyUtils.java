@@ -71,7 +71,7 @@ public class MyUtils {
         Date now = new Date();
         int minutes = (int) (now.getTime() - date.getTime()) / (60000);
         if (minutes <= 0) {
-            return "Только что";
+            return "только что";
         }
         int hours = minutes / 60;
         minutes -= hours * 60;
@@ -93,11 +93,12 @@ public class MyUtils {
             } else if (min > 4 || min == 0) {
                 out.append(String.valueOf(minutes)).append(" минут");
             }
-            out.append(" назад");
         } else {
-            out.append(String.valueOf(hours)).append("ч ");
+            if( hours > 0 )
+                out.append(String.valueOf(hours)).append("ч ");
             out.append(String.valueOf(minutes)).append("м");
         }
+        out.append(" назад");
         return out.toString();
     }
 

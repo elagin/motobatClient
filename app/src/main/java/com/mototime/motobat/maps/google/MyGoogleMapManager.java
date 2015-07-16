@@ -114,7 +114,7 @@ public class MyGoogleMapManager extends MyMapManager {
 //            if (!point.getMedText().equals("")) {
 //                title += ", " + point.getMedText();
 //            }
-            title += ", " + MyUtils.getIntervalFromNowInText(point.getCreated()) + " назад";
+            title += ", " + MyUtils.getIntervalFromNowInText(point.getCreated());
 
             float alpha;
             int minutes = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 60000 - point.getKarma());
