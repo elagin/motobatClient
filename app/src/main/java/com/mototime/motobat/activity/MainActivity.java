@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -35,16 +34,15 @@ import org.json.JSONObject;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
-    private static String[] sMyScope = new String[]{VKScope.WALL};
-    private final String appID = "4989462";
+    private static String   sTokenKey = "VK_ACCESS_TOKEN_FULL";
+    private static String[] sMyScope  = new String[]{VKScope.WALL};
+    private final  String   appID     = "4989462";
     public Context context;
-    View   leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop;
-    ImageButton rt, gs, car, good, normal, evil, addPointBtn;
+    View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop, targetView;
+    ImageButton rt, gs, car, good, normal, evil, addPointBtn, cancelButton, okButton;
     private MyApp myApp = null;
-    private Button cancelButton;
     private TextView textNotify;
-    private boolean inCreate;
+    private boolean  inCreate;
     private NewPoint newPoint;
     private VKSdkListener sdkListener = new VKSdkListener() {
         @Override
@@ -104,7 +102,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         assignViews();
         assignButtons();
-        newPoint = new NewPoint();
+        newPoint = new NewPoint(myApp);
         myApp.createMap(this);
 
 
@@ -116,8 +114,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void assignButtons() {
-        cancelButton = (Button) findViewById(R.id.cancel_button);
         addPointBtn = (ImageButton) findViewById(R.id.create_wizard);
+        okButton = (ImageButton) findViewById(R.id.ok_button);
+        cancelButton = (ImageButton) findViewById(R.id.cancel_button);
 
         good = (ImageButton) findViewById(R.id.good_police);
         evil = (ImageButton) findViewById(R.id.evil_police);
@@ -127,14 +126,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         rt = (ImageButton) findViewById(R.id.rt);
         car = (ImageButton) findViewById(R.id.car);
 
-        cancelButton.setOnClickListener(this);
         addPointBtn.setOnClickListener(this);
+        okButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
         good.setOnClickListener(this);
         evil.setOnClickListener(this);
         normal.setOnClickListener(this);
         gs.setOnClickListener(this);
         rt.setOnClickListener(this);
         car.setOnClickListener(this);
+
     }
 
     private void assignViews() {
@@ -144,6 +145,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         leftMain = this.findViewById(R.id.main_left);
         notifyTop = this.findViewById((R.id.notify_top));
         textNotify = (TextView) findViewById(R.id.text_notify);
+        targetView = this.findViewById((R.id.target_view));
+
     }
 
     @Override
@@ -173,30 +176,36 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.create_wizard:
-                if (myApp.getSession().isStandart()) {
-                    AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
-                    AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
-                    AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
-                    AnimateViews.hide(leftMain, AnimateViews.LEFT);
-                    inCreate = true;
-                    newPoint = new NewPoint();
-                    evil.setAlpha(0.4f);
-                    normal.setAlpha(1f);
-                    good.setAlpha(0.4f);
-                    gs.setAlpha(1f);
-                    rt.setAlpha(0.4f);
-                    car.setAlpha(0.4f);
-                    newPoint.setNormal();
-                    newPoint.setGS();
-                } else {
-                    showNotify("У Вас нет прав на создание точек.");
-                }
+                //if (myApp.getSession().isStandart()) {
+                AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
+                AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
+                AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
+                AnimateViews.hide(leftMain);
+                AnimateViews.show(targetView);
+                inCreate = true;
+                newPoint = new NewPoint(myApp);
+                evil.setAlpha(0.4f);
+                normal.setAlpha(1f);
+                good.setAlpha(0.4f);
+                gs.setAlpha(1f);
+                rt.setAlpha(0.4f);
+                car.setAlpha(0.4f);
+                newPoint.setNormal();
+                newPoint.setGS();
+                //} else {
+                //    showNotify("У Вас нет прав на создание точек.");
+                //}
                 break;
+            case R.id.ok_button:
+                newPoint.setLatLng(myApp.getMap().getCenter());
+                newPoint.sendRequest();
             case R.id.cancel_button:
                 AnimateViews.hide(leftCreateWizard, AnimateViews.LEFT);
                 AnimateViews.hide(rightCreateWizard, AnimateViews.RIGHT);
                 AnimateViews.hide(bottomCreate, AnimateViews.BOTTOM);
-                AnimateViews.show(leftMain, AnimateViews.LEFT);
+                AnimateViews.show(leftMain);
+                AnimateViews.hide(targetView);
+                newPoint = null;
                 inCreate = false;
                 break;
             case R.id.good_police:
@@ -235,11 +244,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 car.setAlpha(0.4f);
                 newPoint.setRT();
                 break;
-//            case R.id.notify_button:
-//                ObjectAnimator animateTop = ObjectAnimator.ofFloat(notifyTop, View.TRANSLATION_Y, 0, -notifyTop.getWidth());
-//                animateTop.setDuration(200).start();
-//                notifyButton.setText("");
-//                break;
         }
     }
 
@@ -264,6 +268,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     rightCreateWizard.setTranslationX(rightCreateWizard.getWidth());
                     bottomCreate.setTranslationY(bottomCreate.getHeight());
                     textNotify.setTranslationY(-textNotify.getHeight());
+                    AnimateViews.hide(targetView);
                     inCreate = false;
                 }
             });
@@ -282,13 +287,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             try {
                 Boolean isMember = (result.getInt("response") != 0);
                 myApp.getSession().setIsMember(isMember);
-                if (isMember) {
+ //               if (isMember) {
                     new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID());
                     myApp.getPoints().requestPoints(myApp);
-                }
-
-                else
-                    showNotify("Вы не состоите в группе 'Moto Times'.\nЗагрузка точек не возможна.");
+//                } else
+//                    showNotify("Вы не состоите в группе 'Moto Times'.\nЗагрузка точек не возможна.");
             } catch (JSONException e) {
                 int a = 10;
             }
@@ -305,7 +308,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     JSONObject result = response.getJSONObject("RESULT");
                     role = result.getString("role");
                     myApp.getSession().setRole(role);
-                    if(role != "readonly") {
+                    if (role != "readonly") {
                         //TODO Отобразить кнопку
                         //addPointBtn
                     }
@@ -314,7 +317,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
             }
-
         }
     }
 }

@@ -1,45 +1,25 @@
 package com.mototime.motobat.network;
 
 import android.content.Context;
-import android.location.Location;
 
-import com.mototime.motobat.R;
-import com.mototime.motobat.utils.Const;
+import com.mototime.motobat.MyApp;
+import com.mototime.motobat.NewPoint;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Date;
 import java.util.HashMap;
 
 public class CreatePointRequest extends HTTPClient {
 
-    public CreatePointRequest(AsyncTaskCompleteListener listener, Context context, String userId) {
+    public CreatePointRequest(AsyncTaskCompleteListener listener, Context context, NewPoint point) {
         this.context = context;
         this.listener = listener;
         post = new HashMap<>();
+        MyApp myApp = (MyApp) context.getApplicationContext();
         post.put("method", "create");
-        post.put("userid", userId);
-    }
-
-    public void execute() {
-        super.execute(post);
-    }
-
-    public void setLocation(Location location) {
-        post.put("lat", String.valueOf(location.getLatitude()));
-        post.put("lng", String.valueOf(location.getLongitude()));
-    }
-
-    public void setAddress(String address) {
-        post.put("address", address);
-    }
-
-    public void setDescription(String description) {
-        post.put("descr", description);
-    }
-
-    public void setCreated(Date created) {
-        post.put("created", Const.dateFormat.format(created));
+        post.put("userid", myApp.getPreferences().getUserID());
+        post.put("alignment", String.valueOf(point.getAlignment()));
+        post.put("transport", String.valueOf(point.getTransport()));
+        post.put("lat", String.valueOf(point.getLatLng().latitude));
+        post.put("lng", String.valueOf(point.getLatLng().longitude));
+        execute(post);
     }
 }

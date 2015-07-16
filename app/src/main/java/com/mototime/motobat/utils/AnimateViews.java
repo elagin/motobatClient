@@ -47,7 +47,15 @@ public class AnimateViews {
         animate(view, direction, true);
     }
 
+    public static void hide(View view) {
+        view.setVisibility(View.INVISIBLE);
+    }
+
     public static void show(View view, byte direction) {
         animate(view, direction, false);
+    }
+
+    public static void show(View view) {
+        view.setVisibility(View.VISIBLE);
     }
 }

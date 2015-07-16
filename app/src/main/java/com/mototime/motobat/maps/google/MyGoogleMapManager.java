@@ -81,6 +81,10 @@ public class MyGoogleMapManager extends MyMapManager {
         map.getUiSettings().setMyLocationButtonEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
     }
+    @Override
+    public LatLng getCenter(){
+        return map.getCameraPosition().target;
+    }
 
     @SuppressWarnings("UnusedParameters")
     @Override

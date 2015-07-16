@@ -3,6 +3,8 @@ package com.mototime.motobat.maps.general;
 import android.content.Context;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by pavel on 08.07.15.
  */
@@ -29,4 +31,6 @@ public abstract class MyMapManager {
     protected void setName(String name) {
         this.name = name;
     }
+
+    public abstract LatLng getCenter();
 }
