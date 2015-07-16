@@ -110,17 +110,18 @@ public class MyGoogleMapManager extends MyMapManager {
             final Point point = myApp.getPoints().getPoint(id);
             if (point.isInvisible()) continue;
             //String title = point.getAddress();
-            String title = "";
-//            if (!point.getMedText().equals("")) {
-//                title += ", " + point.getMedText();
-//            }
-            title += ", " + MyUtils.getIntervalFromNowInText(point.getCreated());
+            StringBuilder title = new StringBuilder();
+            title.append(point.getTransport());
+            title.append(", ");
+            title.append(point.getAlignment());
+            title.append(", ");
+            title.append(MyUtils.getIntervalFromNowInText(point.getCreated()));
 
             float alpha;
             int minutes = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 60000 - point.getKarma());
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
             Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
-            Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title)
+            Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title.toString())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.police_stick)).alpha(alpha));
             map.addCircle(new CircleOptions().center(point.getLatLng()).radius(25).strokeColor(0xFFFF0000).strokeWidth(2));
             points.put(marker.getId(), id);

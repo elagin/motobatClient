@@ -11,13 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class NewPoint implements AsyncTaskCompleteListener {
-    public final static int NORMAL_POLICE = 1;
-    public final static int GOOD_POLICE   = 2;
-    public final static int EVIL_POLICE   = 3;
-
-    public final static int GS  = 1;
-    public final static int RT  = 2;
-    public final static int CAR = 3;
 
     private       int     alignment;
     private       int     transport;
@@ -33,27 +26,27 @@ public class NewPoint implements AsyncTaskCompleteListener {
     }
 
     public void setEvil() {
-        alignment = EVIL_POLICE;
+        alignment = Point.EVIL_POLICE;
     }
 
     public void setGood() {
-        alignment = GOOD_POLICE;
+        alignment = Point.GOOD_POLICE;
     }
 
     public void setNormal() {
-        alignment = NORMAL_POLICE;
+        alignment = Point.NORMAL_POLICE;
     }
 
     public void setGS() {
-        transport = GS;
+        transport = Point.GS;
     }
 
     public void setRT() {
-        transport = RT;
+        transport = Point.RT;
     }
 
     public void setCar() {
-        transport = CAR;
+        transport = Point.CAR;
     }
 
     public int getAlignment() {

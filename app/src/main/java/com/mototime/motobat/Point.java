@@ -9,11 +9,20 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by pavel on 07.07.15.
  */
 public class Point {
+
+    public final static int NORMAL_POLICE = 1;
+    public final static int GOOD_POLICE   = 2;
+    public final static int EVIL_POLICE   = 3;
+
+    public final static int GS  = 1;
+    public final static int RT  = 2;
+    public final static int CAR = 3;
 
     MyApp myApp = null;
     private int id;
@@ -24,6 +33,9 @@ public class Point {
     private Location location;
     private int karma;
     private boolean error;
+    private int alignment;
+    private int transport;
+    private Random rnd = new Random();
 
     public Point(JSONObject json, Context context) {
         setError(false);
@@ -53,6 +65,16 @@ public class Point {
             created = new Date(date * 1000);
             ownerID = data.getInt("owner");
             karma = data.getInt("karma");
+//TODO прибрать в релизе
+            if(data.has("transport"))
+                transport = data.getInt("transport");
+            else
+                transport = rnd.nextInt(2) + 1;
+            if(data.has("alignment"))
+                alignment = data.getInt("alignment");
+            else
+                alignment = rnd.nextInt(2) + 1;
+//TODO прибрать в релизе
         } catch (Exception e) {
             e.printStackTrace();
             setError(true);
@@ -87,5 +109,25 @@ public class Point {
 
     public LatLng getLatLng() {
         return new LatLng(lat, lng);
+    }
+
+    public String getTransport() {
+        if(transport == Point.GS)
+            return "Гусь";
+        if(transport == Point.RT)
+            return "РТ";
+        if(transport == Point.CAR)
+            return "Коробка";
+        return "Не известно";
+    }
+
+    public String getAlignment() {
+        if(alignment == Point.EVIL_POLICE)
+            return "злой";
+        if(alignment == Point.NORMAL_POLICE)
+            return "нейтральный";
+        if(alignment == Point.GOOD_POLICE)
+            return "добрый";
+        return "не известно";
     }
 }
