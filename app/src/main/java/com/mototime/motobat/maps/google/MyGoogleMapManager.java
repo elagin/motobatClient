@@ -17,7 +17,6 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.Point;
 import com.mototime.motobat.R;
 import com.mototime.motobat.maps.general.MyMapManager;
-import com.mototime.motobat.utils.Inflate;
 import com.mototime.motobat.utils.MyUtils;
 
 import java.util.Date;
@@ -26,7 +25,7 @@ import java.util.Map;
 
 
 public class MyGoogleMapManager extends MyMapManager {
-    private static GoogleMap map;
+    private static GoogleMap            map;
     private static Map<String, Integer> points;
 
     private MyApp myApp = null;
@@ -81,10 +80,33 @@ public class MyGoogleMapManager extends MyMapManager {
         map.getUiSettings().setMyLocationButtonEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
     }
+
     @Override
-    public LatLng getCenter(){
+    public LatLng getCenter() {
         return map.getCameraPosition().target;
     }
+
+    @Override
+    public void goToLatLng(LatLng latLng) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, STANDART_ZOOM));
+    }
+
+    @Override
+    public void goToUser() {
+        Location location = map.getMyLocation();
+        if (location == null) {
+            map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                @Override
+                public void onMyLocationChange(Location location) {
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(location), STANDART_ZOOM));
+                    map.setOnMyLocationChangeListener(null);
+                }
+            });
+        } else {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(location), STANDART_ZOOM));
+        }
+    }
+
 
     @SuppressWarnings("UnusedParameters")
     @Override
@@ -122,7 +144,7 @@ public class MyGoogleMapManager extends MyMapManager {
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
             Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
             Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title.toString())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.police_stick)).alpha(alpha));
+                                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.police_stick)).alpha(alpha));
             map.addCircle(new CircleOptions().center(point.getLatLng()).radius(25).strokeColor(0xFFFF0000).strokeWidth(2));
             points.put(marker.getId(), id);
         }

@@ -13,6 +13,8 @@ public abstract class MyMapManager {
     public static final String GOOGLE = "google";
     public static final String YANDEX = "yandex";
 
+    public static final int STANDART_ZOOM = 12;
+
     private String name;
 
     public abstract void placeUser(Context context);
@@ -33,4 +35,8 @@ public abstract class MyMapManager {
     }
 
     public abstract LatLng getCenter();
+
+    public abstract void goToLatLng(LatLng latLng);
+
+    public abstract void goToUser();
 }

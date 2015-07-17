@@ -269,6 +269,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     bottomCreate.setTranslationY(bottomCreate.getHeight());
                     textNotify.setTranslationY(-textNotify.getHeight());
                     AnimateViews.hide(targetView);
+                    myApp.getMap().goToUser();
                     inCreate = false;
                 }
             });
@@ -287,9 +288,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             try {
                 Boolean isMember = (result.getInt("response") != 0);
                 myApp.getSession().setIsMember(isMember);
- //               if (isMember) {
-                    new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID());
-                    myApp.getPoints().requestPoints(myApp);
+                //               if (isMember) {
+                new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID());
+                myApp.getPoints().requestPoints(myApp);
 //                } else
 //                    showNotify("Вы не состоите в группе 'Moto Times'.\nЗагрузка точек не возможна.");
             } catch (JSONException e) {
