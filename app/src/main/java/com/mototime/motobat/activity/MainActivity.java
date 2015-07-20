@@ -269,6 +269,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     bottomCreate.setTranslationY(bottomCreate.getHeight());
                     textNotify.setTranslationY(-textNotify.getHeight());
                     AnimateViews.hide(targetView);
+                    AnimateViews.show(leftMain);
                     myApp.getMap().goToUser();
                     inCreate = false;
                 }
