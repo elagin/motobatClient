@@ -135,7 +135,7 @@ public class MyGoogleMapManager extends MyMapManager {
             StringBuilder title = new StringBuilder();
             title.append(point.getTransport());
             title.append(", ");
-            title.append(point.getAlignment());
+            title.append(point.getAlignmentString());
             title.append(", ");
             title.append(MyUtils.getIntervalFromNowInText(point.getCreated()));
 
@@ -143,9 +143,19 @@ public class MyGoogleMapManager extends MyMapManager {
             int minutes = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 60000 - point.getKarma());
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
             Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
+            int icon;
+            switch (point.getAlignment()) {
+                case Point.EVIL_POLICE:
+                    icon = R.drawable.map_evil;
+                    break;
+                case Point.GOOD_POLICE:
+                    icon = R.drawable.map_good;
+                    break;
+                default:
+                    icon = R.drawable.map_neutral;
+            }
             Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title.toString())
-                                                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.police_stick)).alpha(alpha));
-            map.addCircle(new CircleOptions().center(point.getLatLng()).radius(25).strokeColor(0xFFFF0000).strokeWidth(2));
+                                                             .icon(BitmapDescriptorFactory.fromResource(icon)).alpha(alpha));
             points.put(marker.getId(), id);
         }
     }

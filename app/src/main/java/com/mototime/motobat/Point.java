@@ -25,16 +25,16 @@ public class Point {
     public final static int CAR = 3;
 
     MyApp myApp = null;
-    private int id;
-    private Date created;
-    private int ownerID;
-    private float lat;
-    private float lng;
+    private int      id;
+    private Date     created;
+    private int      ownerID;
+    private float    lat;
+    private float    lng;
     private Location location;
-    private int karma;
-    private boolean error;
-    private int alignment;
-    private int transport;
+    private int      karma;
+    private boolean  error;
+    private int      alignment;
+    private int      transport;
     private Random rnd = new Random();
 
     public Point(JSONObject json, Context context) {
@@ -66,11 +66,11 @@ public class Point {
             ownerID = data.getInt("owner");
             karma = data.getInt("karma");
 //TODO прибрать в релизе
-            if(data.has("transport"))
+            if (data.has("transport"))
                 transport = data.getInt("transport");
             else
                 transport = rnd.nextInt(2) + 1;
-            if(data.has("alignment"))
+            if (data.has("alignment"))
                 alignment = data.getInt("alignment");
             else
                 alignment = rnd.nextInt(2) + 1;
@@ -112,21 +112,28 @@ public class Point {
     }
 
     public String getTransport() {
-        if(transport == Point.GS)
-            return "Гусь";
-        if(transport == Point.RT)
-            return "РТ";
-        if(transport == Point.CAR)
-            return "Коробка";
-        return "Не известно";
+        switch (transport) {
+            case Point.GS:
+                return "Гусь";
+            case Point.RT:
+                return "РТ";
+            case Point.CAR:
+                return "Коробка";
+            default:
+                return "Не известно";
+        }
     }
 
-    public String getAlignment() {
-        if(alignment == Point.EVIL_POLICE)
+    public int getAlignment(){
+        return alignment;
+    }
+
+    public String getAlignmentString() {
+        if (alignment == Point.EVIL_POLICE)
             return "злой";
-        if(alignment == Point.NORMAL_POLICE)
+        if (alignment == Point.NORMAL_POLICE)
             return "нейтральный";
-        if(alignment == Point.GOOD_POLICE)
+        if (alignment == Point.GOOD_POLICE)
             return "добрый";
         return "не известно";
     }
