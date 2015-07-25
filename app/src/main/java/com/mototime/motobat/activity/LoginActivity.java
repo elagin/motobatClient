@@ -206,7 +206,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 myApp.getPreferences().setUserID(userId);
                 myApp.getPreferences().setVkToken(accessToken);
                 //new IsMemberVKRequest(new IsMemberVKCallback(), context, myApp.getPreferences().getVkToken());
-                new RoleRequest(new RoleCallback(), context, userId);
+                //new RoleRequest(new RoleCallback(), context, userId, myApp.getSession().getName());
             }
         }
     }

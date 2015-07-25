@@ -72,6 +72,10 @@ public class Session {
         return name;
     }
 
+    public void setUserName(String userName) {
+        this.name = userName;
+    }
+
     public String getRole() {
         return role;
     }

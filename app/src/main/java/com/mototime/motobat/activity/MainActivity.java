@@ -17,6 +17,7 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
+import com.mototime.motobat.network.GetUserInfoVKRequest;
 import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.network.RoleRequest;
@@ -29,6 +30,7 @@ import com.vk.sdk.VKUIHelper;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.dialogs.VKCaptchaDialog;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -290,7 +292,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Boolean isMember = (result.getInt("response") != 0);
                 myApp.getSession().setIsMember(isMember);
                 //               if (isMember) {
-                new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID());
+                new GetUserInfoVKRequest( new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
+                //new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID());
                 myApp.getPoints().requestPoints(myApp);
 //                } else
 //                    showNotify("Вы не состоите в группе 'Moto Times'.\nЗагрузка точек не возможна.");
@@ -318,6 +321,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    private class GetUserInfoCallback implements AsyncTaskCompleteListener {
+
+        @Override
+        public void onTaskComplete(JSONObject response) throws JSONException {
+            JSONArray resArr = (JSONArray)response.get("response");
+            if(resArr != null) {
+                JSONObject resp = (JSONObject) resArr.get(0);
+                String userName = resp.getString("first_name") + " " + resp.getString("last_name");
+                myApp.getSession().setUserName(userName);
+                new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName);
             }
         }
     }
