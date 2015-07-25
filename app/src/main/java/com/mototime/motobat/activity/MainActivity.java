@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.NewPoint;
@@ -107,7 +108,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         newPoint = new NewPoint(myApp);
         myApp.createMap(this);
 
-
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
 //        if (!VKSdk.wakeUpSession())
 //            VKSdk.authorize(sMyScope, true, true);
@@ -137,7 +137,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         gs.setOnClickListener(this);
         rt.setOnClickListener(this);
         car.setOnClickListener(this);
-
     }
 
     private void assignViews() {
@@ -148,7 +147,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         notifyTop = this.findViewById((R.id.notify_top));
         textNotify = (TextView) findViewById(R.id.text_notify);
         targetView = this.findViewById((R.id.target_view));
-
     }
 
     @Override
@@ -178,25 +176,26 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.create_wizard:
-                //if (myApp.getSession().isStandart()) {
-                AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
-                AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
-                AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
-                AnimateViews.hide(leftMain);
-                AnimateViews.show(targetView);
-                inCreate = true;
-                newPoint = new NewPoint(myApp);
-                evil.setAlpha(0.4f);
-                normal.setAlpha(1f);
-                good.setAlpha(0.4f);
-                gs.setAlpha(1f);
-                rt.setAlpha(0.4f);
-                car.setAlpha(0.4f);
-                newPoint.setNormal();
-                newPoint.setGS();
-                //} else {
-                //    showNotify("У Вас нет прав на создание точек.");
-                //}
+                if (!myApp.getSession().isRO()) {
+                    AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
+                    AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
+                    AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
+                    AnimateViews.hide(leftMain);
+                    AnimateViews.show(targetView);
+                    inCreate = true;
+                    newPoint = new NewPoint(myApp);
+                    evil.setAlpha(0.4f);
+                    normal.setAlpha(1f);
+                    good.setAlpha(0.4f);
+                    gs.setAlpha(1f);
+                    rt.setAlpha(0.4f);
+                    car.setAlpha(0.4f);
+                    newPoint.setNormal();
+                    newPoint.setGS();
+                } else {
+                    //showNotify("У Вас нет прав на создание точек.");
+                    Toast.makeText(context, "У Вас нет прав на создание точек.", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.ok_button:
                 newPoint.setLatLng(myApp.getMap().getCenter());
