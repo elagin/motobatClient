@@ -17,24 +17,24 @@ import java.util.Random;
 public class Point {
 
     public final static int NORMAL_POLICE = 1;
-    public final static int GOOD_POLICE   = 2;
-    public final static int EVIL_POLICE   = 3;
+    public final static int GOOD_POLICE = 2;
+    public final static int EVIL_POLICE = 3;
 
-    public final static int GS  = 1;
-    public final static int RT  = 2;
+    public final static int GS = 1;
+    public final static int RT = 2;
     public final static int CAR = 3;
 
     MyApp myApp = null;
-    private int      id;
-    private Date     created;
-    private int      ownerID;
-    private float    lat;
-    private float    lng;
+    private int id;
+    private Date created;
+    private int ownerID;
+    private float lat;
+    private float lng;
     private Location location;
-    private int      karma;
-    private boolean  error;
-    private int      alignment;
-    private int      transport;
+    private int karma;
+    private boolean error;
+    private int alignment;
+    private int transport;
     private Random rnd = new Random();
 
     public Point(JSONObject json, Context context) {
@@ -111,7 +111,7 @@ public class Point {
         return new LatLng(lat, lng);
     }
 
-    public String getTransport() {
+    public String getTransportString() {
         switch (transport) {
             case Point.GS:
                 return "Гусь";
@@ -124,7 +124,11 @@ public class Point {
         }
     }
 
-    public int getAlignment(){
+    public int getTransport() {
+        return transport;
+    }
+
+    public int getAlignment() {
         return alignment;
     }
 

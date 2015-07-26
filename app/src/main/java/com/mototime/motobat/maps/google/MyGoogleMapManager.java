@@ -9,7 +9,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -133,7 +132,7 @@ public class MyGoogleMapManager extends MyMapManager {
             if (point.isInvisible()) continue;
             //String title = point.getAddress();
             StringBuilder title = new StringBuilder();
-            title.append(point.getTransport());
+            title.append(point.getTransportString());
             title.append(", ");
             title.append(point.getAlignmentString());
             title.append(", ");
@@ -144,15 +143,15 @@ public class MyGoogleMapManager extends MyMapManager {
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
             Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
             int icon;
-            switch (point.getAlignment()) {
-                case Point.EVIL_POLICE:
-                    icon = R.drawable.map_evil;
+            switch (point.getTransport()) {
+                case Point.RT:
+                    icon = R.drawable.map_rt;
                     break;
-                case Point.GOOD_POLICE:
-                    icon = R.drawable.map_good;
+                case Point.GS:
+                    icon = R.drawable.map_gs;
                     break;
                 default:
-                    icon = R.drawable.map_neutral;
+                    icon = R.drawable.map_car;
             }
             Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title.toString())
                                                              .icon(BitmapDescriptorFactory.fromResource(icon)).alpha(alpha));
