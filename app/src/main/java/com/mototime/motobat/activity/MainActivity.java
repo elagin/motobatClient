@@ -176,7 +176,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.create_wizard:
-                if (!myApp.getSession().isRO()) {
+                if (myApp.getSession().isStandart()) {
                     AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
                     AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
                     AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
