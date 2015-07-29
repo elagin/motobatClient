@@ -176,7 +176,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.create_wizard:
-                if (myApp.getSession().isStandart()) {
+                if (myApp.getSession().isStandart() && myApp.getSession().isMember()) {
                     AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
                     AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
                     AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
@@ -194,6 +194,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     newPoint.setGS();
                 } else {
                     //showNotify("У Вас нет прав на создание точек.");
+                    //TODO по-хорошему надо выводить разные сообщения для прав и членства в группе.
                     Toast.makeText(context, "У Вас нет прав на создание точек.", Toast.LENGTH_LONG).show();
                 }
                 break;
