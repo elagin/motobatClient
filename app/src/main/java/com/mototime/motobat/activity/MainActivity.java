@@ -176,7 +176,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.create_wizard:
-                if (myApp.getSession().isStandart() && myApp.getSession().isMember()) {
+                if (myApp.getSession().isRO()) {
+                    Toast.makeText(context, "Вам запрещено создавать точки", Toast.LENGTH_LONG).show();
+                } else if (!myApp.getSession().isMember()) {
+                    Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
+                } else {
                     AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
                     AnimateViews.show(rightCreateWizard, AnimateViews.RIGHT);
                     AnimateViews.show(bottomCreate, AnimateViews.BOTTOM);
@@ -192,10 +196,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     car.setAlpha(0.4f);
                     newPoint.setNormal();
                     newPoint.setGS();
-                } else {
-                    //showNotify("У Вас нет прав на создание точек.");
-                    //TODO по-хорошему надо выводить разные сообщения для прав и членства в группе.
-                    Toast.makeText(context, "У Вас нет прав на создание точек.", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.ok_button:
@@ -292,7 +292,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Boolean isMember = (result.getInt("response") != 0);
                 myApp.getSession().setIsMember(isMember);
                 //               if (isMember) {
-                new GetUserInfoVKRequest( new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
+                new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
                 //new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID());
                 myApp.getPoints().requestPoints(myApp);
 //                } else
@@ -329,8 +329,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         @Override
         public void onTaskComplete(JSONObject response) throws JSONException {
-            JSONArray resArr = (JSONArray)response.get("response");
-            if(resArr != null) {
+            JSONArray resArr = (JSONArray) response.get("response");
+            if (resArr != null) {
                 JSONObject resp = (JSONObject) resArr.get(0);
                 String userName = resp.getString("first_name") + " " + resp.getString("last_name");
                 myApp.getSession().setUserName(userName);
