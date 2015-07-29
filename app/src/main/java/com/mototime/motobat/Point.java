@@ -116,7 +116,7 @@ public class Point {
             case Point.GS:
                 return "Гусь";
             case Point.RT:
-                return "РТ";
+                return "RT";
             case Point.CAR:
                 return "Коробка";
             default:
