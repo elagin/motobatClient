@@ -1,9 +1,12 @@
 package com.mototime.motobat.maps.google;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,15 +25,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mototime.motobat.R.color.vk_black;
+
 
 public class MyGoogleMapManager extends MyMapManager {
-    private static GoogleMap            map;
+    private static GoogleMap map;
     private static Map<String, Integer> points;
-
-    private MyApp myApp = null;
+    private static Context context;
+    private final MyApp myApp;
 
     public MyGoogleMapManager(final Context context) {
-
+        this.context = context;
         myApp = (MyApp) context.getApplicationContext();
         setName(MyMapManager.GOOGLE);
 
@@ -73,11 +78,27 @@ public class MyGoogleMapManager extends MyMapManager {
         });
     }
 
-    private static void init() {
+    private void init() {
         map.clear();
         map.setMyLocationEnabled(true);
         map.getUiSettings().setMyLocationButtonEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                Point point = myApp.getPoints().getPoint(points.get(marker.getId()));
+                View view = ((Activity) context).getLayoutInflater().inflate(R.layout.info_window, null);
+                ((TextView) view.findViewById(R.id.eventClass)).setText(point.getAlignmentString() + " " + point.getTransportString());
+                ((TextView) view.findViewById(R.id.time)).setText(MyUtils.getIntervalFromNowInText(point.getCreated()));
+                ((TextView) view.findViewById(R.id.description)).setText(point.getText());
+                return view;
+            }
+        });
     }
 
     @Override
@@ -137,6 +158,8 @@ public class MyGoogleMapManager extends MyMapManager {
             title.append(point.getAlignmentString());
             title.append(", ");
             title.append(MyUtils.getIntervalFromNowInText(point.getCreated()));
+            title.append(System.getProperty("line.separator"));
+            title.append(point.getText());
 
             float alpha;
             int minutes = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 60000 - point.getKarma());
@@ -154,7 +177,7 @@ public class MyGoogleMapManager extends MyMapManager {
                     icon = R.drawable.map_car;
             }
             Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title.toString())
-                                                             .icon(BitmapDescriptorFactory.fromResource(icon)).alpha(alpha));
+                    .icon(BitmapDescriptorFactory.fromResource(icon)).alpha(alpha));
             points.put(marker.getId(), id);
         }
     }

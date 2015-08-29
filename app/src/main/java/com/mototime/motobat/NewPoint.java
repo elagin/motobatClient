@@ -15,6 +15,7 @@ public class NewPoint implements AsyncTaskCompleteListener {
     private       int     alignment;
     private       int     transport;
     private       LatLng  latLng;
+    private String text;
     private final Context context;
     private final MyApp myApp;
 
@@ -67,6 +68,14 @@ public class NewPoint implements AsyncTaskCompleteListener {
 
     public void sendRequest() {
         new CreatePointRequest(this, context, this);
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override

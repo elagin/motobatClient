@@ -20,6 +20,7 @@ public class CreatePointRequest extends HTTPClient {
         post.put("transport", String.valueOf(point.getTransport()));
         post.put("lat", String.valueOf(point.getLatLng().latitude));
         post.put("lng", String.valueOf(point.getLatLng().longitude));
+        post.put("text", String.valueOf(point.getText()));
         execute(post);
     }
 }

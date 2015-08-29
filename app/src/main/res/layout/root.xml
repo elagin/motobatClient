@@ -109,31 +109,56 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/create_bottom"
         android:layout_gravity="bottom"
-        android:gravity="center_horizontal">
+        android:gravity="bottom"
+        android:id="@+id/create_bottom">
 
-        <ImageButton
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/ok_button"
-            android:background="@drawable/ok"
-            android:cropToPadding="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="8dp"
-            android:layout_marginRight="16dp"/>
+            android:id="@+id/create_bottom_inner"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal">
 
-        <ImageButton
-            android:layout_width="wrap_content"
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ok_button"
+                android:background="@drawable/ok"
+                android:cropToPadding="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:layout_marginRight="16dp"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cancel_button"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/cancel"
+                android:layout_margin="8dp"
+                android:layout_marginLeft="16dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/cancel_button"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/cancel"
-            android:layout_margin="8dp"
-            android:layout_marginLeft="16dp"/>
+            android:id="@+id/inputDescription"
+            android:layout_gravity="center"
+            android:textColor="#f000"
+            android:maxLines="2"
+            android:hint="Введите описание"
+            android:enabled="true"
+            android:editable="true"
+            android:background="#ffff"
+            android:lines="2"
+            android:textColorHint="#faaa"
+            android:textAlignment="center" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -142,7 +167,9 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical|center_horizontal"
         android:layout_gravity="center"
-        android:id="@+id/target_view">
+        android:id="@+id/target_view"
+        android:focusable="false"
+        android:contentDescription="Введите описание">
 
         <ImageView
             android:layout_width="wrap_content"

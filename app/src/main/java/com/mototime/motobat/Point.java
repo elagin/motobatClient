@@ -35,6 +35,7 @@ public class Point {
     private boolean error;
     private int alignment;
     private int transport;
+    private String text;
     private Random rnd = new Random();
 
     public Point(JSONObject json, Context context) {
@@ -65,6 +66,7 @@ public class Point {
             created = new Date(date * 1000);
             ownerID = data.getInt("owner");
             karma = data.getInt("karma");
+            text = data.getString("text");
 //TODO прибрать в релизе
             if (data.has("transport"))
                 transport = data.getInt("transport");
@@ -140,5 +142,9 @@ public class Point {
         if (alignment == Point.GOOD_POLICE)
             return "добрый";
         return "не известно";
+    }
+
+    public String getText() {
+        return text;
     }
 }

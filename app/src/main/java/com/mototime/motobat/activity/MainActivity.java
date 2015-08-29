@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,15 +38,15 @@ import org.json.JSONObject;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private static String   sTokenKey = "VK_ACCESS_TOKEN_FULL";
-    private static String[] sMyScope  = new String[]{VKScope.WALL};
-    private final  String   appID     = "4989462";
+    private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
+    private static String[] sMyScope = new String[]{VKScope.WALL};
+    private final String appID = "4989462";
     public Context context;
     View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop, targetView;
     ImageButton rt, gs, car, good, normal, evil, addPointBtn, cancelButton, okButton;
     private MyApp myApp = null;
     private TextView textNotify;
-    private boolean  inCreate;
+    private boolean inCreate;
     private NewPoint newPoint;
     private VKSdkListener sdkListener = new VKSdkListener() {
         @Override
@@ -171,6 +172,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        InputMethodManager imm;
         switch (id) {
             case R.id.login_btn:
                 startActivity(new Intent(this, LoginActivity.class));
@@ -200,13 +202,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 break;
             case R.id.ok_button:
                 newPoint.setLatLng(myApp.getMap().getCenter());
+                newPoint.setText(((TextView) findViewById(R.id.inputDescription)).getText().toString());
                 newPoint.sendRequest();
+                ((TextView) findViewById(R.id.inputDescription)).setText("");
+                imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(findViewById(R.id.inputDescription).getWindowToken(), 0);
             case R.id.cancel_button:
                 AnimateViews.hide(leftCreateWizard, AnimateViews.LEFT);
                 AnimateViews.hide(rightCreateWizard, AnimateViews.RIGHT);
                 AnimateViews.hide(bottomCreate, AnimateViews.BOTTOM);
                 AnimateViews.show(leftMain);
                 AnimateViews.hide(targetView);
+                imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(findViewById(R.id.inputDescription).getWindowToken(), 0);
+                ((TextView) findViewById(R.id.inputDescription)).setText("");
                 newPoint = null;
                 inCreate = false;
                 break;
