@@ -198,7 +198,7 @@ public class Session {
         return isOpenMember;
     }
 
-    public void setOpenIsMember(Boolean value) {
+    public void setIsOpenMember(Boolean value) {
         this.isOpenMember = value;
     }
 
