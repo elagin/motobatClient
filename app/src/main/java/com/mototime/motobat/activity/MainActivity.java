@@ -41,6 +41,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
     private static String[] sMyScope = new String[]{VKScope.WALL};
     private final String appID = "4989462";
+
     public Context context;
     View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop, targetView;
     ImageButton rt, gs, car, good, normal, evil, addPointBtn, cancelButton, okButton;
@@ -180,7 +181,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.create_wizard:
                 if (myApp.getSession().isRO()) {
                     Toast.makeText(context, "Вам запрещено создавать точки", Toast.LENGTH_LONG).show();
-                } else if (!myApp.getSession().isMember()) {
+                } else if (!myApp.getSession().isOpenMember()) {
                     Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
                 } else {
                     AnimateViews.show(leftCreateWizard, AnimateViews.LEFT);
@@ -264,7 +265,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         VKUIHelper.onResume(this);
         if (VKSdk.wakeUpSession()) {
             //myApp.getSession().collectData();
-            new IsMemberVKRequest(new IsMemberVKCallback(), this, myApp.getPreferences().getVkToken());
+            new IsMemberVKRequest(new IsMemberOpenGroupVKCallback(), this, myApp.getPreferences().getVkToken(), myApp.OPEN_GROUP_ID);
         } else {
             VKSdk.authorize(sMyScope, true, true);
         }
@@ -294,26 +295,42 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         animateTop.setDuration(500).start();
     }
 
-    private class IsMemberVKCallback implements AsyncTaskCompleteListener {
+    private class IsMemberOpenGroupVKCallback implements AsyncTaskCompleteListener {
         @Override
         public void onTaskComplete(JSONObject result) {
             try {
                 Boolean isMember = (result.getInt("response") != 0);
-                myApp.getSession().setIsMember(isMember);
-                //               if (isMember) {
-                new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
-                //new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID());
-                myApp.getPoints().requestPoints(myApp);
-//                } else
-//                    showNotify("Вы не состоите в группе 'Moto Times'.\nЗагрузка точек не возможна.");
+                myApp.getSession().setIsOpenMember(isMember);
+                if (isMember)
+                    new IsMemberVKRequest(new IsMemberCloseGroupVKCallback(), context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
+                else {
+                    getVKUserInfo();
+                }
             } catch (JSONException e) {
-                int a = 10;
+                Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private class RoleCallback implements AsyncTaskCompleteListener {
+    private class IsMemberCloseGroupVKCallback implements AsyncTaskCompleteListener {
+        @Override
+        public void onTaskComplete(JSONObject result) {
+            try {
+                Boolean isMember = (result.getInt("response") != 0);
+                myApp.getSession().setIsCloseMember(isMember);
+                getVKUserInfo();
+            } catch (JSONException e) {
+                Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
+    private void getVKUserInfo() {
+        new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
+        myApp.getPoints().requestPoints(myApp);
+    }
+
+    private class RoleCallback implements AsyncTaskCompleteListener {
         @Override
         public void onTaskComplete(JSONObject response) {
             String role = "readonly";
@@ -326,9 +343,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         //TODO Отобразить кнопку
                         //addPointBtn
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(context, "Ошибка при определении роли: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         }

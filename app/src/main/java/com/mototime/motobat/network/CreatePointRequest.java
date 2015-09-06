@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class CreatePointRequest extends HTTPClient {
 
-    public CreatePointRequest(AsyncTaskCompleteListener listener, Context context, NewPoint point) {
+    public CreatePointRequest(AsyncTaskCompleteListener listener, Context context, NewPoint point, String memberGroup) {
         this.context = context;
         this.listener = listener;
         post = new HashMap<>();
@@ -21,6 +21,7 @@ public class CreatePointRequest extends HTTPClient {
         post.put("lat", String.valueOf(point.getLatLng().latitude));
         post.put("lng", String.valueOf(point.getLatLng().longitude));
         post.put("text", String.valueOf(point.getText()));
+        post.put("memberGroup", memberGroup);
         execute(post);
     }
 }

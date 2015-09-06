@@ -1,6 +1,7 @@
 package com.mototime.motobat;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
@@ -67,7 +68,12 @@ public class NewPoint implements AsyncTaskCompleteListener {
     }
 
     public void sendRequest() {
-        new CreatePointRequest(this, context, this);
+        if(myApp.getSession().isCloseMember())
+            new CreatePointRequest(this, context, this, myApp.CLOSE_GROUP_ID);
+        else if(myApp.getSession().isOpenMember())
+            new CreatePointRequest(this, context, this, myApp.OPEN_GROUP_ID);
+        else
+            Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
     }
 
     public String getText() {
