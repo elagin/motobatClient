@@ -363,14 +363,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 String userName = resp.getString("first_name") + " " + resp.getString("last_name");
                 myApp.getSession().setUserName(userName);
 
-                PackageInfo pInfo = null;
+                String versionName = "0";
                 try {
-                    pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                    new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, pInfo.versionName);
+                    PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    versionName = pInfo.versionName;
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
-
+                new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
             }
         }
     }
