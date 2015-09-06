@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -360,7 +362,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 JSONObject resp = (JSONObject) resArr.get(0);
                 String userName = resp.getString("first_name") + " " + resp.getString("last_name");
                 myApp.getSession().setUserName(userName);
-                new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName);
+
+                PackageInfo pInfo = null;
+                try {
+                    pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, pInfo.versionName);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }
