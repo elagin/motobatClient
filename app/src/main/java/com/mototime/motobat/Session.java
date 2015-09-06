@@ -29,7 +29,8 @@ public class Session {
     private       String  login;
     private       String  password;
     private MyApp   myAmp    = null;
-    private Boolean isMember = false;
+    private Boolean isCloseMember = false;
+    private Boolean isOpenMember = false;
 
     public Session(Context context, MyApp myAmp) {
         this.context = context;
@@ -185,12 +186,20 @@ public class Session {
             return context.getString(R.string.role_read_only);
     }
 
-    public Boolean isMember() {
-        return isMember;
+    public Boolean isCloseMember() {
+        return isCloseMember;
     }
 
-    public void setIsMember(Boolean value) {
-        this.isMember = value;
+    public void setIsCloseMember(Boolean value) {
+        this.isCloseMember = value;
+    }
+
+    public Boolean isOpenMember() {
+        return isOpenMember;
+    }
+
+    public void setOpenIsMember(Boolean value) {
+        this.isOpenMember = value;
     }
 
     public void collectData() {

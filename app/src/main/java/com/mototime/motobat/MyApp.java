@@ -20,6 +20,10 @@ public class MyApp extends Application {
     public static final SimpleDateFormat fullTimeFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
     public static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+    public static final String CLOSE_GROUP_ID = "98656839"; // Приложение
+    public static final String OPEN_GROUP_ID = "68397238"; // mototimes
+
     private final MyApp instance;
     //    private Map<Integer, Point> pointsMap;
     public Points points;
