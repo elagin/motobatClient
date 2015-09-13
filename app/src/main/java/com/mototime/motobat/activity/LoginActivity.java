@@ -17,7 +17,6 @@ import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.RequestErrors;
-import com.mototime.motobat.network.RoleRequest;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKUIHelper;
@@ -118,7 +117,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_about) {
             return true;
         }
 
