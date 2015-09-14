@@ -3,12 +3,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "com.mototime.motobat"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 4
+        versionCode 6
         versionName "0.6"
     }
     buildTypes {
