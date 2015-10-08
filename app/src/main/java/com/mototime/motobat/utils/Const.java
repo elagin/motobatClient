@@ -24,6 +24,15 @@ public class Const {
     public static final ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     public final static int EQUATOR = 20038;
 
+    // Defines a custom Intent action
+    public static final String BROADCAST_ACTION = "com.mototime.motobat.BROADCAST";
+
+    // Defines the key for the status "extra" in an Intent
+    public static final String EXTENDED_DATA_STATUS = "com.mototime.motobat.STATUS";
+
+    // Defines the key for the log "extra" in an Intent
+    public static final String EXTENDED_STATUS_LOG = "com.mototime.motobat.LOG";
+
     @SuppressWarnings("deprecation")
     public Const() {
     }

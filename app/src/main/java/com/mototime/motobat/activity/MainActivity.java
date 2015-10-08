@@ -352,7 +352,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void getVKUserInfo() {
         new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
-        myApp.getPoints().requestPoints(myApp);
+        //myApp.getPoints().requestPoints(myApp);
+        MyIntentService.startActionGetPointList(this, mReceiver);
     }
 
     private class RoleCallback implements AsyncTaskCompleteListener {
@@ -406,6 +407,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             String action = resultData.getString("action");
             if (action.equals(MyIntentService.ACTION_GET_POINT_LIST)) {
                 String result = resultData.getString("result");
+                try {
+                    JSONObject json = new JSONObject(result);
+                    myApp.getPoints().updatePointsList(json.getJSONArray("RESULT"));
+                    myApp.getMap().placePoints(myApp);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();

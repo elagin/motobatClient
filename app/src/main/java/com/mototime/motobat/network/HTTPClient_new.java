@@ -34,7 +34,9 @@ public abstract class HTTPClient_new {
     Context context;
     public Map<String, String> post;
 
+
     public JSONObject request(/*Map<String, String> post*/) {
+        preferences = new MyPreferences(context);
         if (!MyUtils.isOnline(context)) {
             try {
                 JSONObject result = new JSONObject();

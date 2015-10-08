@@ -24,7 +24,6 @@ public class Point {
     public final static int RT = 2;
     public final static int CAR = 3;
 
-    MyApp myApp = null;
     private int id;
     private Date created;
     private int ownerID;
@@ -38,9 +37,8 @@ public class Point {
     private String text;
     private Random rnd = new Random();
 
-    public Point(JSONObject json, Context context) {
+    public Point(JSONObject json) {
         setError(false);
-        myApp = (MyApp) context.getApplicationContext();
         createPoint(json);
     }
 

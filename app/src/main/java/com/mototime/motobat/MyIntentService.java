@@ -17,16 +17,14 @@ import com.mototime.motobat.network.GetPointListRequestNew;
  * helper methods.
  */
 public class MyIntentService extends IntentService {
+
+
+    //private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
+
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_GET_POINT_LIST = "com.mototime.motobat.action.GetPointList";
     public static final String ACTION_CREATE_POINT = "com.mototime.motobat.action.CreatePoint";
-
-    private static final String ACTION_BAZ = "com.mototime.motobat.action.BAZ";
-
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "com.mototime.motobat.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "com.mototime.motobat.extra.PARAM2";
 
     public static void startActionCreatePoint(Context context, NewPointSerializable point, String memberGroup) {
         Intent intent = new Intent(context, MyIntentService.class);
@@ -36,25 +34,10 @@ public class MyIntentService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionGetPointList(Context context, NewPointSerializable point, String memberGroup) {
+    public static void startActionGetPointList(Context context, MyResultReceiver receiver) {
         Intent intent = new Intent(context, MyIntentService.class);
         intent.setAction(ACTION_GET_POINT_LIST);
-        context.startService(intent);
-    }
-
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, MyIntentService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
+        intent.putExtra("receiverTag", receiver);
         context.startService(intent);
     }
 
@@ -65,7 +48,6 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-
             ResultReceiver rec = intent.getParcelableExtra("receiverTag");
             //String recName= intent.getStringExtra("nameTag");
             final String action = intent.getAction();
@@ -78,7 +60,9 @@ public class MyIntentService extends IntentService {
                 bundle.putString("result", handleActionCreatePoint(newPointSerializable, memberGroup));
                 rec.send(0, bundle);
             } else if (ACTION_GET_POINT_LIST.equals(action)) {
-                bundle.putString("result", handleActionGetPointList());
+                String points = handleActionGetPointList();
+                bundle.putString("result",points);
+                        //bundle.putString("result", handleActionGetPointList());
                 rec.send(0, bundle);
             } else {
                 rec.send(0, null);
@@ -96,12 +80,11 @@ public class MyIntentService extends IntentService {
         return getPointListRequestNew.request().toString();
     }
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

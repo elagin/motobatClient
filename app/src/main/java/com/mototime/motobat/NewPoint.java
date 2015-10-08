@@ -87,7 +87,7 @@ public class NewPoint implements AsyncTaskCompleteListener {
     @Override
     public void onTaskComplete(JSONObject response) throws JSONException {
         if (RequestErrors.isError(response)) RequestErrors.showError(context, response);
-        myApp.getPoints().requestPoints(myApp);
+        //myApp.getPoints().requestPoints(myApp);
         myApp.updateMap(context);
     }
 }

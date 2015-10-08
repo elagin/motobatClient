@@ -16,12 +16,12 @@ public class Points {
     private Map<Integer, Point> points;
     private MyApp myApp;
 
-    public Points(MyApp myApp) {
-        this.myApp = myApp;
+    public Points(/*MyApp myApp*/) {
+        //this.myApp = myApp;
         if (points == null) {
             points = new HashMap<>();
         }
-        requestPoints(myApp);
+        //requestPoints(myApp);
     }
 
     public void requestPoints(final MyApp myApp) {
@@ -36,14 +36,14 @@ public class Points {
         }, myApp);
     }
 
-    private void updatePointsList(JSONArray json) {
+    public void updatePointsList(JSONArray json) {
         if (points == null) {
             points = new HashMap<>();
         }
         points.clear();
         for (int i = 0; i < json.length(); i++) {
             try {
-                Point point = new Point(json.getJSONObject(i), myApp);
+                Point point = new Point(json.getJSONObject(i));
                 if (!point.isError()) {
                     points.put(point.getId(), point);
                 }
