@@ -401,20 +401,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        // TODO Auto-generated method stub
-        //Log.d("sohail","received result from Service="+resultData.getString("ServiceTag"));
-        if(resultCode == 0 && resultData != null) {
+        if(resultCode == MyResultReceiver.SUCCSESS_RESULT) {
             String action = resultData.getString("action");
             if (action.equals(MyIntentService.ACTION_GET_POINT_LIST)) {
-                String result = resultData.getString("result");
-                try {
-                    JSONObject json = new JSONObject(result);
-                    myApp.getPoints().updatePointsList(json.getJSONArray("RESULT"));
-                    myApp.getMap().placePoints(myApp);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
             }
+        } else if(resultCode == MyResultReceiver.ERROR_RESULT ) {
+            String error = resultData.getString(MyIntentService.ERROR);
+            Toast.makeText(context, error, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
         }

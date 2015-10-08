@@ -24,6 +24,10 @@ public class Points {
         //requestPoints(myApp);
     }
 
+    public int getSize() {
+        return points.size();
+    }
+
     public void requestPoints(final MyApp myApp) {
         new GetPointListRequest(new AsyncTaskCompleteListener() {
             @Override

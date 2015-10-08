@@ -6,6 +6,9 @@ import android.os.ResultReceiver;
 
 public class MyResultReceiver extends ResultReceiver {
 
+    public final static int SUCCSESS_RESULT = 0;
+    public final static int ERROR_RESULT = 1;
+
     private Receiver mReceiver;
 
     /**

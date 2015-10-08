@@ -3,7 +3,6 @@ package com.mototime.motobat.network;
 import android.content.Context;
 import android.util.Log;
 
-import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.utils.MyUtils;
 
 import org.json.JSONException;
@@ -30,13 +29,10 @@ public abstract class HTTPClient_new {
     private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
 
-    protected MyPreferences preferences;
     Context context;
     public Map<String, String> post;
 
-
-    public JSONObject request(/*Map<String, String> post*/) {
-        preferences = new MyPreferences(context);
+    public JSONObject request(URL url) {
         if (!MyUtils.isOnline(context)) {
             try {
                 JSONObject result = new JSONObject();
@@ -48,7 +44,6 @@ public abstract class HTTPClient_new {
             }
         }
 
-        URL url = getUrl();
         if (url == null) return new JSONObject();
 
         HttpURLConnection connection = null;
@@ -144,10 +139,5 @@ public abstract class HTTPClient_new {
                 e.printStackTrace();
             }
         return result.toString();
-    }
-
-    private URL getUrl() {
-        //http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php?method=getrole&userid=rjhdby
-        return preferences.getServerURI();
     }
 }

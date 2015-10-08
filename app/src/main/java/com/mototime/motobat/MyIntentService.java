@@ -8,6 +8,10 @@ import android.os.ResultReceiver;
 
 import com.mototime.motobat.network.CreatePointRequestNew;
 import com.mototime.motobat.network.GetPointListRequestNew;
+import com.mototime.motobat.network.RequestErrors;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -17,6 +21,17 @@ import com.mototime.motobat.network.GetPointListRequestNew;
  * helper methods.
  */
 public class MyIntentService extends IntentService {
+
+    MyApp myApp = null;
+
+    private final static String CHARSET = "UTF-8";
+    private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
+
+    public static final String REQUEST_STRING = "myRequest";
+    public static final String RESPONSE_STRING = "myResponse";
+    public static final String RESPONSE_MESSAGE = "myResponseMessage";
+
+    public static final String ERROR = "error";
 
 
     //private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
@@ -47,41 +62,53 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            ResultReceiver rec = intent.getParcelableExtra("receiverTag");
-            //String recName= intent.getStringExtra("nameTag");
-            final String action = intent.getAction();
+        ResultReceiver rec = intent.getParcelableExtra("receiverTag");
+        //String recName= intent.getStringExtra("nameTag");
+        final String action = intent.getAction();
 
-            Bundle bundle = new Bundle();
-            bundle.putString("action", action);
-            if (ACTION_CREATE_POINT.equals(action)) {
-                final NewPointSerializable newPointSerializable = (NewPointSerializable) intent.getSerializableExtra("point");
-                final String memberGroup = intent.getStringExtra("memberGroup");
-                bundle.putString("result", handleActionCreatePoint(newPointSerializable, memberGroup));
-                rec.send(0, bundle);
-            } else if (ACTION_GET_POINT_LIST.equals(action)) {
-                String points = handleActionGetPointList();
-                bundle.putString("result",points);
-                        //bundle.putString("result", handleActionGetPointList());
-                rec.send(0, bundle);
-            } else {
-                rec.send(0, null);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("action", action);
+        if (ACTION_CREATE_POINT.equals(action)) {
+            final NewPointSerializable newPointSerializable = (NewPointSerializable) intent.getSerializableExtra("point");
+            final String memberGroup = intent.getStringExtra("memberGroup");
+            JSONObject response = handleActionCreatePoint(newPointSerializable, memberGroup);
+            rec.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
+        } else if (ACTION_GET_POINT_LIST.equals(action)) {
+            JSONObject response = handleActionGetPointList();
+            if (RequestErrors.isError(response)) {
+                bundle.putString(ERROR, RequestErrors.getError(response));
+                rec.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
             }
+            else {
+                try {
+                    MyApp myApp = (MyApp) getApplicationContext();
+                    myApp.getPoints().updatePointsList(response.getJSONArray("RESULT"));
+                    myApp.getMap().placePoints(myApp);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //bundle.putString(RESPONSE_HAVE_ERROR, points.toString());
+            }
+            rec.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
+        } else {
+            rec.send(MyResultReceiver.SUCCSESS_RESULT, null);
         }
     }
 
-    private String handleActionCreatePoint(NewPointSerializable param1, String param2) {
-        CreatePointRequestNew createPointRequest = new CreatePointRequestNew(this, param1, param2);
-        return createPointRequest.request().toString();
+    private JSONObject handleActionCreatePoint(NewPointSerializable point, String group) {
+        JSONObject result = new CreatePointRequestNew(this, point, group).request(myApp.getPreferences().getServerURI());
+        return result;
     }
 
-    private String handleActionGetPointList() {
-        GetPointListRequestNew getPointListRequestNew = new GetPointListRequestNew(this);
-        return getPointListRequestNew.request().toString();
+    private JSONObject handleActionGetPointList() {
+        JSONObject result = new GetPointListRequestNew(this).request(myApp.getPreferences().getServerURI());
+        return result;
     }
 
     public void onCreate() {
         super.onCreate();
+        myApp = (MyApp) getApplicationContext();
     }
 
     public void onDestroy() {
