@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mototime.motobat.MyApp;
-import com.mototime.motobat.NewPoint;
+import com.mototime.motobat.MyIntentService;
+import com.mototime.motobat.MyResultReceiver;
+import com.mototime.motobat.NewPointSerializable;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.GetUserInfoVKRequest;
@@ -38,19 +41,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener, MyResultReceiver.Receiver {
 
     private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
     private static String[] sMyScope = new String[]{VKScope.WALL};
     private final String appID = "4989462";
 
     public Context context;
+    public MyResultReceiver mReceiver;
+
     View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop, targetView;
     ImageButton rt, gs, car, good, normal, evil, addPointBtn, cancelButton, okButton;
     private MyApp myApp = null;
     private TextView textNotify;
     private boolean inCreate;
-    private NewPoint newPoint;
+    private NewPointSerializable newPoint;
     private VKSdkListener sdkListener = new VKSdkListener() {
         @Override
         public void onCaptchaError(VKError captchaError) {
@@ -107,9 +112,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         setContentView(R.layout.root);
 
+        mReceiver = new MyResultReceiver(new Handler());
+        mReceiver.setReceiver(this);
+
         assignViews();
         assignButtons();
-        newPoint = new NewPoint(myApp);
+        newPoint = new NewPointSerializable(myApp);
         myApp.createMap(this);
 
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
@@ -192,7 +200,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     AnimateViews.hide(leftMain);
                     AnimateViews.show(targetView);
                     inCreate = true;
-                    newPoint = new NewPoint(myApp);
+                    newPoint = new NewPointSerializable(myApp);
                     evil.setAlpha(0.4f);
                     normal.setAlpha(1f);
                     good.setAlpha(0.4f);
@@ -207,6 +215,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 newPoint.setLatLng(myApp.getMap().getCenter());
                 newPoint.setText(((TextView) findViewById(R.id.inputDescription)).getText().toString());
                 newPoint.sendRequest();
+
+                if (myApp.getSession().isCloseMember()) {
+                    MyIntentService.startActionCreatePoint(this, newPoint, myApp.CLOSE_GROUP_ID);
+//                    Intent intent = new Intent(this, MyIntentService.class);
+//                    intent.putExtra("point", newPoint).putExtra("memberGroup", myApp.CLOSE_GROUP_ID);
+//                    startService(intent);
+                } else if (myApp.getSession().isOpenMember()) {
+                    MyIntentService.startActionCreatePoint(this, newPoint, myApp.OPEN_GROUP_ID);
+//                    Intent intent = new Intent(this, MyIntentService.class);
+//                    intent.putExtra("point", newPoint).putExtra("memberGroup", myApp.OPEN_GROUP_ID);
+//                    startService(intent);
+                } else {
+                    Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
+                }
+
                 ((TextView) findViewById(R.id.inputDescription)).setText("");
                 imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(findViewById(R.id.inputDescription).getWindowToken(), 0);
@@ -372,6 +395,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
                 new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
             }
+        }
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        // TODO Auto-generated method stub
+        //Log.d("sohail","received result from Service="+resultData.getString("ServiceTag"));
+        if(resultCode == 0 && resultData != null) {
+            String action = resultData.getString("action");
+            if (action.equals(MyIntentService.ACTION_GET_POINT_LIST)) {
+                String result = resultData.getString("result");
+            }
+        } else {
+            Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
         }
     }
 }
