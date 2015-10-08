@@ -21,9 +21,6 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-/**
- * Created by pavel on 08.10.15.
- */
 public abstract class HTTPClient_new {
 
     private final static String CHARSET = "UTF-8";

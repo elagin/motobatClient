@@ -27,7 +27,6 @@ import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.GetUserInfoVKRequest;
 import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.network.RequestErrors;
-import com.mototime.motobat.network.RoleRequest;
 import com.mototime.motobat.utils.AnimateViews;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKScope;
@@ -217,12 +216,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 newPoint.sendRequest();
 
                 if (myApp.getSession().isCloseMember()) {
-                    MyIntentService.startActionCreatePoint(this, newPoint, myApp.CLOSE_GROUP_ID);
+                    MyIntentService.startActionCreatePoint(this, mReceiver, newPoint, myApp.CLOSE_GROUP_ID);
 //                    Intent intent = new Intent(this, MyIntentService.class);
 //                    intent.putExtra("point", newPoint).putExtra("memberGroup", myApp.CLOSE_GROUP_ID);
 //                    startService(intent);
                 } else if (myApp.getSession().isOpenMember()) {
-                    MyIntentService.startActionCreatePoint(this, newPoint, myApp.OPEN_GROUP_ID);
+                    MyIntentService.startActionCreatePoint(this, mReceiver, newPoint, myApp.OPEN_GROUP_ID);
 //                    Intent intent = new Intent(this, MyIntentService.class);
 //                    intent.putExtra("point", newPoint).putExtra("memberGroup", myApp.OPEN_GROUP_ID);
 //                    startService(intent);
@@ -394,7 +393,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
-                new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
+                //new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
+                MyIntentService.startActionGetRole(context, mReceiver, myApp.getPreferences().getUserID(), userName, versionName);
             }
         }
     }

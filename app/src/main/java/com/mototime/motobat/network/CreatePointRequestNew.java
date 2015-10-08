@@ -7,9 +7,7 @@ import com.mototime.motobat.NewPointSerializable;
 
 import java.util.HashMap;
 
-/**
- * Created by pavel on 08.10.15.
- */
+
 public class CreatePointRequestNew extends HTTPClient_new {
     public CreatePointRequestNew(/*AsyncTaskCompleteListener listener, */Context context, NewPointSerializable point, String memberGroup) {
         this.context = context;
