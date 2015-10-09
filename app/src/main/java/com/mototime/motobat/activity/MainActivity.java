@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyIntentService;
 import com.mototime.motobat.MyResultReceiver;
-import com.mototime.motobat.NewPointSerializable;
+import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
 import com.mototime.motobat.network.GetUserInfoVKRequest;
@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private MyApp myApp = null;
     private TextView textNotify;
     private boolean inCreate;
-    private NewPointSerializable newPoint;
+    private NewPoint newPoint;
     private VKSdkListener sdkListener = new VKSdkListener() {
         @Override
         public void onCaptchaError(VKError captchaError) {
@@ -116,7 +116,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         assignViews();
         assignButtons();
-        newPoint = new NewPointSerializable(myApp);
+        newPoint = new NewPoint();
         myApp.createMap(this);
 
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
@@ -199,7 +199,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     AnimateViews.hide(leftMain);
                     AnimateViews.show(targetView);
                     inCreate = true;
-                    newPoint = new NewPointSerializable(myApp);
+                    newPoint = new NewPoint();
                     evil.setAlpha(0.4f);
                     normal.setAlpha(1f);
                     good.setAlpha(0.4f);
@@ -213,18 +213,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.ok_button:
                 newPoint.setLatLng(myApp.getMap().getCenter());
                 newPoint.setText(((TextView) findViewById(R.id.inputDescription)).getText().toString());
-                newPoint.sendRequest();
 
                 if (myApp.getSession().isCloseMember()) {
                     MyIntentService.startActionCreatePoint(this, mReceiver, newPoint, myApp.CLOSE_GROUP_ID);
-//                    Intent intent = new Intent(this, MyIntentService.class);
-//                    intent.putExtra("point", newPoint).putExtra("memberGroup", myApp.CLOSE_GROUP_ID);
-//                    startService(intent);
                 } else if (myApp.getSession().isOpenMember()) {
                     MyIntentService.startActionCreatePoint(this, mReceiver, newPoint, myApp.OPEN_GROUP_ID);
-//                    Intent intent = new Intent(this, MyIntentService.class);
-//                    intent.putExtra("point", newPoint).putExtra("memberGroup", myApp.OPEN_GROUP_ID);
-//                    startService(intent);
                 } else {
                     Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
                 }
@@ -403,8 +396,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onReceiveResult(int resultCode, Bundle resultData) {
         if(resultCode == MyResultReceiver.SUCCSESS_RESULT) {
             String action = resultData.getString("action");
-            if (action.equals(MyIntentService.ACTION_GET_POINT_LIST)) {
-                Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
+            switch (action) {
+                case MyIntentService.ACTION_GET_POINT_LIST:
+                    myApp.getMap().placePoints(myApp);
+                    Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
+                    break;
+                case MyIntentService.ACTION_CREATE_POINT:
+                    MyIntentService.startActionGetPointList(this, mReceiver);
+                    break;
+                case MyIntentService.ACTION_GET_ROLE:
+                    break;
+                default:
             }
         } else if(resultCode == MyResultReceiver.ERROR_RESULT ) {
             String error = resultData.getString(MyIntentService.ERROR);

@@ -3,13 +3,13 @@ package com.mototime.motobat.network;
 import android.content.Context;
 
 import com.mototime.motobat.MyApp;
-import com.mototime.motobat.NewPointSerializable;
+import com.mototime.motobat.NewPoint;
 
 import java.util.HashMap;
 
 
 public class CreatePointRequestNew extends HTTPClient_new {
-    public CreatePointRequestNew(/*AsyncTaskCompleteListener listener, */Context context, NewPointSerializable point, String memberGroup) {
+    public CreatePointRequestNew(/*AsyncTaskCompleteListener listener, */Context context, NewPoint point, String memberGroup) {
         this.context = context;
         //this.listener = listener;
         post = new HashMap<>();

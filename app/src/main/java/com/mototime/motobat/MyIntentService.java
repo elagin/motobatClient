@@ -58,7 +58,7 @@ public class MyIntentService extends IntentService {
         return res;
     }
 
-    public static void startActionCreatePoint(Context context, MyResultReceiver receiver, NewPointSerializable point, String memberGroup) {
+    public static void startActionCreatePoint(Context context, MyResultReceiver receiver, NewPoint point, String memberGroup) {
         Intent intent = newIntent(context, ACTION_CREATE_POINT, receiver);
         intent.putExtra(POINT, point);
         intent.putExtra(MEMBER_GROUP, memberGroup);
@@ -67,16 +67,11 @@ public class MyIntentService extends IntentService {
 
     public static void startActionGetPointList(Context context, MyResultReceiver receiver) {
         Intent intent = newIntent(context, ACTION_GET_POINT_LIST, receiver);
-//        intent.setAction(ACTION_GET_POINT_LIST);
-//        intent.putExtra(RECEIVER_TAG, receiver);
         context.startService(intent);
     }
 
     public static void startActionGetRole(Context context, MyResultReceiver receiver, String userID, String userName, String versionName) {
         Intent intent = newIntent(context, ACTION_GET_ROLE, receiver);
-//        intent.setAction(ACTION_GET_ROLE);
-//        intent.putExtra(RECEIVER_TAG, receiver);
-
         intent.putExtra(USER_ID, userID);
         intent.putExtra(USER_NAME, userName);
         intent.putExtra(VERSION_NAME, versionName);
@@ -89,63 +84,68 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        ResultReceiver rec = intent.getParcelableExtra(RECEIVER_TAG);
+        ResultReceiver reciver = intent.getParcelableExtra(RECEIVER_TAG);
         //String recName= intent.getStringExtra("nameTag");
         final String action = intent.getAction();
         Bundle bundle = new Bundle();
         bundle.putString(ACTION, action);
 
-        if (ACTION_CREATE_POINT.equals(action)) {
-//            final NewPointSerializable newPointSerializable = (NewPointSerializable) intent.getSerializableExtra("point");
-//            final String memberGroup = intent.getStringExtra("memberGroup");
-            JSONObject response = handleActionCreatePoint(intent);
-            rec.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
-        } else if (ACTION_GET_POINT_LIST.equals(action)) {
-            JSONObject response = handleActionGetPointList();
-            if (RequestErrors.isError(response)) {
-                bundle.putString(ERROR, RequestErrors.getError(response));
-                rec.send(MyResultReceiver.ERROR_RESULT, bundle);
-            } else {
-                try {
-                    MyApp myApp = (MyApp) getApplicationContext();
-                    myApp.getPoints().updatePointsList(response.getJSONArray(RESULT));
-                    myApp.getMap().placePoints(myApp);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        switch (action) {
+            case ACTION_CREATE_POINT:
+                JSONObject response = handleActionCreatePoint(intent);
+                if (RequestErrors.isError(response)) {
+                    returnError(response, bundle, reciver);
+                } else {
+                    reciver.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
                 }
-                rec.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
-            }
-        } else if (ACTION_GET_ROLE.equals(action)) {
-//            final String userID = intent.getStringExtra(USER_ID);
-//            final String userName = intent.getStringExtra(USER_NAME);
-//            final String versionName = intent.getStringExtra(VERSION_NAME);
-            JSONObject response = handleRoleRequest(intent);
-            if (RequestErrors.isError(response)) {
-                bundle.putString(ERROR, RequestErrors.getError(response));
-                rec.send(MyResultReceiver.ERROR_RESULT, bundle);
-            } else {
-                String role = "readonly";
-                JSONObject result = null;
-                try {
-                    result = response.getJSONObject(RESULT);
-                    role = result.getString("role");
-                    myApp.getSession().setRole(role);
-                    if (role != "readonly") {
-                        //TODO Отобразить кнопку
-                        //addPointBtn
+                break;
+            case ACTION_GET_POINT_LIST:
+                JSONObject pointList = handleActionGetPointList();
+                if (RequestErrors.isError(pointList)) {
+                    returnError(pointList, bundle, reciver);
+                } else {
+                    try {
+                        myApp.getPoints().updatePointsList(pointList.getJSONArray(RESULT));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    reciver.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
                 }
-                rec.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
-            }
-        } else {
-            rec.send(MyResultReceiver.SUCCSESS_RESULT, null);
+                break;
+            case ACTION_GET_ROLE:
+                JSONObject roleResponse = handleRoleRequest(intent);
+                if (RequestErrors.isError(roleResponse)) {
+                    returnError(roleResponse, bundle, reciver);
+                } else {
+                    String role = "readonly";
+                    JSONObject result = null;
+                    try {
+                        result = roleResponse.getJSONObject(RESULT);
+                        role = result.getString("role");
+                        myApp.getSession().setRole(role);
+                        if (role != "readonly") {
+                            //TODO Отобразить кнопку
+                            //addPointBtn
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    reciver.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
+                }
+                break;
+            default:
+                reciver.send(MyResultReceiver.SUCCSESS_RESULT, null);
+                break;
         }
     }
 
-    private JSONObject handleActionCreatePoint(Intent intent/*NewPointSerializable point, String group*/) {
-        final NewPointSerializable point = (NewPointSerializable) intent.getSerializableExtra(POINT);
+    private void returnError(JSONObject response, Bundle bundle, ResultReceiver reciver) {
+        bundle.putString(ERROR, RequestErrors.getError(response));
+        reciver.send(MyResultReceiver.ERROR_RESULT, bundle);
+    }
+
+    private JSONObject handleActionCreatePoint(Intent intent) {
+        final NewPoint point = (NewPoint) intent.getSerializableExtra(POINT);
         final String group = intent.getStringExtra(MEMBER_GROUP);
 
         JSONObject result = new CreatePointRequestNew(this, point, group).request(myApp.getPreferences().getServerURI());

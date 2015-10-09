@@ -11,18 +11,18 @@ import com.mototime.motobat.network.RequestErrors;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NewPoint implements AsyncTaskCompleteListener {
+import java.io.Serializable;
+
+public class NewPoint implements Serializable {
 
     private       int     alignment;
     private       int     transport;
-    private       LatLng  latLng;
+//    private       LatLng  latLng;
+    private       double  lat;
+    private       double  lon;
     private String text;
-    private final Context context;
-    private final MyApp myApp;
 
-    public NewPoint(MyApp myApp) {
-        this.context = myApp.getApplicationContext();
-        this.myApp = myApp;
+    public NewPoint() {
         setNormal();
         setGS();
     }
@@ -60,21 +60,22 @@ public class NewPoint implements AsyncTaskCompleteListener {
     }
 
     public LatLng getLatLng() {
-        return latLng;
+        return new LatLng(lat, lon);
     }
 
     public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
+        this.lon = latLng.longitude;
+        this.lat = latLng.latitude;
     }
 
-    public void sendRequest() {
-        if(myApp.getSession().isCloseMember())
-            new CreatePointRequest(this, context, this, myApp.CLOSE_GROUP_ID);
-        else if(myApp.getSession().isOpenMember())
-            new CreatePointRequest(this, context, this, myApp.OPEN_GROUP_ID);
-        else
-            Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
-    }
+//    public void sendRequest() {
+//        if(myApp.getSession().isCloseMember())
+//            new CreatePointRequest(this, context, this, myApp.CLOSE_GROUP_ID);
+//        else if(myApp.getSession().isOpenMember())
+//            new CreatePointRequest(this, context, this, myApp.OPEN_GROUP_ID);
+//        else
+//            Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
+//    }
 
     public String getText() {
         return text;
@@ -84,10 +85,10 @@ public class NewPoint implements AsyncTaskCompleteListener {
         this.text = text;
     }
 
-    @Override
-    public void onTaskComplete(JSONObject response) throws JSONException {
-        if (RequestErrors.isError(response)) RequestErrors.showError(context, response);
-        //myApp.getPoints().requestPoints(myApp);
-        myApp.updateMap(context);
-    }
+//    @Override
+//    public void onTaskComplete(JSONObject response) throws JSONException {
+//        if (RequestErrors.isError(response)) RequestErrors.showError(context, response);
+//        //myApp.getPoints().requestPoints(myApp);
+//        myApp.updateMap(context);
+//    }
 }
