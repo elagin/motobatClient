@@ -30,8 +30,17 @@ public class Const {
     // Defines the key for the status "extra" in an Intent
     public static final String EXTENDED_DATA_STATUS = "com.mototime.motobat.STATUS";
 
+    // Defines the key for the status "extra" in an Intent
+    public static final String EXTENDED_OPERATION_TYPE = "com.mototime.motobat.OPERATION_TYPE";
+
     // Defines the key for the log "extra" in an Intent
     public static final String EXTENDED_STATUS_LOG = "com.mototime.motobat.LOG";
+
+    public static final int STATE_ACTION_STARTED = 0;
+
+    // The background thread is done
+    public static final int STATE_ACTION_COMPLETE = 1;
+
 
     @SuppressWarnings("deprecation")
     public Const() {

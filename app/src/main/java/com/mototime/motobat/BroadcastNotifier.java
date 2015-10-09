@@ -32,7 +32,7 @@ public class BroadcastNotifier {
      *
      * @param status {@link Integer} denoting a work request status
      */
-    public void broadcastIntentWithState(int status) {
+    public void broadcastIntentWithState(String type, int status) {
 
         Intent localIntent = new Intent();
 
@@ -41,6 +41,8 @@ public class BroadcastNotifier {
 
         // Puts the status into the Intent
         localIntent.putExtra(Const.EXTENDED_DATA_STATUS, status);
+        localIntent.putExtra(Const.EXTENDED_OPERATION_TYPE, type);
+
         localIntent.addCategory(Intent.CATEGORY_DEFAULT);
 
         // Broadcasts the Intent

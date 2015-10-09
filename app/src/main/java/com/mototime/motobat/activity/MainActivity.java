@@ -2,13 +2,17 @@ package com.mototime.motobat.activity;
 
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +32,7 @@ import com.mototime.motobat.network.GetUserInfoVKRequest;
 import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.utils.AnimateViews;
+import com.mototime.motobat.utils.Const;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -46,8 +51,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static String[] sMyScope = new String[]{VKScope.WALL};
     private final String appID = "4989462";
 
+    private static final String CLASS_TAG = "MainActivity";
+
     public Context context;
     public MyResultReceiver mReceiver;
+    DownloadStateReceiver mDownloadStateReceiver;
 
     View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop, targetView;
     ImageButton rt, gs, car, good, normal, evil, addPointBtn, cancelButton, okButton;
@@ -109,6 +117,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         myApp = (MyApp) getApplicationContext();
         context = getApplicationContext();
 
+        // The filter's action is BROADCAST_ACTION
+        IntentFilter statusIntentFilter = new IntentFilter(Const.BROADCAST_ACTION);
+
+        // Sets the filter's category to DEFAULT
+        statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+
+        // Instantiates a new DownloadStateReceiver
+        mDownloadStateReceiver = new DownloadStateReceiver();
+
+        // Registers the DownloadStateReceiver and its intent filters
+        LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
         setContentView(R.layout.root);
 
         mReceiver = new MyResultReceiver(new Handler());
@@ -397,10 +416,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         if(resultCode == MyResultReceiver.SUCCSESS_RESULT) {
             String action = resultData.getString("action");
             switch (action) {
-                case MyIntentService.ACTION_GET_POINT_LIST:
-                    myApp.getMap().placePoints(myApp);
-                    Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
-                    break;
+//                case MyIntentService.ACTION_GET_POINT_LIST:
+//                    myApp.getMap().placePoints(myApp);
+//                    Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
+//                    break;
                 case MyIntentService.ACTION_CREATE_POINT:
                     MyIntentService.startActionGetPointList(this, mReceiver);
                     break;
@@ -413,6 +432,38 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             Toast.makeText(context, error, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class DownloadStateReceiver extends BroadcastReceiver {
+        private DownloadStateReceiver() {
+            // prevents instantiation by other packages.
+        }
+
+        /**
+         *
+         * This method is called by the system when a broadcast Intent is matched by this class'
+         * intent filters
+         *
+         * @param context An Android context
+         * @param intent The incoming broadcast Intent
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(CLASS_TAG, "onReceive");
+            switch (intent.getStringExtra(Const.EXTENDED_OPERATION_TYPE)) {
+                case MyIntentService.ACTION_GET_POINT_LIST:
+                    myApp.getMap().placePoints(myApp);
+                    Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
+                    break;
+                case MyIntentService.ACTION_CREATE_POINT:
+                    MyIntentService.startActionGetPointList(context, mReceiver);
+                    break;
+                case MyIntentService.ACTION_GET_ROLE:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

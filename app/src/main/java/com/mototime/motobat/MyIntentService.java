@@ -10,6 +10,7 @@ import com.mototime.motobat.network.CreatePointRequestNew;
 import com.mototime.motobat.network.GetPointListRequestNew;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.network.RoleRequestNew;
+import com.mototime.motobat.utils.Const;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,10 @@ public class MyIntentService extends IntentService {
     public static final String ACTION_CREATE_POINT = "com.mototime.motobat.action.CreatePoint";
     public static final String ACTION_GET_ROLE = "com.mototime.motobat.action.GetRole";
 
+
+    public static final int ACTION_GET_POINT_LIST_COMPLETE = 10;
+
+
     public static final String USER_ID = "userID";
     public static final String USER_NAME = "userName";
     public static final String VERSION_NAME = "versionName";
@@ -49,7 +54,7 @@ public class MyIntentService extends IntentService {
 
     public static final String RESULT = "RESULT";
 
-    //private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
+    private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
 
     private static Intent newIntent(Context context, String action, MyResultReceiver receiver) {
         Intent res = new Intent(context, MyIntentService.class);
@@ -84,6 +89,8 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        //mBroadcaster.broadcastIntentWithState(Const.STATE_ACTION_STARTED);
+
         ResultReceiver reciver = intent.getParcelableExtra(RECEIVER_TAG);
         //String recName= intent.getStringExtra("nameTag");
         final String action = intent.getAction();
@@ -110,6 +117,7 @@ public class MyIntentService extends IntentService {
                         e.printStackTrace();
                     }
                     reciver.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
+                    mBroadcaster.broadcastIntentWithState(action, ACTION_GET_POINT_LIST_COMPLETE);
                 }
                 break;
             case ACTION_GET_ROLE:
@@ -137,6 +145,7 @@ public class MyIntentService extends IntentService {
                 reciver.send(MyResultReceiver.SUCCSESS_RESULT, null);
                 break;
         }
+        //mBroadcaster.broadcastIntentWithState(Const.STATE_ACTION_COMPLETE);
     }
 
     private void returnError(JSONObject response, Bundle bundle, ResultReceiver reciver) {
