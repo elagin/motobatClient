@@ -26,7 +26,6 @@ import com.mototime.motobat.MyIntentService;
 import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.GetUserInfoVKRequest;
 import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.utils.AnimateViews;
@@ -356,7 +355,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void getVKUserInfo() {
-        new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
+//        new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
+        MyIntentService.startActionGetUserInfoVKRequest(this, myApp.getPreferences().getVkToken());
         //myApp.getPoints().requestPoints(myApp);
         MyIntentService.startActionGetPointList(this);
     }

@@ -3,13 +3,17 @@ package com.mototime.motobat;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.mototime.motobat.network.CreatePointRequestNew;
 import com.mototime.motobat.network.GetPointListRequestNew;
+import com.mototime.motobat.network.GetUserInfoVKRequestNew;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.network.RoleRequestNew;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,6 +42,7 @@ public class MyIntentService extends IntentService {
     public static final String ACTION_GET_POINT_LIST = "com.mototime.motobat.action.GetPointList";
     public static final String ACTION_CREATE_POINT = "com.mototime.motobat.action.CreatePoint";
     public static final String ACTION_GET_ROLE = "com.mototime.motobat.action.GetRole";
+    public static final String ACTION_GET_USER_INFO_VK = "com.mototime.motobat.action.GetUserInfoVK";
 
     public static final String RESUIL_CODE = "result_code";
 
@@ -47,6 +52,8 @@ public class MyIntentService extends IntentService {
     public static final String USER_ID = "userID";
     public static final String USER_NAME = "userName";
     public static final String VERSION_NAME = "versionName";
+    public static final String ACCESS_TOKEN = "access_token";
+
 
     public static final String POINT = "point";
     public static final String MEMBER_GROUP = "memberGroup";
@@ -78,6 +85,12 @@ public class MyIntentService extends IntentService {
         intent.putExtra(USER_ID, userID);
         intent.putExtra(USER_NAME, userName);
         intent.putExtra(VERSION_NAME, versionName);
+        context.startService(intent);
+    }
+
+    public static void startActionGetUserInfoVKRequest(Context context, String token) {
+        Intent intent = newIntent(context, ACTION_GET_USER_INFO_VK);
+        intent.putExtra(ACCESS_TOKEN, token);
         context.startService(intent);
     }
 
@@ -133,6 +146,31 @@ public class MyIntentService extends IntentService {
                     mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 }
                 break;
+            case ACTION_GET_USER_INFO_VK:
+                JSONObject userInfo = handleGetUserInfoVKRequest(intent);
+                try {
+                    JSONArray resArr = (JSONArray) userInfo.get("response");
+                    if (resArr != null) {
+                        JSONObject resp = (JSONObject) resArr.get(0);
+                        String userName = resp.getString("first_name") + " " + resp.getString("last_name");
+                        myApp.getSession().setUserName(userName);
+
+                        String versionName = "0";
+                        try {
+                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                            versionName = pInfo.versionName;
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        //new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
+                        startActionGetRole(this, myApp.getPreferences().getUserID(), userName, versionName);
+                        //mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
             default:
                 mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 break;
@@ -146,7 +184,6 @@ public class MyIntentService extends IntentService {
     private JSONObject handleActionCreatePoint(Intent intent) {
         final NewPoint point = (NewPoint) intent.getSerializableExtra(POINT);
         final String group = intent.getStringExtra(MEMBER_GROUP);
-
         JSONObject result = new CreatePointRequestNew(this, point, group).request(myApp.getPreferences().getServerURI());
         return result;
     }
@@ -163,6 +200,10 @@ public class MyIntentService extends IntentService {
         return new RoleRequestNew(this, userID, userName, versionName).request(myApp.getPreferences().getServerURI());
     }
 
+    private JSONObject handleGetUserInfoVKRequest(Intent intent) {
+        final String access_token = intent.getStringExtra(ACCESS_TOKEN);
+        return new GetUserInfoVKRequestNew(this, access_token).request();
+    }
 
     public void onCreate() {
         super.onCreate();
