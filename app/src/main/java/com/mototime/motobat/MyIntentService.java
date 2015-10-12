@@ -4,13 +4,11 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.ResultReceiver;
 
 import com.mototime.motobat.network.CreatePointRequestNew;
 import com.mototime.motobat.network.GetPointListRequestNew;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.network.RoleRequestNew;
-import com.mototime.motobat.utils.Const;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,9 +39,10 @@ public class MyIntentService extends IntentService {
     public static final String ACTION_CREATE_POINT = "com.mototime.motobat.action.CreatePoint";
     public static final String ACTION_GET_ROLE = "com.mototime.motobat.action.GetRole";
 
+    public static final String RESUIL_CODE = "result_code";
 
-    public static final int ACTION_GET_POINT_LIST_COMPLETE = 10;
-
+    public final static int RESULT_SUCCSESS = 0;
+    public final static int RESULT_ERROR = 1;
 
     public static final String USER_ID = "userID";
     public static final String USER_NAME = "userName";
@@ -56,27 +55,26 @@ public class MyIntentService extends IntentService {
 
     private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
 
-    private static Intent newIntent(Context context, String action, MyResultReceiver receiver) {
+    private static Intent newIntent(Context context, String action) {
         Intent res = new Intent(context, MyIntentService.class);
         res.setAction(action);
-        res.putExtra(RECEIVER_TAG, receiver);
         return res;
     }
 
-    public static void startActionCreatePoint(Context context, MyResultReceiver receiver, NewPoint point, String memberGroup) {
-        Intent intent = newIntent(context, ACTION_CREATE_POINT, receiver);
+    public static void startActionCreatePoint(Context context, NewPoint point, String memberGroup) {
+        Intent intent = newIntent(context, ACTION_CREATE_POINT);
         intent.putExtra(POINT, point);
         intent.putExtra(MEMBER_GROUP, memberGroup);
         context.startService(intent);
     }
 
-    public static void startActionGetPointList(Context context, MyResultReceiver receiver) {
-        Intent intent = newIntent(context, ACTION_GET_POINT_LIST, receiver);
+    public static void startActionGetPointList(Context context) {
+        Intent intent = newIntent(context, ACTION_GET_POINT_LIST);
         context.startService(intent);
     }
 
-    public static void startActionGetRole(Context context, MyResultReceiver receiver, String userID, String userName, String versionName) {
-        Intent intent = newIntent(context, ACTION_GET_ROLE, receiver);
+    public static void startActionGetRole(Context context, String userID, String userName, String versionName) {
+        Intent intent = newIntent(context, ACTION_GET_ROLE);
         intent.putExtra(USER_ID, userID);
         intent.putExtra(USER_NAME, userName);
         intent.putExtra(VERSION_NAME, versionName);
@@ -89,10 +87,6 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        //mBroadcaster.broadcastIntentWithState(Const.STATE_ACTION_STARTED);
-
-        ResultReceiver reciver = intent.getParcelableExtra(RECEIVER_TAG);
-        //String recName= intent.getStringExtra("nameTag");
         final String action = intent.getAction();
         Bundle bundle = new Bundle();
         bundle.putString(ACTION, action);
@@ -101,34 +95,32 @@ public class MyIntentService extends IntentService {
             case ACTION_CREATE_POINT:
                 JSONObject response = handleActionCreatePoint(intent);
                 if (RequestErrors.isError(response)) {
-                    returnError(response, bundle, reciver);
+                    returnError(response, action);
                 } else {
-                    reciver.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
+                    mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 }
                 break;
             case ACTION_GET_POINT_LIST:
                 JSONObject pointList = handleActionGetPointList();
                 if (RequestErrors.isError(pointList)) {
-                    returnError(pointList, bundle, reciver);
+                    returnError(pointList, action);
                 } else {
                     try {
                         myApp.getPoints().updatePointsList(pointList.getJSONArray(RESULT));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    reciver.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
-                    mBroadcaster.broadcastIntentWithState(action, ACTION_GET_POINT_LIST_COMPLETE);
+                    mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 }
                 break;
             case ACTION_GET_ROLE:
                 JSONObject roleResponse = handleRoleRequest(intent);
                 if (RequestErrors.isError(roleResponse)) {
-                    returnError(roleResponse, bundle, reciver);
+                    returnError(roleResponse, action);
                 } else {
                     String role = "readonly";
-                    JSONObject result = null;
                     try {
-                        result = roleResponse.getJSONObject(RESULT);
+                        JSONObject result = roleResponse.getJSONObject(RESULT);
                         role = result.getString("role");
                         myApp.getSession().setRole(role);
                         if (role != "readonly") {
@@ -138,19 +130,17 @@ public class MyIntentService extends IntentService {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    reciver.send(MyResultReceiver.SUCCSESS_RESULT, bundle);
+                    mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 }
                 break;
             default:
-                reciver.send(MyResultReceiver.SUCCSESS_RESULT, null);
+                mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 break;
         }
-        //mBroadcaster.broadcastIntentWithState(Const.STATE_ACTION_COMPLETE);
     }
 
-    private void returnError(JSONObject response, Bundle bundle, ResultReceiver reciver) {
-        bundle.putString(ERROR, RequestErrors.getError(response));
-        reciver.send(MyResultReceiver.ERROR_RESULT, bundle);
+    private void returnError(JSONObject response, String action) {
+        mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, RequestErrors.getError(response));
     }
 
     private JSONObject handleActionCreatePoint(Intent intent) {
@@ -166,7 +156,7 @@ public class MyIntentService extends IntentService {
         return result;
     }
 
-    private JSONObject handleRoleRequest(Intent intent/*String userID, String userName, String versionName*/) {
+    private JSONObject handleRoleRequest(Intent intent) {
         final String userID = intent.getStringExtra(USER_ID);
         final String userName = intent.getStringExtra(USER_NAME);
         final String versionName = intent.getStringExtra(VERSION_NAME);

@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyIntentService;
-import com.mototime.motobat.MyResultReceiver;
 import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
@@ -45,7 +43,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener, MyResultReceiver.Receiver {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
     private static String[] sMyScope = new String[]{VKScope.WALL};
@@ -54,8 +52,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static final String CLASS_TAG = "MainActivity";
 
     public Context context;
-    public MyResultReceiver mReceiver;
-    DownloadStateReceiver mDownloadStateReceiver;
+    ResponseStateReceiver mDownloadStateReceiver;
 
     View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop, targetView;
     ImageButton rt, gs, car, good, normal, evil, addPointBtn, cancelButton, okButton;
@@ -123,15 +120,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // Sets the filter's category to DEFAULT
         statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 
-        // Instantiates a new DownloadStateReceiver
-        mDownloadStateReceiver = new DownloadStateReceiver();
+        // Instantiates a new ResponseStateReceiver
+        mDownloadStateReceiver = new ResponseStateReceiver();
 
-        // Registers the DownloadStateReceiver and its intent filters
+        // Registers the ResponseStateReceiver and its intent filters
         LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
         setContentView(R.layout.root);
-
-        mReceiver = new MyResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
 
         assignViews();
         assignButtons();
@@ -234,9 +228,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 newPoint.setText(((TextView) findViewById(R.id.inputDescription)).getText().toString());
 
                 if (myApp.getSession().isCloseMember()) {
-                    MyIntentService.startActionCreatePoint(this, mReceiver, newPoint, myApp.CLOSE_GROUP_ID);
+                    MyIntentService.startActionCreatePoint(this, newPoint, myApp.CLOSE_GROUP_ID);
                 } else if (myApp.getSession().isOpenMember()) {
-                    MyIntentService.startActionCreatePoint(this, mReceiver, newPoint, myApp.OPEN_GROUP_ID);
+                    MyIntentService.startActionCreatePoint(this, newPoint, myApp.OPEN_GROUP_ID);
                 } else {
                     Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
                 }
@@ -364,7 +358,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private void getVKUserInfo() {
         new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
         //myApp.getPoints().requestPoints(myApp);
-        MyIntentService.startActionGetPointList(this, mReceiver);
+        MyIntentService.startActionGetPointList(this);
     }
 
     private class RoleCallback implements AsyncTaskCompleteListener {
@@ -406,37 +400,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 //new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
-                MyIntentService.startActionGetRole(context, mReceiver, myApp.getPreferences().getUserID(), userName, versionName);
+                MyIntentService.startActionGetRole(context, myApp.getPreferences().getUserID(), userName, versionName);
             }
         }
     }
 
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        if(resultCode == MyResultReceiver.SUCCSESS_RESULT) {
-            String action = resultData.getString("action");
-            switch (action) {
-//                case MyIntentService.ACTION_GET_POINT_LIST:
-//                    myApp.getMap().placePoints(myApp);
-//                    Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
-//                    break;
-                case MyIntentService.ACTION_CREATE_POINT:
-                    MyIntentService.startActionGetPointList(this, mReceiver);
-                    break;
-                case MyIntentService.ACTION_GET_ROLE:
-                    break;
-                default:
-            }
-        } else if(resultCode == MyResultReceiver.ERROR_RESULT ) {
-            String error = resultData.getString(MyIntentService.ERROR);
-            Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
-        }
-    }
 
-    private class DownloadStateReceiver extends BroadcastReceiver {
-        private DownloadStateReceiver() {
+    private class ResponseStateReceiver extends BroadcastReceiver {
+        private ResponseStateReceiver() {
             // prevents instantiation by other packages.
         }
 
@@ -451,18 +422,26 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(CLASS_TAG, "onReceive");
-            switch (intent.getStringExtra(Const.EXTENDED_OPERATION_TYPE)) {
-                case MyIntentService.ACTION_GET_POINT_LIST:
-                    myApp.getMap().placePoints(myApp);
-                    Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
-                    break;
-                case MyIntentService.ACTION_CREATE_POINT:
-                    MyIntentService.startActionGetPointList(context, mReceiver);
-                    break;
-                case MyIntentService.ACTION_GET_ROLE:
-                    break;
-                default:
-                    break;
+            int resultCode = intent.getIntExtra(MyIntentService.RESUIL_CODE, 0);
+            if (resultCode == MyIntentService.RESULT_SUCCSESS) {
+                switch (intent.getStringExtra(Const.EXTENDED_OPERATION_TYPE)) {
+                    case MyIntentService.ACTION_GET_POINT_LIST:
+                        myApp.getMap().placePoints(myApp);
+                        Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
+                        break;
+                    case MyIntentService.ACTION_CREATE_POINT:
+                        MyIntentService.startActionGetPointList(context);
+                        break;
+                    case MyIntentService.ACTION_GET_ROLE:
+                        break;
+                    default:
+                        break;
+                }
+            } else if (resultCode == MyIntentService.RESULT_ERROR) {
+                String error = intent.getStringExtra(MyIntentService.RESULT);
+                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
             }
         }
     }
