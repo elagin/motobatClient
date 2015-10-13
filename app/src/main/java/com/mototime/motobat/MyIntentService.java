@@ -153,63 +153,74 @@ public class MyIntentService extends IntentService {
                             //TODO Отобразить кнопку
                             //addPointBtn
                         }
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, e.getLocalizedMessage());
                     }
-                    mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 }
                 break;
             case ACTION_GET_USER_INFO_VK:
                 JSONObject userInfo = handleGetUserInfoVKRequest(intent);
-                try {
-                    JSONArray resArr = (JSONArray) userInfo.get("response");
-                    if (resArr != null) {
-                        JSONObject resp = (JSONObject) resArr.get(0);
-                        String userName = resp.getString("first_name") + " " + resp.getString("last_name");
-                        myApp.getSession().setUserName(userName);
+                if (RequestErrors.isVkError(userInfo)) {
+                    returnError(userInfo, action);
+                } else {
+                    try {
+                        JSONArray resArr = (JSONArray) userInfo.get("response");
+                        if (resArr != null) {
+                            JSONObject resp = (JSONObject) resArr.get(0);
+                            String userName = resp.getString("first_name") + " " + resp.getString("last_name");
+                            myApp.getSession().setUserName(userName);
+                            mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
 
-                        String versionName = "0";
-                        try {
-                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                            versionName = pInfo.versionName;
-                        } catch (PackageManager.NameNotFoundException e) {
-                            e.printStackTrace();
+                            String versionName = "0";
+                            try {
+                                PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                                versionName = pInfo.versionName;
+                            } catch (PackageManager.NameNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            startActionGetRole(this, myApp.getPreferences().getUserID(), userName, versionName);
                         }
-                        startActionGetRole(this, myApp.getPreferences().getUserID(), userName, versionName);
-                        //mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
-                    }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, e.getLocalizedMessage());
+                    }
                 }
                 break;
             case ACTION_IS_OPEN_MEMBER_VK:
                 JSONObject resultOpen = handleIsMemberVKRequest(intent);
-                try {
-                    Boolean isMember = (resultOpen.getInt("response") != 0);
-                    myApp.getSession().setIsOpenMember(isMember);
-                    if (isMember) {
-                        startActionIsCloseMemberVKRequest(this, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
-                        //new IsMemberVKRequest(new IsMemberCloseGroupVKCallback(), context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
+                if (RequestErrors.isVkError(resultOpen)) {
+                    returnError(resultOpen, action);
+                } else {
+                    try {
+                        Boolean isMember = (resultOpen.getInt("response") != 0);
+                        myApp.getSession().setIsOpenMember(isMember);
+                        if (isMember) {
+                            startActionIsCloseMemberVKRequest(this, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
+                        }
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
+                    } catch (JSONException e) {
+                        Log.e(getClass().getName(), e.getLocalizedMessage());
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, e.getLocalizedMessage());
                     }
-//                    else {
-//                        getVKUserInfo();
-//                    }
-                } catch (JSONException e) {
-                    Log.e(getClass().getName(), e.getLocalizedMessage());
-                    //Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
                 break;
             case ACTION_IS_CLOSE_MEMBER_VK:
                 JSONObject resultClose = handleIsMemberVKRequest(intent);
-//                        try {
-                Boolean isMember = null;
-                try {
-                    isMember = (resultClose.getInt("response") != 0);
-                    myApp.getSession().setIsCloseMember(isMember);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    //Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                if (RequestErrors.isVkError(resultClose)) {
+                    returnError(resultClose, action);
+                } else {
+                    Boolean isMember = null;
+                    try {
+                        isMember = (resultClose.getInt("response") != 0);
+                        myApp.getSession().setIsCloseMember(isMember);
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, e.getLocalizedMessage());
+                    }
                 }
                 break;
             default:
