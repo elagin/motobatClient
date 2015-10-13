@@ -26,7 +26,6 @@ import com.mototime.motobat.MyIntentService;
 import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
 import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.utils.AnimateViews;
 import com.mototime.motobat.utils.Const;
@@ -235,7 +234,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
 
                 ((TextView) findViewById(R.id.inputDescription)).setText("");
-                imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(findViewById(R.id.inputDescription).getWindowToken(), 0);
             case R.id.cancel_button:
                 AnimateViews.hide(leftCreateWizard, AnimateViews.LEFT);
@@ -243,7 +242,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 AnimateViews.hide(bottomCreate, AnimateViews.BOTTOM);
                 AnimateViews.show(leftMain);
                 AnimateViews.hide(targetView);
-                imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(findViewById(R.id.inputDescription).getWindowToken(), 0);
                 ((TextView) findViewById(R.id.inputDescription)).setText("");
                 newPoint = null;
@@ -294,7 +293,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         VKUIHelper.onResume(this);
         if (VKSdk.wakeUpSession()) {
             //myApp.getSession().collectData();
-            new IsMemberVKRequest(new IsMemberOpenGroupVKCallback(), this, myApp.getPreferences().getVkToken(), myApp.OPEN_GROUP_ID);
+            //new IsMemberVKRequest(new IsMemberOpenGroupVKCallback(), this, myApp.getPreferences().getVkToken(), myApp.OPEN_GROUP_ID);
+            MyIntentService.startActionIsOpenMemberVKRequest(this, myApp.getPreferences().getVkToken(), myApp.OPEN_GROUP_ID);
         } else {
             VKSdk.authorize(sMyScope, true, true);
         }
@@ -331,7 +331,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Boolean isMember = (result.getInt("response") != 0);
                 myApp.getSession().setIsOpenMember(isMember);
                 if (isMember)
-                    new IsMemberVKRequest(new IsMemberCloseGroupVKCallback(), context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
+                    //    new IsMemberVKRequest(new IsMemberCloseGroupVKCallback(), context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
+                    MyIntentService.startActionIsCloseMemberVKRequest(context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
                 else {
                     getVKUserInfo();
                 }
@@ -412,12 +413,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 
         /**
-         *
          * This method is called by the system when a broadcast Intent is matched by this class'
          * intent filters
          *
          * @param context An Android context
-         * @param intent The incoming broadcast Intent
+         * @param intent  The incoming broadcast Intent
          */
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -433,6 +433,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         MyIntentService.startActionGetPointList(context);
                         break;
                     case MyIntentService.ACTION_GET_ROLE:
+                        break;
+                    case MyIntentService.ACTION_IS_OPEN_MEMBER_VK:
+                        if (!myApp.getSession().isOpenMember())
+                            getVKUserInfo();
+                        break;
+                    case MyIntentService.ACTION_IS_CLOSE_MEMBER_VK:
+                        getVKUserInfo();
+//                            Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         break;
                     default:
                         break;

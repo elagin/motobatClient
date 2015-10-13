@@ -11,7 +11,6 @@ import java.util.HashMap;
 public class CreatePointRequestNew extends HTTPClient_new {
     public CreatePointRequestNew(Context context, NewPoint point, String memberGroup) {
         this.context = context;
-        //this.listener = listener;
         post = new HashMap<>();
         MyApp myApp = (MyApp) context.getApplicationContext();
         post.put("method", "create");

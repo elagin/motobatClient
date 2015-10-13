@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.mototime.motobat.network.CreatePointRequestNew;
 import com.mototime.motobat.network.GetPointListRequestNew;
 import com.mototime.motobat.network.GetUserInfoVKRequestNew;
+import com.mototime.motobat.network.IsMemberVKRequestNew;
 import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.network.RoleRequestNew;
 
@@ -20,7 +22,7 @@ import org.json.JSONObject;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p>
+ * <p/>
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
@@ -43,6 +45,8 @@ public class MyIntentService extends IntentService {
     public static final String ACTION_CREATE_POINT = "com.mototime.motobat.action.CreatePoint";
     public static final String ACTION_GET_ROLE = "com.mototime.motobat.action.GetRole";
     public static final String ACTION_GET_USER_INFO_VK = "com.mototime.motobat.action.GetUserInfoVK";
+    public static final String ACTION_IS_OPEN_MEMBER_VK = "com.mototime.motobat.action.IsOpenMemberVK";
+    public static final String ACTION_IS_CLOSE_MEMBER_VK = "com.mototime.motobat.action.IsCloseMemberVK";
 
     public static final String RESUIL_CODE = "result_code";
 
@@ -53,7 +57,7 @@ public class MyIntentService extends IntentService {
     public static final String USER_NAME = "userName";
     public static final String VERSION_NAME = "versionName";
     public static final String ACCESS_TOKEN = "access_token";
-
+    public static final String GROUP_ID = "group_id";
 
     public static final String POINT = "point";
     public static final String MEMBER_GROUP = "memberGroup";
@@ -91,6 +95,20 @@ public class MyIntentService extends IntentService {
     public static void startActionGetUserInfoVKRequest(Context context, String token) {
         Intent intent = newIntent(context, ACTION_GET_USER_INFO_VK);
         intent.putExtra(ACCESS_TOKEN, token);
+        context.startService(intent);
+    }
+
+    public static void startActionIsOpenMemberVKRequest(Context context, String token, String group_id) {
+        Intent intent = newIntent(context, ACTION_IS_OPEN_MEMBER_VK);
+        intent.putExtra(ACCESS_TOKEN, token);
+        intent.putExtra(GROUP_ID, group_id);
+        context.startService(intent);
+    }
+
+    public static void startActionIsCloseMemberVKRequest(Context context, String token, String group_id) {
+        Intent intent = newIntent(context, ACTION_IS_CLOSE_MEMBER_VK);
+        intent.putExtra(ACCESS_TOKEN, token);
+        intent.putExtra(GROUP_ID, group_id);
         context.startService(intent);
     }
 
@@ -171,6 +189,39 @@ public class MyIntentService extends IntentService {
                     e.printStackTrace();
                 }
                 break;
+            case ACTION_IS_OPEN_MEMBER_VK:
+                JSONObject resultOpen = handleIsMemberVKRequest(intent);
+                try {
+                    Boolean isMember = (resultOpen.getInt("response") != 0);
+                    myApp.getSession().setIsOpenMember(isMember);
+                    if (isMember) {
+                        startActionIsCloseMemberVKRequest(this, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
+                        //new IsMemberVKRequest(new IsMemberCloseGroupVKCallback(), context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
+                    }
+//                    else {
+//                        getVKUserInfo();
+//                    }
+                } catch (JSONException e) {
+                    Log.e(getClass().getName(), e.getLocalizedMessage());
+                    //Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
+                break;
+            case ACTION_IS_CLOSE_MEMBER_VK:
+                JSONObject resultClose = handleIsMemberVKRequest(intent);
+//                        try {
+                Boolean isMember = null;
+                try {
+                    isMember = (resultClose.getInt("response") != 0);
+                    myApp.getSession().setIsCloseMember(isMember);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//                        }
+//                            getVKUserInfo();
+//                        } catch (JSONException e) {
+//                            Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+//                        }
+                break;
             default:
                 mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 break;
@@ -203,6 +254,12 @@ public class MyIntentService extends IntentService {
     private JSONObject handleGetUserInfoVKRequest(Intent intent) {
         final String access_token = intent.getStringExtra(ACCESS_TOKEN);
         return new GetUserInfoVKRequestNew(this, access_token).request();
+    }
+
+    private JSONObject handleIsMemberVKRequest(Intent intent) {
+        final String access_token = intent.getStringExtra(ACCESS_TOKEN);
+        final String group_id = intent.getStringExtra(GROUP_ID);
+        return new IsMemberVKRequestNew(this, access_token, group_id).request();
     }
 
     public void onCreate() {
