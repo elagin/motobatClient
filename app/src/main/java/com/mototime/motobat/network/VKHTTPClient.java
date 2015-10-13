@@ -1,11 +1,8 @@
 package com.mototime.motobat.network;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
-import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.utils.MyUtils;
 
 import org.json.JSONException;
@@ -25,24 +22,14 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-public abstract class VKHTTPClient extends AsyncTask<Map<String, String>, Integer, JSONObject> {
+public abstract class VKHTTPClient {
     private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
 
-    protected MyPreferences preferences;
     Context context;
-    AsyncTaskCompleteListener listener;
     Map<String, String> post;
-    private ProgressDialog dialog;
 
-    @SafeVarargs
-    @Override
-    protected final JSONObject doInBackground(Map<String, String>... params) {
-        preferences = new MyPreferences(context);
-        return request(params[0]);
-    }
-
-    JSONObject request(Map<String, String> post) {
+    public JSONObject request() {
         if (!MyUtils.isOnline(context)) {
             try {
                 JSONObject result = new JSONObject();
@@ -55,7 +42,7 @@ public abstract class VKHTTPClient extends AsyncTask<Map<String, String>, Intege
         }
 
         String method = post.get("method");
-        if(method == null) return new JSONObject();
+        if (method == null) return new JSONObject();
         URL url = getUrl(method);
         if (url == null) return new JSONObject();
         post.remove("method");
@@ -164,28 +151,5 @@ public abstract class VKHTTPClient extends AsyncTask<Map<String, String>, Intege
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void dismiss() {
-        try {
-            if (dialog != null && dialog.isShowing())
-                dialog.dismiss();
-        } catch (final Exception e) {
-            // Handle or log or ignore
-        } finally {
-            dialog = null;
-        }
-    }
-
-    @Override
-    protected void onPostExecute(JSONObject result) {
-        if (listener != null) {
-            try {
-                listener.onTaskComplete(result);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        dismiss();
     }
 }

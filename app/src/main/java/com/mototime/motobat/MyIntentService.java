@@ -8,12 +8,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.mototime.motobat.network.CreatePointRequestNew;
-import com.mototime.motobat.network.GetPointListRequestNew;
-import com.mototime.motobat.network.GetUserInfoVKRequestNew;
-import com.mototime.motobat.network.IsMemberVKRequestNew;
+import com.mototime.motobat.network.CreatePointRequest;
+import com.mototime.motobat.network.GetPointListRequest;
+import com.mototime.motobat.network.GetUserInfoVKRequest;
+import com.mototime.motobat.network.IsMemberVKRequest;
 import com.mototime.motobat.network.RequestErrors;
-import com.mototime.motobat.network.RoleRequestNew;
+import com.mototime.motobat.network.RoleRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,16 +30,6 @@ public class MyIntentService extends IntentService {
 
     MyApp myApp = null;
 
-    private final static String CHARSET = "UTF-8";
-    private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
-
-    public static final String REQUEST_STRING = "myRequest";
-    public static final String RESPONSE_STRING = "myResponse";
-    public static final String RESPONSE_MESSAGE = "myResponseMessage";
-
-    public static final String ERROR = "error";
-
-    public static final String RECEIVER_TAG = "receiverTag";
     public static final String ACTION = "action";
     public static final String ACTION_GET_POINT_LIST = "com.mototime.motobat.action.GetPointList";
     public static final String ACTION_CREATE_POINT = "com.mototime.motobat.action.CreatePoint";
@@ -65,6 +55,15 @@ public class MyIntentService extends IntentService {
     public static final String RESULT = "RESULT";
 
     private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
+
+    public MyIntentService() {
+        super("MyIntentService");
+    }
+
+    public void onCreate() {
+        super.onCreate();
+        myApp = (MyApp) getApplicationContext();
+    }
 
     private static Intent newIntent(Context context, String action) {
         Intent res = new Intent(context, MyIntentService.class);
@@ -110,10 +109,6 @@ public class MyIntentService extends IntentService {
         intent.putExtra(ACCESS_TOKEN, token);
         intent.putExtra(GROUP_ID, group_id);
         context.startService(intent);
-    }
-
-    public MyIntentService() {
-        super("MyIntentService");
     }
 
     @Override
@@ -180,7 +175,6 @@ public class MyIntentService extends IntentService {
                         } catch (PackageManager.NameNotFoundException e) {
                             e.printStackTrace();
                         }
-                        //new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
                         startActionGetRole(this, myApp.getPreferences().getUserID(), userName, versionName);
                         //mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                     }
@@ -215,12 +209,8 @@ public class MyIntentService extends IntentService {
                     myApp.getSession().setIsCloseMember(isMember);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    //Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
-//                        }
-//                            getVKUserInfo();
-//                        } catch (JSONException e) {
-//                            Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-//                        }
                 break;
             default:
                 mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
@@ -235,12 +225,12 @@ public class MyIntentService extends IntentService {
     private JSONObject handleActionCreatePoint(Intent intent) {
         final NewPoint point = (NewPoint) intent.getSerializableExtra(POINT);
         final String group = intent.getStringExtra(MEMBER_GROUP);
-        JSONObject result = new CreatePointRequestNew(this, point, group).request(myApp.getPreferences().getServerURI());
+        JSONObject result = new CreatePointRequest(this, point, group).request(myApp.getPreferences().getServerURI());
         return result;
     }
 
     private JSONObject handleActionGetPointList() {
-        JSONObject result = new GetPointListRequestNew(this).request(myApp.getPreferences().getServerURI());
+        JSONObject result = new GetPointListRequest(this).request(myApp.getPreferences().getServerURI());
         return result;
     }
 
@@ -248,23 +238,18 @@ public class MyIntentService extends IntentService {
         final String userID = intent.getStringExtra(USER_ID);
         final String userName = intent.getStringExtra(USER_NAME);
         final String versionName = intent.getStringExtra(VERSION_NAME);
-        return new RoleRequestNew(this, userID, userName, versionName).request(myApp.getPreferences().getServerURI());
+        return new RoleRequest(this, userID, userName, versionName).request(myApp.getPreferences().getServerURI());
     }
 
     private JSONObject handleGetUserInfoVKRequest(Intent intent) {
         final String access_token = intent.getStringExtra(ACCESS_TOKEN);
-        return new GetUserInfoVKRequestNew(this, access_token).request();
+        return new GetUserInfoVKRequest(this, access_token).request();
     }
 
     private JSONObject handleIsMemberVKRequest(Intent intent) {
         final String access_token = intent.getStringExtra(ACCESS_TOKEN);
         final String group_id = intent.getStringExtra(GROUP_ID);
-        return new IsMemberVKRequestNew(this, access_token, group_id).request();
-    }
-
-    public void onCreate() {
-        super.onCreate();
-        myApp = (MyApp) getApplicationContext();
+        return new IsMemberVKRequest(this, access_token, group_id).request();
     }
 
     public void onDestroy() {

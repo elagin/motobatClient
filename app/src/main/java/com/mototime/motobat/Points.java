@@ -1,12 +1,7 @@
 package com.mototime.motobat;
 
-import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.GetPointListRequest;
-import com.mototime.motobat.network.RequestErrors;
-
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,17 +23,17 @@ public class Points {
         return points.size();
     }
 
-    public void requestPoints(final MyApp myApp) {
-        new GetPointListRequest(new AsyncTaskCompleteListener() {
-            @Override
-            public void onTaskComplete(JSONObject response) throws JSONException {
-                if (!RequestErrors.isError(response)) {
-                    updatePointsList(response.getJSONArray(RequestErrors.VALID_RESULT));
-                    myApp.getMap().placePoints(myApp);
-                }
-            }
-        }, myApp);
-    }
+//    public void requestPoints(final MyApp myApp) {
+//        new GetPointListRequest(new AsyncTaskCompleteListener() {
+//            @Override
+//            public void onTaskComplete(JSONObject response) throws JSONException {
+//                if (!RequestErrors.isError(response)) {
+//                    updatePointsList(response.getJSONArray(RequestErrors.VALID_RESULT));
+//                    myApp.getMap().placePoints(myApp);
+//                }
+//            }
+//        }, myApp);
+//    }
 
     public void updatePointsList(JSONArray json) {
         if (points == null) {

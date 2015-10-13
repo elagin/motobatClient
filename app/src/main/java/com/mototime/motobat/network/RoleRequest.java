@@ -6,8 +6,7 @@ import java.util.HashMap;
 
 public class RoleRequest extends HTTPClient  {
 
-    public RoleRequest(AsyncTaskCompleteListener listener, Context context, String userID, String userName, String versionName) {
-        this.listener = listener;
+    public RoleRequest(Context context, String userID, String userName, String versionName) {
         this.context = context;
 
         post = new HashMap<>();
@@ -15,6 +14,5 @@ public class RoleRequest extends HTTPClient  {
         post.put("userid", userID);
         post.put("name", userName);
         post.put("versionName", versionName);
-        execute(post);
     }
 }
