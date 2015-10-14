@@ -38,8 +38,8 @@ import org.json.JSONObject;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private static String sTokenKey = "VK_ACCESS_TOKEN_FULL";
-    private static String[] sMyScope = new String[]{VKScope.WALL};
+    private static final String sTokenKey = "VK_ACCESS_TOKEN_FULL";
+    private static final String[] sMyScope = new String[]{VKScope.WALL};
     private final String appID = "4989462";
 
     private static final String CLASS_TAG = "MainActivity";
@@ -288,7 +288,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         VKUIHelper.onResume(this);
         if (VKSdk.wakeUpSession()) {
             //myApp.getSession().collectData();
-            MyIntentService.startActionIsOpenMemberVKRequest(this, myApp.getPreferences().getVkToken(), MyApp.OPEN_GROUP_ID);
+            MyIntentService.startActionIsOpenMemberVKRequest(this, myApp.getPreferences().getVkToken());
         } else {
             VKSdk.authorize(sMyScope, true, true);
         }

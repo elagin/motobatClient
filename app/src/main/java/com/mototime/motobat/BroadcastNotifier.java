@@ -8,7 +8,7 @@ import com.mototime.motobat.utils.Const;
 
 public class BroadcastNotifier {
 
-    private LocalBroadcastManager mBroadcaster;
+    private final LocalBroadcastManager mBroadcaster;
 
     /**
      * Creates a BroadcastNotifier containing an instance of LocalBroadcastManager.

@@ -25,9 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mototime.motobat.R.color.vk_black;
-
-
 public class MyGoogleMapManager extends MyMapManager {
     private static GoogleMap map;
     private static Map<String, Integer> points;

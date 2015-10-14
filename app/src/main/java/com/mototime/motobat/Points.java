@@ -9,7 +9,6 @@ import java.util.Map;
 public class Points {
 
     private Map<Integer, Point> points;
-    private MyApp myApp;
 
     public Points() {
         if (points == null) {

@@ -22,16 +22,10 @@ public class Session {
     private       int           id;
     private final MyPreferences prefs;
     private boolean isAuthorized = false;
-    private final Context context;
-    private       String  login;
-    private       String  password;
-    private MyApp   myAmp    = null;
     private Boolean isCloseMember = false;
     private Boolean isOpenMember = false;
 
     public Session(Context context, MyApp myAmp) {
-        this.context = context;
-        this.myAmp = myAmp;
         prefs = new MyPreferences(context);
         reset();
 
@@ -104,37 +98,6 @@ public class Session {
         return makePassHash(prefs.getPassword());
     }
 
-    public Boolean auth(Context context, String login, String password) {
-        this.password = password;
-        this.login = login;
-//        AuthRequest auth = new AuthRequest(context);
-//        auth.setUserID(login);
-//        auth.setPassword(password);
-//        JSONObject result = auth.execute();
-//        if (auth.isError(result)) {
-//            String isError = auth.getError(result);
-//            Toast.makeText(context, isError, Toast.LENGTH_LONG).show();
-//            isAuthorized = false;
-//        } else {
-//            try {
-//                name = result.getString("name");
-//                role = result.getString("role");
-//                id = Integer.parseInt(result.getString("id"));
-//                if (name.length() > 0) {
-//                    prefs.setUserID(login);
-//                    prefs.setPassword(password);
-//                    isAuthorized = true;
-//                } else {
-//                    isAuthorized = false;
-//                }
-//            } catch (JSONException e) {
-//                Toast.makeText(context, context.getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
-//                isAuthorized = false;
-//            }
-//        }
-        return isAuthorized;
-    }
-
     public boolean isAuthorized() {
         return isAuthorized;
     }
@@ -198,60 +161,4 @@ public class Session {
     public void setIsOpenMember(Boolean value) {
         this.isOpenMember = value;
     }
-
-    public void collectData() {
-        //new IsMemberVKRequest(new IsMemberVKCallback(), context, myAmp.getPreferences().getVkToken());
-        //new GetUserInfoVKRequest(new GetUserInfoVKCallback(), context, myAmp.getPreferences().getVkToken());
-        //new RoleRequest(new RoleCallback(), context, myAmp.getPreferences().getUserID());
-    }
-
-//    private class IsMemberVKCallback implements AsyncTaskCompleteListener {
-//        @Override
-//        public void onTaskComplete(JSONObject result) {
-//            try {
-//                isMember = result.getBoolean("response");
-//            } catch (JSONException e) {
-//            }
-//        }
-//    }
-
-//    private class RoleCallback implements AsyncTaskCompleteListener {
-//
-//        @Override
-//        public void onTaskComplete(JSONObject response) {
-//            String role = "readonly";
-//            if (!RequestErrors.isError(response)) {
-//                try {
-//                    JSONObject result = response.getJSONObject("RESULT");
-//                    role = result.getString("role");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            setRole(role);
-//        }
-//    }
-
-//    private class GetUserInfoVKCallback implements AsyncTaskCompleteListener {
-//
-//        @Override
-//        public void onTaskComplete(JSONObject response) throws JSONException {
-//            try {
-//                StringBuilder userName = new StringBuilder();
-//                JSONArray resArray = (JSONArray) response.get("response");
-//                JSONObject result = (JSONObject) resArray.get(0);
-//                String firstName = result.getString("first_name");
-//                String lastName = result.getString("last_name");
-//                if (lastName != null)
-//                    userName.append(lastName);
-//                if (firstName != null) {
-//                    if (userName.length() > 0)
-//                        userName.append(" ");
-//                    userName.append(firstName);
-//                }
-//                name = userName.toString();
-//            } catch (JSONException e) {
-//            }
-//        }
-//    }
 }

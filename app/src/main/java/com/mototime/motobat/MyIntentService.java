@@ -27,7 +27,7 @@ import org.json.JSONObject;
  */
 public class MyIntentService extends IntentService {
 
-    MyApp myApp = null;
+    private MyApp myApp = null;
 
     public static final String ACTION_GET_POINT_LIST = "com.mototime.motobat.action.GetPointList";
     public static final String ACTION_CREATE_POINT = "com.mototime.motobat.action.CreatePoint";
@@ -41,18 +41,18 @@ public class MyIntentService extends IntentService {
     public final static int RESULT_SUCCSESS = 0;
     public final static int RESULT_ERROR = 1;
 
-    public static final String USER_ID = "userID";
-    public static final String USER_NAME = "userName";
-    public static final String VERSION_NAME = "versionName";
-    public static final String ACCESS_TOKEN = "access_token";
-    public static final String GROUP_ID = "group_id";
+    private static final String USER_ID = "userID";
+    private static final String USER_NAME = "userName";
+    private static final String VERSION_NAME = "versionName";
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final String GROUP_ID = "group_id";
 
-    public static final String POINT = "point";
-    public static final String MEMBER_GROUP = "memberGroup";
+    private static final String POINT = "point";
+    private static final String MEMBER_GROUP = "memberGroup";
 
     public static final String RESULT = "RESULT";
 
-    private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
+    private final BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
 
     public MyIntentService() {
         super("MyIntentService");
@@ -95,17 +95,17 @@ public class MyIntentService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startActionIsOpenMemberVKRequest(Context context, String token, String group_id) {
+    public static void startActionIsOpenMemberVKRequest(Context context, String token) {
         Intent intent = newIntent(context, ACTION_IS_OPEN_MEMBER_VK);
         intent.putExtra(ACCESS_TOKEN, token);
-        intent.putExtra(GROUP_ID, group_id);
+        intent.putExtra(GROUP_ID, MyApp.OPEN_GROUP_ID);
         context.startService(intent);
     }
 
-    public static void startActionIsCloseMemberVKRequest(Context context, String token, String group_id) {
+    private static void startActionIsCloseMemberVKRequest(Context context, String token) {
         Intent intent = newIntent(context, ACTION_IS_CLOSE_MEMBER_VK);
         intent.putExtra(ACCESS_TOKEN, token);
-        intent.putExtra(GROUP_ID, group_id);
+        intent.putExtra(GROUP_ID, MyApp.CLOSE_GROUP_ID);
         context.startService(intent);
     }
 
@@ -183,7 +183,7 @@ public class MyIntentService extends IntentService {
                         Boolean isMember = (resultOpen.getInt("response") != 0);
                         myApp.getSession().setIsOpenMember(isMember);
                         if (isMember) {
-                            startActionIsCloseMemberVKRequest(this, myApp.getPreferences().getVkToken(), MyApp.CLOSE_GROUP_ID);
+                            startActionIsCloseMemberVKRequest(this, myApp.getPreferences().getVkToken());
                         }
                         mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                     } catch (JSONException e) {

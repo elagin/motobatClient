@@ -3,19 +3,13 @@ package com.mototime.motobat.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TableRow;
 
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
-/**
- * Created by pavel on 08.07.15.
- */
 public class Const {
     public static final SimpleDateFormat fullTimeFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
@@ -36,11 +30,6 @@ public class Const {
     // Defines the key for the log "extra" in an Intent
     public static final String EXTENDED_STATUS_LOG = "com.mototime.motobat.LOG";
 
-    public static final int STATE_ACTION_STARTED = 0;
-
-    // The background thread is done
-    public static final int STATE_ACTION_COMPLETE = 1;
-
 
     @SuppressWarnings("deprecation")
     public Const() {
@@ -48,16 +37,6 @@ public class Const {
 
     public static float getDP(Context context) {
         return context.getResources().getDisplayMetrics().density;
-    }
-
-    public static int getHeight(Context context) {
-        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-        return display.getHeight();
-    }
-
-    public static int getWidth(Context context) {
-        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-        return display.getWidth();
     }
 
     public static int getDefaultBGColor(Context context) {

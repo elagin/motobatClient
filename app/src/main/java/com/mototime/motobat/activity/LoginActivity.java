@@ -1,7 +1,6 @@
 package com.mototime.motobat.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -15,28 +14,17 @@ import android.widget.TextView;
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyPreferences;
 import com.mototime.motobat.R;
-import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.RequestErrors;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKUIHelper;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private static Context context;
     private Button logoutBtn;
     private Button loginBtn;
-    private Button cancelBtn;
     private MyApp myApp = null;
     private MyPreferences prefs;
-    private static String[] sMyScope = new String[]{VKScope.WALL};
-
-    private void enableLoginBtn() {
-        //loginBtn.setEnabled(login.getText().toString().length() > 0 && password.getText().toString().length() > 0);
-    }
+    private static final String[] sMyScope = new String[]{VKScope.WALL};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +34,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         myApp = (MyApp) getApplicationContext();
-
-        context = this;
         prefs = myApp.getPreferences();
 
-        cancelBtn = (Button) findViewById(R.id.cancel_button);
+        Button cancelBtn = (Button) findViewById(R.id.cancel_button);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +111,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     }
 
     private void fillCtrls() {
-        View accListYesterdayLine = findViewById(R.id.accListYesterdayLine);
         TextView roleView = (TextView) findViewById(R.id.role);
         TextView loggedStatus = (TextView) findViewById(R.id.auth_logged_status);
         TextView userNameView = (TextView) findViewById(R.id.user_name);
@@ -206,35 +191,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 myApp.getPreferences().setVkToken(accessToken);
                 //new IsMemberVKRequest(new IsMemberVKCallback(), context, myApp.getPreferences().getVkToken());
                 //new RoleRequest(new RoleCallback(), context, userId, myApp.getSession().getName());
-            }
-        }
-    }
-
-    private class RoleCallback implements AsyncTaskCompleteListener {
-
-        @Override
-        public void onTaskComplete(JSONObject response) {
-            String role = "readonly";
-            if (!RequestErrors.isError(response)) {
-                try {
-                    JSONObject result = response.getJSONObject("RESULT");
-                    role = result.getString("role");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            myApp.getSession().setRole(role);
-            fillCtrls();
-        }
-    }
-
-    private class IsMemberVKCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                //{"response":0}
-                result = (JSONObject) result.get("response");
-            } catch (JSONException e) {
             }
         }
     }

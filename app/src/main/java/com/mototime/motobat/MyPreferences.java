@@ -22,7 +22,7 @@ public class MyPreferences {
     private final static String VK_TOKEN_KEY = "vk_access_token";
     private final static String VK_USER_NAME = "vk_user_name";
 
-    private static String serverURI = "server";
+    private static final String serverURI = "server";
 
     private static SharedPreferences preferences;
     private static Context context;

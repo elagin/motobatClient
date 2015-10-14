@@ -88,7 +88,7 @@ public class MyUtils {
                 out.append(String.valueOf(minutes)).append(" минут");
             }
         } else {
-            if( hours > 0 )
+            if (hours > 0)
                 out.append(String.valueOf(hours)).append("ч ");
             out.append(String.valueOf(minutes)).append("м");
         }
@@ -111,7 +111,7 @@ public class MyUtils {
     }
 
     public static boolean isOnline(Context context) {
-        ConnectivityManager cm      = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }

@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * Created by pavel on 08.07.15.
- */
-public class Inflate {
+class Inflate {
     /**
      * Устанавливаем карту в контейнер.
      */

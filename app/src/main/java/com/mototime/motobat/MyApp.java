@@ -11,7 +11,6 @@ import com.mototime.motobat.maps.google.MyGoogleMapManager;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,16 +25,14 @@ public class MyApp extends Application {
 
     private final MyApp instance;
     //    private Map<Integer, Point> pointsMap;
-    public Points points;
+    private Points points;
     private MyPreferences prefs = null;
     private Session session = null;
     private MyMapManager map;
-    private VK vk;
     private Geocoder geocoder;
 
     public MyApp() {
         instance = this;
-        vk = new VK();
     }
 
     public MyPreferences getPreferences() {
@@ -76,18 +73,13 @@ public class MyApp extends Application {
         return session;
     }
 
-    public VK vk() {
-        return vk;
-    }
-
     public String getAddres(Double lat, Double lon) {
         if (geocoder == null) {
             geocoder = new Geocoder(getApplicationContext());
         }
         StringBuilder res = new StringBuilder();
-        List<Address> list = new ArrayList<>();
         try {
-            list = geocoder.getFromLocation(lat, lon, 1);
+            List<Address> list = geocoder.getFromLocation(lat, lon, 1);
             Address addr = list.get(0);
 
 
