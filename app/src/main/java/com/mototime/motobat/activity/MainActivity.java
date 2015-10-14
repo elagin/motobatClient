@@ -288,7 +288,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         VKUIHelper.onResume(this);
         if (VKSdk.wakeUpSession()) {
             //myApp.getSession().collectData();
-            //new IsMemberVKRequest(new IsMemberOpenGroupVKCallback(), this, myApp.getPreferences().getVkToken(), myApp.OPEN_GROUP_ID);
             MyIntentService.startActionIsOpenMemberVKRequest(this, myApp.getPreferences().getVkToken(), MyApp.OPEN_GROUP_ID);
         } else {
             VKSdk.authorize(sMyScope, true, true);
@@ -320,9 +319,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void getVKUserInfo() {
-//        new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
         MyIntentService.startActionGetUserInfoVKRequest(this, myApp.getPreferences().getVkToken());
-        //myApp.getPoints().requestPoints(myApp);
         MyIntentService.startActionGetPointList(this);
     }
 

@@ -46,7 +46,7 @@ public class MyApp extends Application {
 
     public Points getPoints() {
         if(points == null)
-            points = new Points(/*this*/);
+            points = new Points();
         return points;
     }
 
