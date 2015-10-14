@@ -2,12 +2,14 @@ package com.mototime.motobat.activity;
 
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,14 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mototime.motobat.MyApp;
+import com.mototime.motobat.MyIntentService;
 import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
-import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.GetUserInfoVKRequest;
-import com.mototime.motobat.network.IsMemberVKRequest;
-import com.mototime.motobat.network.RequestErrors;
-import com.mototime.motobat.network.RoleRequest;
 import com.mototime.motobat.utils.AnimateViews;
+import com.mototime.motobat.utils.Const;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -34,7 +33,6 @@ import com.vk.sdk.VKUIHelper;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.dialogs.VKCaptchaDialog;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,7 +42,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private static String[] sMyScope = new String[]{VKScope.WALL};
     private final String appID = "4989462";
 
+    private static final String CLASS_TAG = "MainActivity";
+
     public Context context;
+    ResponseStateReceiver mDownloadStateReceiver;
+
     View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop, targetView;
     ImageButton rt, gs, car, good, normal, evil, addPointBtn, cancelButton, okButton;
     private MyApp myApp = null;
@@ -105,11 +107,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         myApp = (MyApp) getApplicationContext();
         context = getApplicationContext();
 
+        // The filter's action is BROADCAST_ACTION
+        IntentFilter statusIntentFilter = new IntentFilter(Const.BROADCAST_ACTION);
+
+        // Sets the filter's category to DEFAULT
+        statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+
+        // Instantiates a new ResponseStateReceiver
+        mDownloadStateReceiver = new ResponseStateReceiver();
+
+        // Registers the ResponseStateReceiver and its intent filters
+        LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
         setContentView(R.layout.root);
 
         assignViews();
         assignButtons();
-        newPoint = new NewPoint(myApp);
+        newPoint = new NewPoint();
         myApp.createMap(this);
 
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
@@ -192,7 +205,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     AnimateViews.hide(leftMain);
                     AnimateViews.show(targetView);
                     inCreate = true;
-                    newPoint = new NewPoint(myApp);
+                    newPoint = new NewPoint();
                     evil.setAlpha(0.4f);
                     normal.setAlpha(1f);
                     good.setAlpha(0.4f);
@@ -206,9 +219,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.ok_button:
                 newPoint.setLatLng(myApp.getMap().getCenter());
                 newPoint.setText(((TextView) findViewById(R.id.inputDescription)).getText().toString());
-                newPoint.sendRequest();
+
+                if (myApp.getSession().isCloseMember()) {
+                    MyIntentService.startActionCreatePoint(this, newPoint, MyApp.CLOSE_GROUP_ID);
+                } else if (myApp.getSession().isOpenMember()) {
+                    MyIntentService.startActionCreatePoint(this, newPoint, MyApp.OPEN_GROUP_ID);
+                } else {
+                    Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
+                }
+
                 ((TextView) findViewById(R.id.inputDescription)).setText("");
-                imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(findViewById(R.id.inputDescription).getWindowToken(), 0);
             case R.id.cancel_button:
                 AnimateViews.hide(leftCreateWizard, AnimateViews.LEFT);
@@ -216,7 +237,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 AnimateViews.hide(bottomCreate, AnimateViews.BOTTOM);
                 AnimateViews.show(leftMain);
                 AnimateViews.hide(targetView);
-                imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(findViewById(R.id.inputDescription).getWindowToken(), 0);
                 ((TextView) findViewById(R.id.inputDescription)).setText("");
                 newPoint = null;
@@ -267,7 +288,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         VKUIHelper.onResume(this);
         if (VKSdk.wakeUpSession()) {
             //myApp.getSession().collectData();
-            new IsMemberVKRequest(new IsMemberOpenGroupVKCallback(), this, myApp.getPreferences().getVkToken(), myApp.OPEN_GROUP_ID);
+            MyIntentService.startActionIsOpenMemberVKRequest(this, myApp.getPreferences().getVkToken(), MyApp.OPEN_GROUP_ID);
         } else {
             VKSdk.authorize(sMyScope, true, true);
         }
@@ -297,80 +318,67 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         animateTop.setDuration(500).start();
     }
 
-    private class IsMemberOpenGroupVKCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                Boolean isMember = (result.getInt("response") != 0);
-                myApp.getSession().setIsOpenMember(isMember);
-                if (isMember)
-                    new IsMemberVKRequest(new IsMemberCloseGroupVKCallback(), context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
-                else {
-                    getVKUserInfo();
-                }
-            } catch (JSONException e) {
-                Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private class IsMemberCloseGroupVKCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                Boolean isMember = (result.getInt("response") != 0);
-                myApp.getSession().setIsCloseMember(isMember);
-                getVKUserInfo();
-            } catch (JSONException e) {
-                Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
     private void getVKUserInfo() {
-        new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
-        myApp.getPoints().requestPoints(myApp);
+        MyIntentService.startActionGetUserInfoVKRequest(this, myApp.getPreferences().getVkToken());
+        MyIntentService.startActionGetPointList(this);
     }
 
-    private class RoleCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject response) {
-            String role = "readonly";
-            if (!RequestErrors.isError(response)) {
-                try {
-                    JSONObject result = response.getJSONObject("RESULT");
-                    role = result.getString("role");
-                    myApp.getSession().setRole(role);
-                    if (role != "readonly") {
-                        //TODO Отобразить кнопку
-                        //addPointBtn
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, "Ошибка при определении роли: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
+    private class ResponseStateReceiver extends BroadcastReceiver {
+        private ResponseStateReceiver() {
+            // prevents instantiation by other packages.
         }
-    }
 
-    private class GetUserInfoCallback implements AsyncTaskCompleteListener {
-
+        /**
+         * This method is called by the system when a broadcast Intent is matched by this class'
+         * intent filters
+         *
+         * @param context An Android context
+         * @param intent  The incoming broadcast Intent
+         */
         @Override
-        public void onTaskComplete(JSONObject response) throws JSONException {
-            JSONArray resArr = (JSONArray) response.get("response");
-            if (resArr != null) {
-                JSONObject resp = (JSONObject) resArr.get(0);
-                String userName = resp.getString("first_name") + " " + resp.getString("last_name");
-                myApp.getSession().setUserName(userName);
-
-                String versionName = "0";
-                try {
-                    PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                    versionName = pInfo.versionName;
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
+        public void onReceive(Context context, Intent intent) {
+            Log.d(CLASS_TAG, "onReceive");
+            int resultCode = intent.getIntExtra(MyIntentService.RESULT_CODE, 0);
+            if (resultCode == MyIntentService.RESULT_SUCCSESS) {
+                switch (intent.getStringExtra(Const.EXTENDED_OPERATION_TYPE)) {
+                    case MyIntentService.ACTION_GET_POINT_LIST:
+                        myApp.getMap().placePoints(myApp);
+                        Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
+                        break;
+                    case MyIntentService.ACTION_CREATE_POINT:
+                        MyIntentService.startActionGetPointList(context);
+                        break;
+                    case MyIntentService.ACTION_GET_ROLE:
+                        break;
+                    case MyIntentService.ACTION_IS_OPEN_MEMBER_VK:
+                        if (!myApp.getSession().isOpenMember())
+                            getVKUserInfo();
+                        break;
+                    case MyIntentService.ACTION_IS_CLOSE_MEMBER_VK:
+                        getVKUserInfo();
+//                            Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        break;
+                    case MyIntentService.ACTION_GET_USER_INFO_VK:
+                        String userInfo = intent.getStringExtra(MyIntentService.RESULT);
+                        if (userInfo != null) {
+                            try {
+                                JSONObject res = new JSONObject(userInfo);
+                                String userName = res.getString("userName");
+                                String versionName = res.getString("versionName");
+                                MyIntentService.startActionGetRole(context, myApp.getPreferences().getUserID(), userName, versionName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
+            } else if (resultCode == MyIntentService.RESULT_ERROR) {
+                String error = intent.getStringExtra(MyIntentService.RESULT);
+                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
             }
         }
     }

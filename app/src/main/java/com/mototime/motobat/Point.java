@@ -1,6 +1,5 @@
 package com.mototime.motobat;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -11,9 +10,6 @@ import org.json.JSONObject;
 import java.util.Date;
 import java.util.Random;
 
-/**
- * Created by pavel on 07.07.15.
- */
 public class Point {
 
     public final static int NORMAL_POLICE = 1;
@@ -24,7 +20,6 @@ public class Point {
     public final static int RT = 2;
     public final static int CAR = 3;
 
-    MyApp myApp = null;
     private int id;
     private Date created;
     private int ownerID;
@@ -38,9 +33,8 @@ public class Point {
     private String text;
     private Random rnd = new Random();
 
-    public Point(JSONObject json, Context context) {
+    public Point(JSONObject json) {
         setError(false);
-        myApp = (MyApp) context.getApplicationContext();
         createPoint(json);
     }
 

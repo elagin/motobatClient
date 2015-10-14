@@ -10,6 +10,9 @@ public class RequestErrors {
     final static public String VALID_RESULT   = "RESULT";
     final static public String INVALID_RESULT = "ERROR";
 
+    final static public String VALID_VK_RESULT = "response";
+
+
     final static public String PREREQUISITES   = "PREREQUISITES";
     final static public String NO_USER         = "NO USER";
     final static public String ALREADY_IN_ROLE = "ALREADY IN ROLE";
@@ -46,6 +49,10 @@ public class RequestErrors {
 
     public static boolean isError(JSONObject response) {
         return !response.has(RequestErrors.VALID_RESULT);
+    }
+
+    public static boolean isVkError(JSONObject response) {
+        return !response.has(RequestErrors.VALID_VK_RESULT);
     }
 
     public static void showError(Context context, JSONObject response) {

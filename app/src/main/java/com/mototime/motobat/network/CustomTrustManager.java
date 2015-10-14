@@ -13,9 +13,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 
-/**
- * Created by pavel on 09.07.15.
- */
 public class CustomTrustManager {
     private static TrustManager[] trustManagers;
 

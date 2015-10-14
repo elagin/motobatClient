@@ -8,10 +8,8 @@ import com.mototime.motobat.NewPoint;
 import java.util.HashMap;
 
 public class CreatePointRequest extends HTTPClient {
-
-    public CreatePointRequest(AsyncTaskCompleteListener listener, Context context, NewPoint point, String memberGroup) {
+    public CreatePointRequest(Context context, NewPoint point, String memberGroup) {
         this.context = context;
-        this.listener = listener;
         post = new HashMap<>();
         MyApp myApp = (MyApp) context.getApplicationContext();
         post.put("method", "create");
@@ -22,6 +20,5 @@ public class CreatePointRequest extends HTTPClient {
         post.put("lng", String.valueOf(point.getLatLng().longitude));
         post.put("text", String.valueOf(point.getText()));
         post.put("memberGroup", memberGroup);
-        execute(post);
     }
 }
