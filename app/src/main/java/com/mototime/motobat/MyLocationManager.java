@@ -10,12 +10,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/**
- * Created by pavel on 08.07.15.
- */
 public class MyLocationManager {
     public static String address;
     private static Location current;

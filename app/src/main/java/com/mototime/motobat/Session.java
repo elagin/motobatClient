@@ -9,9 +9,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-/**
- * Created by pavel on 08.07.15.
- */
 public class Session {
 
     private static final String[] ReadOnly  = new String[]{"readonly", "banned", "standart", "moderator", "admin", "developer"};

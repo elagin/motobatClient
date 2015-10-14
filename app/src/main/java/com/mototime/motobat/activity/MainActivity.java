@@ -6,8 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
@@ -25,8 +23,6 @@ import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyIntentService;
 import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
-import com.mototime.motobat.network.AsyncTaskCompleteListener;
-import com.mototime.motobat.network.RequestErrors;
 import com.mototime.motobat.utils.AnimateViews;
 import com.mototime.motobat.utils.Const;
 import com.vk.sdk.VKAccessToken;
@@ -37,7 +33,6 @@ import com.vk.sdk.VKUIHelper;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.dialogs.VKCaptchaDialog;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -226,9 +221,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 newPoint.setText(((TextView) findViewById(R.id.inputDescription)).getText().toString());
 
                 if (myApp.getSession().isCloseMember()) {
-                    MyIntentService.startActionCreatePoint(this, newPoint, myApp.CLOSE_GROUP_ID);
+                    MyIntentService.startActionCreatePoint(this, newPoint, MyApp.CLOSE_GROUP_ID);
                 } else if (myApp.getSession().isOpenMember()) {
-                    MyIntentService.startActionCreatePoint(this, newPoint, myApp.OPEN_GROUP_ID);
+                    MyIntentService.startActionCreatePoint(this, newPoint, MyApp.OPEN_GROUP_ID);
                 } else {
                     Toast.makeText(context, "Вы не состоите в группе имеющей право создавать точки", Toast.LENGTH_LONG).show();
                 }
@@ -294,7 +289,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         if (VKSdk.wakeUpSession()) {
             //myApp.getSession().collectData();
             //new IsMemberVKRequest(new IsMemberOpenGroupVKCallback(), this, myApp.getPreferences().getVkToken(), myApp.OPEN_GROUP_ID);
-            MyIntentService.startActionIsOpenMemberVKRequest(this, myApp.getPreferences().getVkToken(), myApp.OPEN_GROUP_ID);
+            MyIntentService.startActionIsOpenMemberVKRequest(this, myApp.getPreferences().getVkToken(), MyApp.OPEN_GROUP_ID);
         } else {
             VKSdk.authorize(sMyScope, true, true);
         }
@@ -324,88 +319,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         animateTop.setDuration(500).start();
     }
 
-    private class IsMemberOpenGroupVKCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                Boolean isMember = (result.getInt("response") != 0);
-                myApp.getSession().setIsOpenMember(isMember);
-                if (isMember)
-                    //    new IsMemberVKRequest(new IsMemberCloseGroupVKCallback(), context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
-                    MyIntentService.startActionIsCloseMemberVKRequest(context, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
-                else {
-                    getVKUserInfo();
-                }
-            } catch (JSONException e) {
-                Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private class IsMemberCloseGroupVKCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject result) {
-            try {
-                Boolean isMember = (result.getInt("response") != 0);
-                myApp.getSession().setIsCloseMember(isMember);
-                getVKUserInfo();
-            } catch (JSONException e) {
-                Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
     private void getVKUserInfo() {
 //        new GetUserInfoVKRequest(new GetUserInfoCallback(), context, myApp.getPreferences().getVkToken());
         MyIntentService.startActionGetUserInfoVKRequest(this, myApp.getPreferences().getVkToken());
         //myApp.getPoints().requestPoints(myApp);
         MyIntentService.startActionGetPointList(this);
     }
-
-    private class RoleCallback implements AsyncTaskCompleteListener {
-        @Override
-        public void onTaskComplete(JSONObject response) {
-            String role = "readonly";
-            if (!RequestErrors.isError(response)) {
-                try {
-                    JSONObject result = response.getJSONObject("RESULT");
-                    role = result.getString("role");
-                    myApp.getSession().setRole(role);
-                    if (role != "readonly") {
-                        //TODO Отобразить кнопку
-                        //addPointBtn
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, "Ошибка при определении роли: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-
-    private class GetUserInfoCallback implements AsyncTaskCompleteListener {
-
-        @Override
-        public void onTaskComplete(JSONObject response) throws JSONException {
-            JSONArray resArr = (JSONArray) response.get("response");
-            if (resArr != null) {
-                JSONObject resp = (JSONObject) resArr.get(0);
-                String userName = resp.getString("first_name") + " " + resp.getString("last_name");
-                myApp.getSession().setUserName(userName);
-
-                String versionName = "0";
-                try {
-                    PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                    versionName = pInfo.versionName;
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                //new RoleRequest(new RoleCallback(), context, myApp.getPreferences().getUserID(), userName, versionName);
-                MyIntentService.startActionGetRole(context, myApp.getPreferences().getUserID(), userName, versionName);
-            }
-        }
-    }
-
 
     private class ResponseStateReceiver extends BroadcastReceiver {
         private ResponseStateReceiver() {
@@ -422,7 +341,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(CLASS_TAG, "onReceive");
-            int resultCode = intent.getIntExtra(MyIntentService.RESUIL_CODE, 0);
+            int resultCode = intent.getIntExtra(MyIntentService.RESULT_CODE, 0);
             if (resultCode == MyIntentService.RESULT_SUCCSESS) {
                 switch (intent.getStringExtra(Const.EXTENDED_OPERATION_TYPE)) {
                     case MyIntentService.ACTION_GET_POINT_LIST:
@@ -441,6 +360,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     case MyIntentService.ACTION_IS_CLOSE_MEMBER_VK:
                         getVKUserInfo();
 //                            Toast.makeText(context, "Ошибка при проверке членства в группе: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        break;
+                    case MyIntentService.ACTION_GET_USER_INFO_VK:
+                        String userInfo = intent.getStringExtra(MyIntentService.RESULT);
+                        if (userInfo != null) {
+                            try {
+                                JSONObject res = new JSONObject(userInfo);
+                                String userName = res.getString("userName");
+                                String versionName = res.getString("versionName");
+                                MyIntentService.startActionGetRole(context, myApp.getPreferences().getUserID(), userName, versionName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         break;
                     default:
                         break;

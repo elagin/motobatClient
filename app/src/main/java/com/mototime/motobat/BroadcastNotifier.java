@@ -6,9 +6,6 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.mototime.motobat.utils.Const;
 
-/**
- * Created by elagin on 08.10.15.
- */
 public class BroadcastNotifier {
 
     private LocalBroadcastManager mBroadcaster;
@@ -40,7 +37,7 @@ public class BroadcastNotifier {
         localIntent.setAction(Const.BROADCAST_ACTION);
 
         // Puts the status into the Intent
-        localIntent.putExtra(MyIntentService.RESUIL_CODE, status);
+        localIntent.putExtra(MyIntentService.RESULT_CODE, status);
         localIntent.putExtra(Const.EXTENDED_OPERATION_TYPE, type);
         if (!result.isEmpty())
             localIntent.putExtra(MyIntentService.RESULT, result);

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.mototime.motobat.network.CreatePointRequest;
@@ -30,7 +29,6 @@ public class MyIntentService extends IntentService {
 
     MyApp myApp = null;
 
-    public static final String ACTION = "action";
     public static final String ACTION_GET_POINT_LIST = "com.mototime.motobat.action.GetPointList";
     public static final String ACTION_CREATE_POINT = "com.mototime.motobat.action.CreatePoint";
     public static final String ACTION_GET_ROLE = "com.mototime.motobat.action.GetRole";
@@ -38,7 +36,7 @@ public class MyIntentService extends IntentService {
     public static final String ACTION_IS_OPEN_MEMBER_VK = "com.mototime.motobat.action.IsOpenMemberVK";
     public static final String ACTION_IS_CLOSE_MEMBER_VK = "com.mototime.motobat.action.IsCloseMemberVK";
 
-    public static final String RESUIL_CODE = "result_code";
+    public static final String RESULT_CODE = "result_code";
 
     public final static int RESULT_SUCCSESS = 0;
     public final static int RESULT_ERROR = 1;
@@ -114,9 +112,6 @@ public class MyIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         final String action = intent.getAction();
-        Bundle bundle = new Bundle();
-        bundle.putString(ACTION, action);
-
         switch (action) {
             case ACTION_CREATE_POINT:
                 JSONObject response = handleActionCreatePoint(intent);
@@ -135,6 +130,7 @@ public class MyIntentService extends IntentService {
                         myApp.getPoints().updatePointsList(pointList.getJSONArray(RESULT));
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, e.getLocalizedMessage());
                     }
                     mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                 }
@@ -146,16 +142,12 @@ public class MyIntentService extends IntentService {
                 } else {
                     String role = "readonly";
                     try {
-                        JSONObject result = roleResponse.getJSONObject(RESULT);
-                        role = result.getString("role");
+                        role = roleResponse.getJSONObject(RESULT).getString("role");
                         myApp.getSession().setRole(role);
-                        if (role != "readonly") {
-                            //TODO Отобразить кнопку
-                            //addPointBtn
-                        }
                         mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        myApp.getSession().setRole(role);
                         mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, e.getLocalizedMessage());
                     }
                 }
@@ -167,25 +159,18 @@ public class MyIntentService extends IntentService {
                 } else {
                     try {
                         JSONArray resArr = (JSONArray) userInfo.get("response");
-                        if (resArr != null) {
-                            JSONObject resp = (JSONObject) resArr.get(0);
-                            String userName = resp.getString("first_name") + " " + resp.getString("last_name");
-                            myApp.getSession().setUserName(userName);
-                            mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
-
-                            String versionName = "0";
-                            try {
-                                PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                                versionName = pInfo.versionName;
-                            } catch (PackageManager.NameNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                            startActionGetRole(this, myApp.getPreferences().getUserID(), userName, versionName);
-                        }
-
+                        JSONObject resp = (JSONObject) resArr.get(0);
+                        final String userName = resp.getString("first_name") + " " + resp.getString("last_name");
+                        myApp.getSession().setUserName(userName);
+                        PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                        JSONObject userInfoJ = new JSONObject().put("userName", userName).put("versionName", pInfo.versionName);
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, userInfoJ.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                         mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, e.getLocalizedMessage());
+                    } catch (PackageManager.NameNotFoundException pme) {
+                        pme.printStackTrace();
+                        mBroadcaster.broadcastIntentWithState(action, RESULT_ERROR, pme.getLocalizedMessage());
                     }
                 }
                 break;
@@ -198,7 +183,7 @@ public class MyIntentService extends IntentService {
                         Boolean isMember = (resultOpen.getInt("response") != 0);
                         myApp.getSession().setIsOpenMember(isMember);
                         if (isMember) {
-                            startActionIsCloseMemberVKRequest(this, myApp.getPreferences().getVkToken(), myApp.CLOSE_GROUP_ID);
+                            startActionIsCloseMemberVKRequest(this, myApp.getPreferences().getVkToken(), MyApp.CLOSE_GROUP_ID);
                         }
                         mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                     } catch (JSONException e) {
@@ -212,10 +197,8 @@ public class MyIntentService extends IntentService {
                 if (RequestErrors.isVkError(resultClose)) {
                     returnError(resultClose, action);
                 } else {
-                    Boolean isMember = null;
                     try {
-                        isMember = (resultClose.getInt("response") != 0);
-                        myApp.getSession().setIsCloseMember(isMember);
+                        myApp.getSession().setIsCloseMember(resultClose.getInt("response") != 0);
                         mBroadcaster.broadcastIntentWithState(action, RESULT_SUCCSESS, "");
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -236,13 +219,11 @@ public class MyIntentService extends IntentService {
     private JSONObject handleActionCreatePoint(Intent intent) {
         final NewPoint point = (NewPoint) intent.getSerializableExtra(POINT);
         final String group = intent.getStringExtra(MEMBER_GROUP);
-        JSONObject result = new CreatePointRequest(this, point, group).request(myApp.getPreferences().getServerURI());
-        return result;
+        return new CreatePointRequest(this, point, group).request(myApp.getPreferences().getServerURI());
     }
 
     private JSONObject handleActionGetPointList() {
-        JSONObject result = new GetPointListRequest(this).request(myApp.getPreferences().getServerURI());
-        return result;
+        return new GetPointListRequest(this).request(myApp.getPreferences().getServerURI());
     }
 
     private JSONObject handleRoleRequest(Intent intent) {

@@ -14,13 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by pavel on 07.07.15.
- */
 public class MyUtils {
-    public static boolean isInteger(String s) {
-        return isInteger(s, 10);
-    }
 
     @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
     public static boolean isInteger(String s, int radix) {

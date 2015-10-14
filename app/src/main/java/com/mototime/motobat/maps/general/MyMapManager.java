@@ -5,9 +5,6 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
-/**
- * Created by pavel on 08.07.15.
- */
 public abstract class MyMapManager {
     public static final String OSM = "osm";
     public static final String GOOGLE = "google";

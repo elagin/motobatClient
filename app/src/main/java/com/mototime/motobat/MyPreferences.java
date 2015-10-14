@@ -10,10 +10,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by pavel on 08.07.15.
- */
-
 @SuppressLint("CommitPrefEdits")
 public class MyPreferences {
 
