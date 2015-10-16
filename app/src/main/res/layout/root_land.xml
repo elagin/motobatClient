@@ -1,179 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_land"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/root_land">
+    android:layout_height="match_parent">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        tools:context=".MapsActivity" />
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/notify_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:id="@+id/notify_top">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_notify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Уведомление"
-            android:background="#8cff0000" />
+            android:background="#8cff0000"
+            android:text="Уведомление" />
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/create_left"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:gravity="bottom|center_horizontal"
-        android:id="@+id/create_left"
-        android:background="#22000000">
+        android:orientation="horizontal">
 
-        <ImageButton
+        <LinearLayout
+            android:id="@+id/create_bottomes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/good_police"
-            android:background="@drawable/helmet_good"
-            android:alpha="0.4"
-            android:layout_margin="8dp" />
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/normal_police"
-            android:background="@drawable/helmet"
-            android:layout_margin="8dp" />
+            <ImageButton
+                android:id="@+id/ok_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/ok"
+                android:cropToPadding="false" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/evil_police"
-            android:background="@drawable/helmet_bad"
-            android:alpha="0.4"
-            android:layout_margin="8dp" />
+            <ImageButton
+                android:id="@+id/cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/cancel" />
 
-        <EditText
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/create_bottom_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/inputDescription"
-            android:layout_gravity="center"
-            android:textColor="#f000"
-            android:maxLines="2"
-            android:hint="Введите описание"
-            android:enabled="true"
-            android:background="#ffff"
-            android:lines="2"
-            android:textColorHint="#faaa"
-            android:textAlignment="center" />
-    </LinearLayout>
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_toLeftOf="@id/create_bottomes"
+            android:gravity="left">
+
+            <EditText
+                android:id="@+id/inputDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#ffff"
+                android:enabled="true"
+                android:hint="Введите описание"
+                android:lines="2"
+                android:maxLines="2"
+                android:textAlignment="center"
+                android:textColor="#f000"
+                android:textColorHint="#faaa" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/create_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
+        android:background="#22000000"
         android:gravity="top|center_horizontal"
-        android:id="@+id/create_right"
-        android:background="#22000000">
+        android:orientation="horizontal">
 
-        <ImageButton
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/rt"
-            android:background="@drawable/rt"
-            android:layout_margin="8dp" />
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/gs"
-            android:background="@drawable/gs"
-            android:layout_margin="8dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.5"
+                android:orientation="horizontal"
+                android:gravity="left">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/car"
-            android:background="@drawable/car"
-            android:layout_margin="8dp" />
+                <ImageButton
+                    android:id="@+id/good_police"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="8dp"
+                    android:alpha="0.4"
+                    android:background="@drawable/helmet_good" />
 
+                <ImageButton
+                    android:id="@+id/normal_police"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/helmet" />
+
+                <ImageButton
+                    android:id="@+id/evil_police"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="8dp"
+                    android:alpha="0.4"
+                    android:background="@drawable/helmet_bad" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.5"
+                android:orientation="horizontal"
+                android:gravity="right">
+
+                <ImageButton
+                    android:id="@+id/rt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rt" />
+
+                <ImageButton
+                    android:id="@+id/gs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/gs" />
+
+                <ImageButton
+                    android:id="@+id/car"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/car" />
+            </LinearLayout>
+
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/main_left"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="left|center_vertical"
-        android:id="@+id/main_left">
+        android:orientation="horizontal">
 
         <ImageButton
+            android:id="@+id/create_wizard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/create_wizard"
-            android:background="@drawable/create"
-            android:layout_margin="8dp" />
+            android:layout_margin="8dp"
+            android:background="@drawable/create" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:id="@+id/create_bottom">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/create_bottom_inner"
-            android:layout_gravity="bottom"
-            android:gravity="center_horizontal">
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ok_button"
-                android:background="@drawable/ok"
-                android:cropToPadding="false"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="8dp"
-                android:layout_marginRight="16dp" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/cancel_button"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/cancel"
-                android:layout_margin="8dp"
-                android:layout_marginLeft="16dp" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/target_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal"
         android:layout_gravity="center"
-        android:id="@+id/target_view"
+        android:contentDescription="Введите описание"
         android:focusable="false"
-        android:contentDescription="Введите описание">
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView2"
             android:src="@drawable/target" />
     </LinearLayout>
 
