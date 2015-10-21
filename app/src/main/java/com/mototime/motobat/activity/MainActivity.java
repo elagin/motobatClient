@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String CLASS_TAG = "MainActivity";
 
     private Context context;
-    private ResponseStateReceiver mDownloadStateReceiver;
 
     private View leftCreateWizard;
     private View rightCreateWizard;
@@ -59,9 +58,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton good;
     private ImageButton normal;
     private ImageButton evil;
-    private ImageButton addPointBtn;
-    private ImageButton cancelButton;
-    private ImageButton okButton;
     private MyApp myApp = null;
     private TextView textNotify;
     private boolean inCreate;
@@ -127,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 
         // Instantiates a new ResponseStateReceiver
-        mDownloadStateReceiver = new ResponseStateReceiver();
+        ResponseStateReceiver mDownloadStateReceiver = new ResponseStateReceiver();
 
         // Registers the ResponseStateReceiver and its intent filters
         LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
@@ -146,9 +142,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void assignButtons() {
-        addPointBtn = (ImageButton) findViewById(R.id.create_wizard);
-        okButton = (ImageButton) findViewById(R.id.ok_button);
-        cancelButton = (ImageButton) findViewById(R.id.cancel_button);
+        ImageButton addPointBtn = (ImageButton) findViewById(R.id.create_wizard);
+        ImageButton okButton = (ImageButton) findViewById(R.id.ok_button);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.cancel_button);
 
         good = (ImageButton) findViewById(R.id.good_police);
         evil = (ImageButton) findViewById(R.id.evil_police);
@@ -203,9 +199,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         InputMethodManager imm;
         switch (id) {
-            case R.id.login_btn:
-                startActivity(new Intent(this, LoginActivity.class));
-                break;
             case R.id.create_wizard:
                 if (myApp.getSession().isRO()) {
                     Toast.makeText(context, "Вам запрещено создавать точки", Toast.LENGTH_LONG).show();
