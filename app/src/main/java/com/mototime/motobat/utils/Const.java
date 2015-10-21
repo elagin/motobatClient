@@ -31,10 +31,6 @@ public class Const {
     public static final String EXTENDED_STATUS_LOG = "com.mototime.motobat.LOG";
 
 
-    @SuppressWarnings("deprecation")
-    public Const() {
-    }
-
     public static float getDP(Context context) {
         return context.getResources().getDisplayMetrics().density;
     }
