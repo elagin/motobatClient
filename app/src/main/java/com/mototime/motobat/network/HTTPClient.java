@@ -25,8 +25,8 @@ public abstract class HTTPClient {
     private final static String CHARSET = "UTF-8";
     private final static String USERAGENT = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
 
-    Context context;
-    public Map<String, String> post;
+    protected Context context;
+    protected Map<String, String> post;
 
     public JSONObject request(URL url) {
         if (!MyUtils.isOnline(context)) {

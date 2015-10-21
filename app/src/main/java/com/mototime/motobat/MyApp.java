@@ -23,7 +23,6 @@ public class MyApp extends Application {
     public static final String CLOSE_GROUP_ID = "98656839"; // Приложение
     public static final String OPEN_GROUP_ID = "68397238"; // mototimes
 
-    private final MyApp instance;
     //    private Map<Integer, Point> pointsMap;
     private Points points;
     private MyPreferences prefs = null;
@@ -32,7 +31,6 @@ public class MyApp extends Application {
     private Geocoder geocoder;
 
     public MyApp() {
-        instance = this;
     }
 
     public MyPreferences getPreferences() {
