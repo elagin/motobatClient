@@ -31,7 +31,7 @@ public class Point {
     private int alignment;
     private int transport;
     private String text;
-    private Random rnd = new Random();
+    private final Random rnd = new Random();
 
     public Point(JSONObject json) {
         setError(false);

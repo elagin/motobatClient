@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +36,7 @@ import com.vk.sdk.dialogs.VKCaptchaDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String sTokenKey = "VK_ACCESS_TOKEN_FULL";
     private static final String[] sMyScope = new String[]{VKScope.WALL};
@@ -44,16 +44,29 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private static final String CLASS_TAG = "MainActivity";
 
-    public Context context;
-    ResponseStateReceiver mDownloadStateReceiver;
+    private Context context;
+    private ResponseStateReceiver mDownloadStateReceiver;
 
-    View leftCreateWizard, rightCreateWizard, bottomCreate, leftMain, notifyTop, targetView;
-    ImageButton rt, gs, car, good, normal, evil, addPointBtn, cancelButton, okButton;
+    private View leftCreateWizard;
+    private View rightCreateWizard;
+    private View bottomCreate;
+    private View leftMain;
+    private View notifyTop;
+    private View targetView;
+    private ImageButton rt;
+    private ImageButton gs;
+    private ImageButton car;
+    private ImageButton good;
+    private ImageButton normal;
+    private ImageButton evil;
+    private ImageButton addPointBtn;
+    private ImageButton cancelButton;
+    private ImageButton okButton;
     private MyApp myApp = null;
     private TextView textNotify;
     private boolean inCreate;
     private NewPoint newPoint;
-    private VKSdkListener sdkListener = new VKSdkListener() {
+    private final VKSdkListener sdkListener = new VKSdkListener() {
         @Override
         public void onCaptchaError(VKError captchaError) {
             new VKCaptchaDialog(captchaError).show();
