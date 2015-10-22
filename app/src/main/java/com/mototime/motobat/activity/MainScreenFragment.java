@@ -1,6 +1,7 @@
 package com.mototime.motobat.activity;
 
 import android.app.Fragment;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,9 +23,14 @@ public class MainScreenFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.main_screen_fragment, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = null;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            view = inflater.inflate(R.layout.root_land, container, false);
+        } else {
+            view = inflater.inflate(R.layout.root, container, false);
+        }
+        return view;
     }
 
     /**
@@ -41,6 +47,4 @@ public class MainScreenFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-
 }

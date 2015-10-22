@@ -1,15 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:id="@+id/root">
+<FrameLayout
+    android:id="@+id/main_frame_applications"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:id="@+id/map"
-              tools:context=".MapsActivity"
-              android:name="com.google.android.gms.maps.SupportMapFragment" />
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        tools:context=".MapsActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -19,19 +21,19 @@
         android:id="@+id/notify_top">
 
         <TextView
-                android:id="@+id/text_notify"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Уведомление"
-                android:background="#8cff0000" />
+            android:id="@+id/text_notify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Уведомление"
+            android:background="#8cff0000" />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/create_left"
+        android:id="@+id/alignment_type"
         android:gravity="center_vertical"
         android:background="#22000000">
 
@@ -41,14 +43,14 @@
             android:id="@+id/good_police"
             android:background="@drawable/helmet_good"
             android:alpha="0.4"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/normal_police"
             android:background="@drawable/helmet"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -56,14 +58,14 @@
             android:id="@+id/evil_police"
             android:background="@drawable/helmet_bad"
             android:alpha="0.4"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp" />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/create_right"
+        android:id="@+id/create_vehicle_types"
         android:gravity="center_vertical|end|right"
         android:layout_gravity="right"
         android:background="#22000000">
@@ -73,21 +75,21 @@
             android:layout_height="wrap_content"
             android:id="@+id/rt"
             android:background="@drawable/rt"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/gs"
             android:background="@drawable/gs"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/car"
             android:background="@drawable/car"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp" />
 
     </LinearLayout>
 
@@ -96,15 +98,14 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="left|center_vertical"
-        android:id="@+id/main_left"
-        >
+        android:id="@+id/create_add">
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/create_wizard"
             android:background="@drawable/create"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp" />
 
     </LinearLayout>
 
@@ -114,7 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="bottom"
-        android:id="@+id/create_bottom">
+        android:id="@+id/create_ok_cancel_edit">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -132,7 +133,7 @@
                 android:cropToPadding="false"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="8dp"
-                android:layout_marginRight="16dp"/>
+                android:layout_marginRight="16dp" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -141,7 +142,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/cancel"
                 android:layout_margin="8dp"
-                android:layout_marginLeft="16dp"/>
+                android:layout_marginLeft="16dp" />
         </LinearLayout>
 
         <EditText
@@ -174,7 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageView2"
-            android:src="@drawable/target"/>
+            android:src="@drawable/target" />
     </LinearLayout>
 
 </FrameLayout>

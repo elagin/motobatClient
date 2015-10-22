@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String CLASS_TAG = "MainActivity";
 
     private Context context;
-    private ResponseStateReceiver mDownloadStateReceiver;
 
     private View leftCreateWizard;
     private View rightCreateWizard;
@@ -59,9 +58,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton good;
     private ImageButton normal;
     private ImageButton evil;
-    private ImageButton addPointBtn;
-    private ImageButton cancelButton;
-    private ImageButton okButton;
     private MyApp myApp = null;
     private TextView textNotify;
     private boolean inCreate;
@@ -127,11 +123,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 
         // Instantiates a new ResponseStateReceiver
-        mDownloadStateReceiver = new ResponseStateReceiver();
+        ResponseStateReceiver mDownloadStateReceiver = new ResponseStateReceiver();
 
         // Registers the ResponseStateReceiver and its intent filters
         LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
-        setContentView(R.layout.root);
+        setContentView(R.layout.main_screen_fragment);
 
         assignViews();
         assignButtons();
@@ -146,9 +142,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void assignButtons() {
-        addPointBtn = (ImageButton) findViewById(R.id.create_wizard);
-        okButton = (ImageButton) findViewById(R.id.ok_button);
-        cancelButton = (ImageButton) findViewById(R.id.cancel_button);
+        ImageButton addPointBtn = (ImageButton) findViewById(R.id.create_wizard);
+        ImageButton okButton = (ImageButton) findViewById(R.id.ok_button);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.cancel_button);
 
         good = (ImageButton) findViewById(R.id.good_police);
         evil = (ImageButton) findViewById(R.id.evil_police);
@@ -170,10 +166,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void assignViews() {
-        leftCreateWizard = this.findViewById(R.id.create_left);
-        rightCreateWizard = this.findViewById(R.id.create_right);
-        bottomCreate = this.findViewById(R.id.create_bottom);
-        leftMain = this.findViewById(R.id.main_left);
+        leftCreateWizard = this.findViewById(R.id.alignment_type);
+        rightCreateWizard = this.findViewById(R.id.create_vehicle_types);
+        bottomCreate = this.findViewById(R.id.create_ok_cancel_edit);
+        leftMain = this.findViewById(R.id.create_add);
         notifyTop = this.findViewById((R.id.notify_top));
         textNotify = (TextView) findViewById(R.id.text_notify);
         targetView = this.findViewById((R.id.target_view));
@@ -203,9 +199,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         InputMethodManager imm;
         switch (id) {
-            case R.id.login_btn:
-                startActivity(new Intent(this, LoginActivity.class));
-                break;
             case R.id.create_wizard:
                 if (myApp.getSession().isRO()) {
                     Toast.makeText(context, "Вам запрещено создавать точки", Toast.LENGTH_LONG).show();
