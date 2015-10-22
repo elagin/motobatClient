@@ -166,10 +166,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void assignViews() {
-        leftCreateWizard = this.findViewById(R.id.create_left);
-        rightCreateWizard = this.findViewById(R.id.create_right);
-        bottomCreate = this.findViewById(R.id.create_bottom);
-        leftMain = this.findViewById(R.id.main_left);
+        leftCreateWizard = this.findViewById(R.id.alignment_type);
+        rightCreateWizard = this.findViewById(R.id.create_vehicle_types);
+        bottomCreate = this.findViewById(R.id.create_ok_cancel_edit);
+        leftMain = this.findViewById(R.id.create_add);
         notifyTop = this.findViewById((R.id.notify_top));
         textNotify = (TextView) findViewById(R.id.text_notify);
         targetView = this.findViewById((R.id.target_view));

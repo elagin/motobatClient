@@ -29,7 +29,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/create_left"
+        android:id="@+id/create_ok_cancel_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -109,6 +109,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
                 android:orientation="horizontal"
+                android:id="@+id/alignment_type"
                 android:gravity="left">
 
                 <ImageButton
@@ -142,6 +143,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:id="@+id/create_vehicle_types"
                 android:layout_weight="0.5"
                 android:orientation="horizontal"
                 android:gravity="right">
@@ -173,7 +175,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/main_left"
+        android:id="@+id/create_add"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="left|center_vertical"

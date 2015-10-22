@@ -33,7 +33,7 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/create_left"
+        android:id="@+id/alignment_type"
         android:gravity="center_vertical"
         android:background="#22000000">
 
@@ -65,7 +65,7 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/create_right"
+        android:id="@+id/create_vehicle_types"
         android:gravity="center_vertical|end|right"
         android:layout_gravity="right"
         android:background="#22000000">
@@ -98,7 +98,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="left|center_vertical"
-        android:id="@+id/main_left">
+        android:id="@+id/create_add">
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="bottom"
-        android:id="@+id/create_bottom">
+        android:id="@+id/create_ok_cancel_edit">
 
         <LinearLayout
             android:orientation="horizontal"
