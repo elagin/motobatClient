@@ -28,7 +28,7 @@ public class MainScreenFragment extends Fragment {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             view = inflater.inflate(R.layout.root_land, container, false);
         } else {
-            view = inflater.inflate(R.layout.main_screen_fragment, container, false);
+            view = inflater.inflate(R.layout.root, container, false);
         }
         return view;
     }

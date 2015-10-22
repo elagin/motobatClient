@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Registers the ResponseStateReceiver and its intent filters
         LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
-        setContentView(R.layout.root);
+        setContentView(R.layout.main_screen_fragment);
 
         assignViews();
         assignButtons();
