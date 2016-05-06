@@ -12,7 +12,6 @@ public class RequestErrors {
 
     final static public String VALID_VK_RESULT = "response";
 
-
     final static public String PREREQUISITES   = "PREREQUISITES";
     final static public String NO_USER         = "NO USER";
     final static public String ALREADY_IN_ROLE = "ALREADY IN ROLE";

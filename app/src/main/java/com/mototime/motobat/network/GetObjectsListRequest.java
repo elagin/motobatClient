@@ -4,11 +4,11 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-public class GetPointListRequest extends HTTPClient  {
+public class GetObjectsListRequest extends HTTPClient {
 
-    public GetPointListRequest(Context context) {
+    public GetObjectsListRequest(Context context) {
         this.context = context;
         post = new HashMap<>();
-        post.put("method", "getlist");
+        post.put("method", "getobjects");
     }
 }

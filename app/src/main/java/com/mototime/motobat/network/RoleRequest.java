@@ -4,7 +4,7 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-public class RoleRequest extends HTTPClient  {
+public class RoleRequest extends HTTPClient {
 
     public RoleRequest(Context context, String userID, String userName, String versionName) {
         this.context = context;

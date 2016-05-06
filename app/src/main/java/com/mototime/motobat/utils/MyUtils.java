@@ -16,43 +16,8 @@ import java.util.regex.Pattern;
 
 public class MyUtils {
 
-    @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
-    public static boolean isInteger(String s, int radix) {
-        if (s.isEmpty())
-            return false;
-        for (int i = 0; i < s.length(); i++) {
-            if (i == 0 && s.charAt(i) == '-') {
-                if (s.length() == 1)
-                    return false;
-                else
-                    continue;
-            }
-            if (Character.digit(s.charAt(i), radix) < 0)
-                return false;
-        }
-        return true;
-    }
-
     public static LatLng LocationToLatLng(Location location) {
         return new LatLng(location.getLatitude(), location.getLongitude());
-    }
-
-    public static Location LatLngToLocation(LatLng latlng) {
-        Location location = new Location(LocationManager.GPS_PROVIDER);
-        location.setLatitude(latlng.latitude);
-        location.setLongitude(latlng.longitude);
-        location.setAccuracy(0);
-        return location;
-    }
-
-    public static List<String> getPhonesFromText(String in) {
-        List<String> out = new ArrayList<>();
-        in = in + ".";
-        Matcher matcher = Pattern.compile("[7|8][ \\(-]?[\\d]{3}[ \\)-]?[\\d]{3}[ -]?[\\d]{2}[ -]?[\\d]{2}[\\D]").matcher(in);
-        while (matcher.find()) {
-            out.add("+7" + matcher.group().replaceAll("[^0-9]", "").substring(1));
-        }
-        return out;
     }
 
     public static String getIntervalFromNowInText(Date date) {
@@ -94,20 +59,6 @@ public class MyUtils {
         }
         out.append(" назад");
         return out.toString();
-    }
-
-    public static String getStringTime(Date date) {
-        return getStringTime(date, false);
-    }
-
-    public static String getStringTime(Date date, boolean full) {
-        String out;
-        if (full) {
-            out = Const.fullTimeFormat.format(date);
-        } else {
-            out = Const.timeFormat.format(date);
-        }
-        return out;
     }
 
     public static boolean isOnline(Context context) {

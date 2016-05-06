@@ -1,4 +1,6 @@
-package com.mototime.motobat;
+package com.mototime.motobat.content.police;
+
+import com.mototime.motobat.content.police.PolicePoint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -6,11 +8,11 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Points {
+public class PolicePoints {
 
-    private Map<Integer, Point> points;
+    private Map<Integer, PolicePoint> points;
 
-    public Points() {
+    public PolicePoints() {
         if (points == null) {
             points = new HashMap<>();
         }
@@ -27,26 +29,19 @@ public class Points {
         points.clear();
         for (int i = 0; i < json.length(); i++) {
             try {
-                Point point = new Point(json.getJSONObject(i));
-                if (!point.isError()) {
-                    points.put(point.getId(), point);
-                }
+                PolicePoint point = new PolicePoint(json.getJSONObject(i));
+                points.put(point.id, point);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public Point getPoint(int id) {
+    public PolicePoint getPoint(int id) {
         return points.get(id);
     }
 
-    public Map<Integer, Point> getMap() {
+    public Map<Integer, PolicePoint> getMap() {
         return points;
     }
-/*
-    public enum Sort {
-        FORWARD, BACKWARD
-    }
-    */
 }

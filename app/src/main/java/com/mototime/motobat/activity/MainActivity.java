@@ -21,8 +21,8 @@ import android.widget.Toast;
 
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyIntentService;
-import com.mototime.motobat.NewPoint;
 import com.mototime.motobat.R;
+import com.mototime.motobat.content.police.NewPoint;
 import com.mototime.motobat.utils.AnimateViews;
 import com.mototime.motobat.utils.Const;
 import com.vk.sdk.VKAccessToken;
@@ -38,30 +38,27 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String sTokenKey = "VK_ACCESS_TOKEN_FULL";
-    private static final String[] sMyScope = new String[]{VKScope.WALL};
-    private final String appID = "4989462";
+    private static final String   sTokenKey = "VK_ACCESS_TOKEN_FULL";
+    private static final String[] sMyScope  = new String[]{ VKScope.WALL };
+    private static final String   appID     = "4989462";
 
     private static final String CLASS_TAG = "MainActivity";
 
     private Context context;
 
-    private View leftCreateWizard;
-    private View rightCreateWizard;
-    private View bottomCreate;
-    private View leftMain;
-    private View notifyTop;
-    private View targetView;
+    private View        leftCreateWizard;
+    private View        rightCreateWizard;
+    private View        bottomCreate;
+    private View        leftMain;
+    private View        notifyTop;
+    private View        targetView;
     private ImageButton rt;
     private ImageButton gs;
     private ImageButton car;
     private ImageButton good;
     private ImageButton normal;
     private ImageButton evil;
-    private MyApp myApp = null;
-    private TextView textNotify;
-    private boolean inCreate;
-    private NewPoint newPoint;
+    private       MyApp         myApp       = null;
     private final VKSdkListener sdkListener = new VKSdkListener() {
         @Override
         public void onCaptchaError(VKError captchaError) {
@@ -102,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             onReceiveNewToken(token);
         }
     };
+    private TextView textNotify;
+    private boolean  inCreate;
+    private NewPoint newPoint;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void assignButtons() {
-        ImageButton addPointBtn = (ImageButton) findViewById(R.id.create_wizard);
-        ImageButton okButton = (ImageButton) findViewById(R.id.ok_button);
+        ImageButton addPointBtn  = (ImageButton) findViewById(R.id.create_wizard);
+        ImageButton okButton     = (ImageButton) findViewById(R.id.ok_button);
         ImageButton cancelButton = (ImageButton) findViewById(R.id.cancel_button);
 
         good = (ImageButton) findViewById(R.id.good_police);
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
+        int                id = v.getId();
         InputMethodManager imm;
         switch (id) {
             case R.id.create_wizard:
@@ -327,6 +327,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getVKUserInfo() {
         MyIntentService.startActionGetUserInfoVKRequest(this, myApp.getPreferences().getVkToken());
         MyIntentService.startActionGetPointList(this);
+        MyIntentService.startActionGetObjectsList(this);
     }
 
     private class ResponseStateReceiver extends BroadcastReceiver {
@@ -345,14 +346,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onReceive(Context context, Intent intent) {
             Log.d(CLASS_TAG, "onReceive");
             int resultCode = intent.getIntExtra(MyIntentService.RESULT_CODE, 0);
-            if (resultCode == MyIntentService.RESULT_SUCCSESS) {
+            if (resultCode == MyIntentService.RESULT_SUCCESS) {
                 switch (intent.getStringExtra(Const.EXTENDED_OPERATION_TYPE)) {
                     case MyIntentService.ACTION_GET_POINT_LIST:
-                        myApp.getMap().placePoints(myApp);
-                        Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPoints().getSize()), Toast.LENGTH_LONG).show();
+                        myApp.getMap().placePolicePoints(myApp);
+//                        Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPolicePoints().getSize()), Toast.LENGTH_LONG).show();
+                        break;
+                    case MyIntentService.ACTION_GET_OBJECTS_LIST:
+                        myApp.getMap().placeObjectsPoints(myApp);
                         break;
                     case MyIntentService.ACTION_CREATE_POINT:
                         MyIntentService.startActionGetPointList(context);
+                        MyIntentService.startActionGetObjectsList(context);
                         break;
                     case MyIntentService.ACTION_GET_ROLE:
                         break;

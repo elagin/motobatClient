@@ -6,29 +6,29 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 
+import com.mototime.motobat.content.objects.ObjectsPoints;
+import com.mototime.motobat.content.police.PolicePoints;
 import com.mototime.motobat.maps.general.MyMapManager;
 import com.mototime.motobat.maps.google.MyGoogleMapManager;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 public class MyApp extends Application {
-
-    public static final SimpleDateFormat fullTimeFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault());
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-    public static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
     public static final String CLOSE_GROUP_ID = "98656839"; // Приложение
-    public static final String OPEN_GROUP_ID = "68397238"; // mototimes
+    public static final String OPEN_GROUP_ID  = "68397238"; // mototimes
 
-    //    private Map<Integer, Point> pointsMap;
-    private Points points;
-    private MyPreferences prefs = null;
-    private Session session = null;
-    private MyMapManager map;
-    private Geocoder geocoder;
+    private PolicePoints  policePoints;
+    private ObjectsPoints objectsPoints;
+    private MyPreferences prefs;
+    private Session       session;
+    private MyMapManager  map;
+    private Geocoder      geocoder;
+
+    {
+        prefs = null;
+        session = null;
+    }
 
     public MyApp() {
     }
@@ -39,10 +39,16 @@ public class MyApp extends Application {
         return prefs;
     }
 
-    public Points getPoints() {
-        if(points == null)
-            points = new Points();
-        return points;
+    public PolicePoints getPolicePoints() {
+        if (policePoints == null)
+            policePoints = new PolicePoints();
+        return policePoints;
+    }
+
+    public ObjectsPoints getObjectsPoints() {
+        if (objectsPoints == null)
+            objectsPoints = new ObjectsPoints();
+        return objectsPoints;
     }
 
     public void createMap(Context context) {
@@ -53,21 +59,13 @@ public class MyApp extends Application {
     }
 
     public void updateMap(Context context) {
-        map.placePoints(context);
+        map.placePolicePoints(context);
         map.placeUser(context);
     }
 
-//    public void addPoint(Point point) {
-//        pointsMap.put(point.getId(), point);
-//    }
-
-//    public Map<Integer, Point> getPointsMap() {
-//        return pointsMap;
-//    }
-
     public Session getSession() {
         if (session == null)
-            session = new Session(getApplicationContext(), this);
+            session = new Session(getApplicationContext());
         return session;
     }
 

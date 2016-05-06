@@ -12,11 +12,10 @@ import java.net.URL;
 
 @SuppressLint("CommitPrefEdits")
 public class MyPreferences {
+    private final static String savedLng = "savedlng";
+    private final static String savedLat = "savedlat";
 
-    private final static String savedlng = "savedlng";
-    private final static String savedlat = "savedlat";
-
-    private final static String login = "login";
+    private final static String login    = "login";
     private final static String password = "password";
 
     private final static String VK_TOKEN_KEY = "vk_access_token";
@@ -25,22 +24,20 @@ public class MyPreferences {
     private static final String serverURI = "server";
 
     private static SharedPreferences preferences;
-    private static Context context;
 
     public MyPreferences(Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        MyPreferences.context = context;
     }
 
     public LatLng getSavedLatLng() {
-        double lat = (double) preferences.getFloat(savedlat, 55.752295f);
-        double lng = (double) preferences.getFloat(savedlng, 37.622735f);
+        double lat = (double) preferences.getFloat(savedLat, 55.752295f);
+        double lng = (double) preferences.getFloat(savedLng, 37.622735f);
         return new LatLng(lat, lng);
     }
 
     public void saveLatLng(LatLng latlng) {
-        preferences.edit().putFloat(savedlat, (float) latlng.latitude)
-                .putFloat(savedlng, (float) latlng.longitude).commit();
+        preferences.edit().putFloat(savedLat, (float) latlng.latitude)
+                   .putFloat(savedLng, (float) latlng.longitude).commit();
     }
 
     public String getUserID() {
@@ -49,14 +46,6 @@ public class MyPreferences {
 
     public void setUserID(String value) {
         preferences.edit().putString(login, value).commit();
-    }
-
-    public String getPassword() {
-        return preferences.getString(password, "");
-    }
-
-    public void setPassword(String value) {
-        preferences.edit().putString(password, value).commit();
     }
 
     public void resetAuth() {
@@ -72,8 +61,8 @@ public class MyPreferences {
     }
 
     public URL getServerURI() {
-        String DefaultURI = "http://forum.moto.msk.ru/mobile_times/mototimes_motobat_json.php";
-        String URI = preferences.getString(serverURI, "");
+        String DefaultURI = "http://mototimes.info/request/request.php";
+        String URI        = preferences.getString(serverURI, "");
         if (URI.equals("")) {
             setServerURI(DefaultURI);
             URI = DefaultURI;
@@ -88,13 +77,5 @@ public class MyPreferences {
 
     public void setServerURI(String URI) {
         preferences.edit().putString(serverURI, URI);
-    }
-
-    public void setVKUserName(String value) {
-        preferences.edit().putString(VK_USER_NAME, value);
-    }
-
-    public String getVKUserName() {
-        return preferences.getString(VK_USER_NAME, "");
     }
 }

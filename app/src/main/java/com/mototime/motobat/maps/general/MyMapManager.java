@@ -6,7 +6,7 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 
 public abstract class MyMapManager {
-    public static final String OSM = "osm";
+    public static final String OSM    = "osm";
     public static final String GOOGLE = "google";
     public static final String YANDEX = "yandex";
 
@@ -21,7 +21,9 @@ public abstract class MyMapManager {
     @SuppressWarnings("SameParameterValue")
     public abstract void zoom(int zoom);
 
-    public abstract void placePoints(Context context);
+    public abstract void placePolicePoints(Context context);
+
+    public abstract void placeObjectsPoints(Context context);
 
     public String getName() {
         return name;

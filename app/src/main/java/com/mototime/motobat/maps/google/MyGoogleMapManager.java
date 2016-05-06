@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,8 +15,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mototime.motobat.MyApp;
-import com.mototime.motobat.Point;
 import com.mototime.motobat.R;
+import com.mototime.motobat.content.objects.ObjectPoint;
+import com.mototime.motobat.content.police.PolicePoint;
 import com.mototime.motobat.maps.general.MyMapManager;
 import com.mototime.motobat.utils.MyUtils;
 
@@ -26,10 +26,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MyGoogleMapManager extends MyMapManager {
-    private static GoogleMap map;
+    private static GoogleMap            map;
     private static Map<String, Integer> points;
-    private static Context context;
-    private final MyApp myApp;
+    private static Map<String, Integer> objects;
+    private static Context              context;
+    private final  MyApp                myApp;
 
     public MyGoogleMapManager(final Context context) {
         this.context = context;
@@ -88,11 +89,24 @@ public class MyGoogleMapManager extends MyMapManager {
 
             @Override
             public View getInfoContents(Marker marker) {
-                Point point = myApp.getPoints().getPoint(points.get(marker.getId()));
+                //TODO Ёбанейший стыдище
+                String text;
+                String created;
+                String description;
+                if (points.containsKey(marker.getId())) {
+                    PolicePoint point = myApp.getPolicePoints().getPoint(points.get(marker.getId()));
+                    text = point.alignment.text + " " + point.type.text;
+                    created = MyUtils.getIntervalFromNowInText(point.created);
+                    description = point.text;
+                } else {
+                    text = myApp.getObjectsPoints().getPoint(objects.get(marker.getId())).type.text;
+                    created = "";
+                    description = myApp.getObjectsPoints().getPoint(objects.get(marker.getId())).text;
+                }
                 View view = ((Activity) context).getLayoutInflater().inflate(R.layout.info_window, null);
-                ((TextView) view.findViewById(R.id.eventClass)).setText(point.getAlignmentString() + " " + point.getTransportString());
-                ((TextView) view.findViewById(R.id.time)).setText(MyUtils.getIntervalFromNowInText(point.getCreated()));
-                ((TextView) view.findViewById(R.id.description)).setText(point.getText());
+                ((TextView) view.findViewById(R.id.eventClass)).setText(text);
+                ((TextView) view.findViewById(R.id.time)).setText(created);
+                ((TextView) view.findViewById(R.id.description)).setText(description);
                 return view;
             }
         });
@@ -138,44 +152,51 @@ public class MyGoogleMapManager extends MyMapManager {
 
     @SuppressWarnings("UnusedParameters")
     @Override
-    public void placePoints(Context context) {
+    public void placePolicePoints(Context context) {
         if (points == null) {
             points = new HashMap<>();
         }
         init();
         points.clear();
 
-        for (int id : myApp.getPoints().getMap().keySet()) {
-            final Point point = myApp.getPoints().getPoint(id);
+        for (int id : myApp.getPolicePoints().getMap().keySet()) {
+            final PolicePoint point = myApp.getPolicePoints().getPoint(id);
             if (point.isInvisible()) continue;
             //String title = point.getAddress();
             StringBuilder title = new StringBuilder();
-            title.append(point.getTransportString());
+            title.append(point.type.text);
             title.append(", ");
-            title.append(point.getAlignmentString());
+            title.append(point.alignment.text);
             title.append(", ");
-            title.append(MyUtils.getIntervalFromNowInText(point.getCreated()));
+            title.append(MyUtils.getIntervalFromNowInText(point.created));
             title.append(System.getProperty("line.separator"));
-            title.append(point.getText());
+            title.append(point.text);
 
             float alpha;
-            int minutes = (int) (((new Date()).getTime() - point.getCreated().getTime()) / 60000 - point.getKarma());
+            int minutes = (int) (((new Date()).getTime() - point.created.getTime()) / 60000 - point.getKarma());
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
-            Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
-            int icon;
-            switch (point.getTransport()) {
-                case Point.RT:
-                    icon = R.drawable.map_rt;
-                    break;
-                case Point.GS:
-                    icon = R.drawable.map_gs;
-                    break;
-                default:
-                    icon = R.drawable.map_car;
-            }
+//            Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
             Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title.toString())
-                    .icon(BitmapDescriptorFactory.fromResource(icon)).alpha(alpha));
+                                                             .icon(BitmapDescriptorFactory.fromResource(point.type.icon)).alpha(alpha));
             points.put(marker.getId(), id);
+        }
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    @Override
+    public void placeObjectsPoints(Context context) {
+        //TODO ёбаный стыд
+        if (objects == null) {
+            objects = new HashMap<>();
+        }
+        //init();
+        objects.clear();
+
+        for (int id : myApp.getObjectsPoints().getMap().keySet()) {
+            final ObjectPoint objectPoint = myApp.getObjectsPoints().getPoint(id);
+            Marker marker = map.addMarker(new MarkerOptions().position(objectPoint.getLatLng()).anchor(0.5f, 0.5f).title(objectPoint.text)
+                                                             .icon(BitmapDescriptorFactory.fromResource(objectPoint.type.icon)).alpha(1));
+            objects.put(marker.getId(), id);
         }
     }
 

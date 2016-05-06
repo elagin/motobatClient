@@ -3,7 +3,7 @@ package com.mototime.motobat.network;
 import android.content.Context;
 
 import com.mototime.motobat.MyApp;
-import com.mototime.motobat.NewPoint;
+import com.mototime.motobat.content.police.NewPoint;
 
 import java.util.HashMap;
 
