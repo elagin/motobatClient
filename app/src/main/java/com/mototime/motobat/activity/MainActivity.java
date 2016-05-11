@@ -387,9 +387,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } else if (resultCode == MyIntentService.RESULT_ERROR) {
                 String error = intent.getStringExtra(MyIntentService.RESULT);
-                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, error, Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
             }
         }
     }

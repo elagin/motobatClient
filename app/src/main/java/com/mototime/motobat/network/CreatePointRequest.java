@@ -14,8 +14,8 @@ public class CreatePointRequest extends HTTPClient {
         MyApp myApp = (MyApp) context.getApplicationContext();
         post.put("method", "create");
         post.put("userid", myApp.getPreferences().getUserID());
-        post.put("alignment", String.valueOf(point.getAlignment()));
-        post.put("transport", String.valueOf(point.getTransport()));
+        post.put("alignment", String.valueOf(point.getAlignment().alignment));
+        post.put("transport", String.valueOf(point.getTransport().type));
         post.put("lat", String.valueOf(point.getLatLng().latitude));
         post.put("lng", String.valueOf(point.getLatLng().longitude));
         post.put("text", String.valueOf(point.getText()));
