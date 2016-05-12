@@ -145,21 +145,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:background="@drawable/rt" />
+                    android:background="@drawable/map_rt" />
 
                 <ImageButton
                     android:id="@+id/gs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:background="@drawable/gs" />
+                    android:background="@drawable/map_gs" />
 
                 <ImageButton
                     android:id="@+id/car"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:background="@drawable/car" />
+                    android:background="@drawable/map_car" />
             </LinearLayout>
 
 

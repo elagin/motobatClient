@@ -9,7 +9,7 @@ public enum PointType {
     POLICE_GS(1, R.drawable.map_gs, "Гусь"),
     POLICE_RT(2, R.drawable.map_rt, "RT"),
     POLICE_CAR(3, R.drawable.map_car, "Коробка"),
-    CAMERA(10, R.drawable.camera, "Камера"),
+    CAMERA(10, R.drawable.camera_small, "Камера"),
     UNKNOWN(255, R.drawable.map_car, "Не известно");
     //TODO иконки
     public final int    type;

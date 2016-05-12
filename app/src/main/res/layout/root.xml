@@ -74,21 +74,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/rt"
-            android:background="@drawable/rt"
+            android:background="@drawable/map_rt"
             android:layout_margin="8dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/gs"
-            android:background="@drawable/gs"
+            android:background="@drawable/map_gs"
             android:layout_margin="8dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/car"
-            android:background="@drawable/car"
+            android:background="@drawable/map_car"
             android:layout_margin="8dp" />
 
     </LinearLayout>

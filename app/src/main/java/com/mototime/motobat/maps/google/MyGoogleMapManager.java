@@ -163,20 +163,20 @@ public class MyGoogleMapManager extends MyMapManager {
             final PolicePoint point = myApp.getPolicePoints().getPoint(id);
             if (point.isInvisible()) continue;
             //String title = point.getAddress();
-            StringBuilder title = new StringBuilder();
-            title.append(point.type.text);
-            title.append(", ");
-            title.append(point.alignment.text);
-            title.append(", ");
-            title.append(MyUtils.getIntervalFromNowInText(point.created));
-            title.append(System.getProperty("line.separator"));
-            title.append(point.text);
+            StringBuilder title = new StringBuilder()
+                    .append(point.type.text)
+                    .append(", ")
+                    .append(point.alignment.text)
+                    .append(", ")
+                    .append(MyUtils.getIntervalFromNowInText(point.created))
+                    .append(System.getProperty("line.separator"))
+                    .append(point.text);
 
             float alpha;
             int minutes = (int) (((new Date()).getTime() - point.created.getTime()) / 60000 - point.getKarma());
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
 //            Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
-            Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 0.5f).title(title.toString())
+            Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 1f).title(title.toString())
                                                              .icon(BitmapDescriptorFactory.fromResource(point.type.icon)).alpha(alpha));
             points.put(marker.getId(), id);
         }
