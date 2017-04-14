@@ -1,5 +1,6 @@
 package com.mototime.motobat.activity;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -21,6 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.EmptyPermissionListener;
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyIntentService;
 import com.mototime.motobat.MyLocationManager;
@@ -57,12 +64,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private View        leftMain;
     private View        notifyTop;
     private View        targetView;
-    public ImageButton rt;
-    public ImageButton gs;
-    public ImageButton car;
-    public ImageButton good;
-    public ImageButton normal;
-    public ImageButton evil;
+    public  ImageButton rt;
+    public  ImageButton gs;
+    public  ImageButton car;
+    public  ImageButton good;
+    public  ImageButton normal;
+    public  ImageButton evil;
     public MyApp myApp = null;
 
     private MyMapManager map;
@@ -149,29 +156,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Registers the ResponseStateReceiver and its intent filters
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
-
         setContentView(R.layout.activity_main);
-
+        VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
         createMap(new MapReady() {
             public void ready(GoogleMap googleMap) {
                 Location location = MyLocationManager.getLocation(MainActivity.this);
                 map.jumpToPoint(location);
                 map.placeUser(MainActivity.this);
-
             }
         });
-
 
         assignViews();
         assignButtons();
         newPoint = new NewPoint();
+        Dexter.withActivity(this)
+              .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+              .withListener(new EmptyPermissionListener() {
+                  @Override
+                  public void onPermissionGranted(PermissionGrantedResponse response) {
+                      map.setMyLocationEnabled(true);
+                  }
 
+                  @Override
+                  public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                      super.onPermissionRationaleShouldBeShown(permission, token);
+                      token.continuePermissionRequest();
+                  }
 
-        VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
-//        if (!VKSdk.wakeUpSession())
-//            VKSdk.authorize(sMyScope, true, true);
-//        else
-//            myApp.getSession().collectData();
+                  @Override
+                  public void onPermissionDenied(PermissionDeniedResponse response) {
+                      super.onPermissionDenied(response);
+                      map.setMyLocationEnabled(true);
+                  }
+              }).check();
+    }
+
+    private void ahead() {
+
     }
 
     private void assignButtons() {

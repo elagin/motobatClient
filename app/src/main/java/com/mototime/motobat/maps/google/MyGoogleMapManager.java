@@ -33,9 +33,10 @@ public class MyGoogleMapManager extends MyMapManager {
     private static Map<String, Integer> objects;
     private static Context              context;
     private final  MyApp                myApp;
+    private boolean locationEnabled = false;
 
     public MyGoogleMapManager(final Context context, final MainActivity.MapReady listener) {
-        this.context = context;
+        MyGoogleMapManager.context = context;
         myApp = (MyApp) context.getApplicationContext();
         setName(MyMapManager.GOOGLE);
 
@@ -75,8 +76,8 @@ public class MyGoogleMapManager extends MyMapManager {
 
     private void init() {
         map.clear();
-        map.setMyLocationEnabled(true);
-        map.getUiSettings().setMyLocationButtonEnabled(true);
+        enableLocation();
+//        map.getUiSettings().setMyLocationButtonEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
@@ -121,20 +122,32 @@ public class MyGoogleMapManager extends MyMapManager {
 
     @Override
     public void goToUser() {
-        Location location = map.getMyLocation();
-        if (location == null) {
-            map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-                @Override
-                public void onMyLocationChange(Location location) {
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(location), STANDART_ZOOM));
-                    map.setOnMyLocationChangeListener(null);
-                }
-            });
-        } else {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(location), STANDART_ZOOM));
-        }
+//        Location location = map.getMyLocation();
+//        if (location == null) {
+//            map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+//                @Override
+//                public void onMyLocationChange(Location location) {
+//                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(location), STANDART_ZOOM));
+//                    map.setOnMyLocationChangeListener(null);
+//                }
+//            });
+//        } else {
+//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(MyUtils.LocationToLatLng(location), STANDART_ZOOM));
+//        }
     }
 
+    @Override
+    public void setMyLocationEnabled(boolean b) {
+        locationEnabled = true;
+        if (map != null) enableLocation();
+    }
+
+    private void enableLocation() {
+        if (locationEnabled) {
+            map.setMyLocationEnabled(true);
+
+        }
+    }
 
     @SuppressWarnings("UnusedParameters")
     @Override

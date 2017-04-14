@@ -38,4 +38,6 @@ public abstract class MyMapManager {
     public abstract void goToLatLng(LatLng latLng);
 
     public abstract void goToUser();
+
+    public abstract void setMyLocationEnabled(boolean b);
 }
