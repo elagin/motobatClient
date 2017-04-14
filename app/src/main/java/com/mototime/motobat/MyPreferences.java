@@ -61,7 +61,7 @@ public class MyPreferences {
     }
 
     public URL getServerURI() {
-        String DefaultURI = "http://mototimes.info/request/request.php";
+        String DefaultURI = "http://motodtp.info/mototimes/request.php";
         String URI        = preferences.getString(serverURI, "");
         if (URI.equals("")) {
             setServerURI(DefaultURI);

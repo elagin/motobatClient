@@ -1,47 +1,223 @@
-<FrameLayout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_frame"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="0dp"
-    android:paddingLeft="0dp"
-    android:paddingRight="0dp"
-    android:paddingTop="0dp"
-    tools:context="com.mototime.motobat.activity.MainActivity" >
-    <fragment
-        class ="com.mototime.motobat.activity.MainScreenFragment"
-        android:id="@+id/main_screen_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:tag="main_screen">
+<FrameLayout android:id="@+id/main_frame"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:paddingBottom="0dp"
+             android:paddingLeft="0dp"
+             android:paddingRight="0dp"
+             android:paddingTop="0dp"
+             tools:context="com.mototime.motobat.activity.MainActivity">
 
-    </fragment>
-</FrameLayout>
-
-<!--
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="0.8"
-    android:keepScreenOn="true"
-    tools:context=".MainActivity">
-
-    <include
-        layout="@layout/point_list"/>
-
-    <LinearLayout
-        android:id="@+id/map_container"
+    <FrameLayout
+        android:id="@+id/main_frame_applications"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    </LinearLayout>
 
-    <Button
-        android:id="@+id/new_point_btn"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="New Button" />
-</LinearLayout>
-    -->
+        <fragment android:id="@+id/google_map"
+                  android:name="com.google.android.gms.maps.SupportMapFragment"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="fill_parent"
+                  android:layout_height="match_parent"
+                  tools:context=".MapsActivity"/>
+
+        <LinearLayout
+            android:id="@+id/notify_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="#8cff0000"
+                android:text="Уведомление"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alignment_type"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#22000000"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/good_police"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:alpha="0.4"
+                android:background="@drawable/helmet_good"/>
+
+            <ImageButton
+                android:id="@+id/normal_police"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/helmet"/>
+
+            <ImageButton
+                android:id="@+id/evil_police"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:alpha="0.4"
+                android:background="@drawable/helmet_bad"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/create_vehicle_types"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="#22000000"
+            android:gravity="center_vertical|end|right"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/rt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/map_rt"/>
+
+            <ImageButton
+                android:id="@+id/gs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/map_gs"/>
+
+            <ImageButton
+                android:id="@+id/car"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/map_car"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/create_add"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="left|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/create_wizard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/create"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/create_ok_cancel_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/create_bottom_inner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/ok_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="8dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/ok"
+                    android:cropToPadding="false"/>
+
+                <ImageButton
+                    android:id="@+id/cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/cancel"/>
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/inputDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#ffff"
+                android:enabled="true"
+                android:hint="Введите описание"
+                android:lines="2"
+                android:maxLines="2"
+                android:textAlignment="center"
+                android:textColor="#f000"
+                android:textColorHint="#faaa"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/target_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="Введите описание"
+            android:focusable="false"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/target"/>
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+</FrameLayout>
+
+    <!--
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="0.8"
+        android:keepScreenOn="true"
+        tools:context=".MainActivity">
+
+        <include
+            layout="@layout/point_list"/>
+
+        <LinearLayout
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/new_point_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="New Button" />
+    </LinearLayout>
+        -->

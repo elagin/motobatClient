@@ -6,6 +6,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.mototime.motobat.content.objects.ObjectsPoints;
 import com.mototime.motobat.content.police.PolicePoints;
 import com.mototime.motobat.maps.general.MyMapManager;
@@ -22,7 +23,7 @@ public class MyApp extends Application {
     private ObjectsPoints objectsPoints;
     private MyPreferences prefs;
     private Session       session;
-    private MyMapManager  map;
+
     private Geocoder      geocoder;
 
     {
@@ -51,17 +52,9 @@ public class MyApp extends Application {
         return objectsPoints;
     }
 
-    public void createMap(Context context) {
-        map = new MyGoogleMapManager(context);
-        Location location = MyLocationManager.getLocation(this);
-        map.jumpToPoint(location);
-        map.placeUser(context);
-    }
 
-    public void updateMap(Context context) {
-        map.placePolicePoints(context);
-        map.placeUser(context);
-    }
+
+
 
     public Session getSession() {
         if (session == null)
@@ -115,7 +108,6 @@ public class MyApp extends Application {
         return res.toString();
     }
 
-    public MyMapManager getMap() {
-        return map;
-    }
+
+
 }

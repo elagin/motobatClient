@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,10 +20,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.MyIntentService;
+import com.mototime.motobat.MyLocationManager;
 import com.mototime.motobat.R;
 import com.mototime.motobat.content.police.NewPoint;
+import com.mototime.motobat.maps.general.MyMapManager;
+import com.mototime.motobat.maps.google.MyGoogleMapManager;
 import com.mototime.motobat.utils.AnimateViews;
 import com.mototime.motobat.utils.Const;
 import com.vk.sdk.VKAccessToken;
@@ -52,13 +57,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private View        leftMain;
     private View        notifyTop;
     private View        targetView;
-    private ImageButton rt;
-    private ImageButton gs;
-    private ImageButton car;
-    private ImageButton good;
-    private ImageButton normal;
-    private ImageButton evil;
-    private       MyApp         myApp       = null;
+    public ImageButton rt;
+    public ImageButton gs;
+    public ImageButton car;
+    public ImageButton good;
+    public ImageButton normal;
+    public ImageButton evil;
+    public MyApp myApp = null;
+
+    private MyMapManager map;
+
+    public void createMap(final MapReady listener) {
+        map = new MyGoogleMapManager(this, listener);
+    }
+
+    public void updateMap(Context context) {
+        map.placePolicePoints(context);
+        map.placeUser(context);
+    }
+
+    public MyMapManager getMap() {
+        return map;
+    }
+
     private final VKSdkListener sdkListener = new VKSdkListener() {
         @Override
         public void onCaptchaError(VKError captchaError) {
@@ -126,13 +147,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ResponseStateReceiver mDownloadStateReceiver = new ResponseStateReceiver();
 
         // Registers the ResponseStateReceiver and its intent filters
+
         LocalBroadcastManager.getInstance(this).registerReceiver(mDownloadStateReceiver, statusIntentFilter);
-        setContentView(R.layout.main_screen_fragment);
+
+        setContentView(R.layout.activity_main);
+
+        createMap(new MapReady() {
+            public void ready(GoogleMap googleMap) {
+                Location location = MyLocationManager.getLocation(MainActivity.this);
+                map.jumpToPoint(location);
+                map.placeUser(MainActivity.this);
+
+            }
+        });
+
 
         assignViews();
         assignButtons();
         newPoint = new NewPoint();
-        myApp.createMap(this);
+
 
         VKSdk.initialize(sdkListener, appID, VKAccessToken.tokenFromSharedPreferences(this, sTokenKey));
 //        if (!VKSdk.wakeUpSession())
@@ -223,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.ok_button:
-                newPoint.setLatLng(myApp.getMap().getCenter());
+                newPoint.setLatLng(getMap().getCenter());
                 newPoint.setText(((TextView) findViewById(R.id.inputDescription)).getText().toString());
 
                 if (myApp.getSession().isCloseMember()) {
@@ -311,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     textNotify.setTranslationY(-textNotify.getHeight());
                     AnimateViews.hide(targetView);
                     AnimateViews.show(leftMain);
-                    myApp.getMap().goToUser();
+                    getMap().goToUser();
                     inCreate = false;
                 }
             });
@@ -349,11 +382,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (resultCode == MyIntentService.RESULT_SUCCESS) {
                 switch (intent.getStringExtra(Const.EXTENDED_OPERATION_TYPE)) {
                     case MyIntentService.ACTION_GET_POINT_LIST:
-                        myApp.getMap().placePolicePoints(myApp);
+                        getMap().placePolicePoints(myApp);
 //                        Toast.makeText(context, String.format("Загружено %d точек.", myApp.getPolicePoints().getSize()), Toast.LENGTH_LONG).show();
                         break;
                     case MyIntentService.ACTION_GET_OBJECTS_LIST:
-                        myApp.getMap().placeObjectsPoints(myApp);
+                        getMap().placeObjectsPoints(myApp);
                         break;
                     case MyIntentService.ACTION_CREATE_POINT:
                         MyIntentService.startActionGetPointList(context);
@@ -373,9 +406,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String userInfo = intent.getStringExtra(MyIntentService.RESULT);
                         if (userInfo != null) {
                             try {
-                                JSONObject res = new JSONObject(userInfo);
-                                String userName = res.getString("userName");
-                                String versionName = res.getString("versionName");
+                                JSONObject res         = new JSONObject(userInfo);
+                                String     userName    = res.getString("userName");
+                                String     versionName = res.getString("versionName");
                                 MyIntentService.startActionGetRole(context, myApp.getPreferences().getUserID(), userName, versionName);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -391,6 +424,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 //Toast.makeText(context, "В onReceiveResult пришло не понятно что.", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    public class MapReady {
+        public void ready(GoogleMap map) {
+
         }
     }
 }

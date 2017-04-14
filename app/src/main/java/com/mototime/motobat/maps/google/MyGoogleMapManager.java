@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mototime.motobat.MyApp;
 import com.mototime.motobat.R;
+import com.mototime.motobat.activity.MainActivity;
 import com.mototime.motobat.content.objects.ObjectPoint;
 import com.mototime.motobat.content.police.PolicePoint;
 import com.mototime.motobat.maps.general.MyMapManager;
@@ -32,7 +34,7 @@ public class MyGoogleMapManager extends MyMapManager {
     private static Context              context;
     private final  MyApp                myApp;
 
-    public MyGoogleMapManager(final Context context) {
+    public MyGoogleMapManager(final Context context, final MainActivity.MapReady listener) {
         this.context = context;
         myApp = (MyApp) context.getApplicationContext();
         setName(MyMapManager.GOOGLE);
@@ -42,36 +44,31 @@ public class MyGoogleMapManager extends MyMapManager {
 
         android.support.v4.app.FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
         //final SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.google_map);
-        final SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.map);
+        final SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.google_map);
 
 /* Возможно поможет, хотя и костыль */
-        for (int i = 0; i < 5; i++) {
-            map = mapFragment.getMap();
-            if (map == null) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                break;
-            }
-        }
-        init();
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                init();
+                map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                marker.showInfoWindow();
-                return true;
-            }
-        });
-        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        marker.showInfoWindow();
+                        return true;
+                    }
+                });
+                map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                    @Override
+                    public void onMapLongClick(LatLng latLng) {
 //                String uri    = "geo:" + latLng.latitude + "," + latLng.longitude;
 //                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 //                context.startActivity(intent);
+                    }
+                });
+                listener.ready(map);
             }
         });
     }
@@ -173,7 +170,7 @@ public class MyGoogleMapManager extends MyMapManager {
                     .append(point.text);
 
             float alpha;
-            int minutes = (int) (((new Date()).getTime() - point.created.getTime()) / 60000 - point.getKarma());
+            int   minutes = (int) (((new Date()).getTime() - point.created.getTime()) / 60000 - point.getKarma());
             alpha = Math.max((float) (1 - 0.003 * Math.max(minutes, 0)), 0.2f);
 //            Log.d("POINTS", "minutes: " + String.valueOf(minutes) + " alpha: " + String.valueOf(alpha));
             Marker marker = map.addMarker(new MarkerOptions().position(point.getLatLng()).anchor(0.5f, 1f).title(title.toString())
